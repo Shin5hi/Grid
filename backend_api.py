@@ -19,7 +19,9 @@ import asyncio
 import json
 import logging
 import os
+import re
 import time
+import uuid
 from contextlib import asynccontextmanager
 from enum import Enum
 from typing import AsyncGenerator
@@ -90,7 +92,7 @@ async def websocket_log_stream(ws: WebSocket) -> None:
             message = await pubsub.get_message(ignore_subscribe_messages=True, timeout=1.0)
             if message and message["type"] == "message":
                 try: log_entry = LogEntry(**json.loads(message["data"]))
-                except: log_entry = LogEntry(level=LogLevel.INFO, source="raw", message=str(message["data"]))
+                except (ValueError, TypeError): log_entry = LogEntry(level=LogLevel.INFO, source="raw", message=str(message["data"]))
                 await ws.send_json(log_entry.model_dump())
             try:
                 client_msg = await asyncio.wait_for(ws.receive_text(), timeout=0.05)
@@ -126,7 +128,7 @@ async def get_automod_config() -> AutoModConfig:
 async def update_automod_config(config: AutoModConfig) -> AutoModConfig:
     r = await get_redis(); payload = config.model_dump_json()
     await r.set(AUTOMOD_CONFIG_KEY, payload)
-    change_event = LogEntry(level=LogLevel.SYSTEM, source="automod", message=f"AutoMod config updated")
+    change_event = LogEntry(level=LogLevel.SYSTEM, source="automod", message="AutoMod config updated")
     await r.publish(LOG_CHANNEL, change_event.model_dump_json())
     return config
 
@@ -181,11 +183,11 @@ async def music_get_queue() -> MusicQueueResponse:
     raw_queue = await r.get(MUSIC_QUEUE_KEY); tracks = []
     if raw_queue:
         try: tracks = [MusicTrack(**i) for i in json.loads(raw_queue)]
-        except: tracks = []
+        except (ValueError, TypeError) as exc: logger.warning("Invalid music queue data: %s", exc); tracks = []
     raw_state = await r.get(MUSIC_STATE_KEY); now_playing = None
     if raw_state:
         try: now_playing = MusicTrack.model_validate_json(raw_state)
-        except: now_playing = None
+        except ValueError as exc: logger.warning("Invalid music state data: %s", exc); now_playing = None
     return MusicQueueResponse(queue=tracks, length=len(tracks), now_playing=now_playing)
 
 
@@ -196,7 +198,7 @@ async def music_add_track(request: MusicAddRequest) -> dict:
     raw_queue = await r.get(MUSIC_QUEUE_KEY); queue = []
     if raw_queue:
         try: queue = json.loads(raw_queue)
-        except: queue = []
+        except ValueError as exc: logger.warning("Invalid music queue data: %s", exc); queue = []
     queue.append(track.model_dump()); await r.set(MUSIC_QUEUE_KEY, json.dumps(queue))
     await r.publish(MUSIC_CHANNEL, json.dumps({"event": "track_added", "track": track.model_dump(), "queue_length": len(queue)}))
     log_entry = LogEntry(level=LogLevel.INFO, source="music", message=f"Track added to queue \"{track.title}\" by {track.artist}")
@@ -221,7 +223,6 @@ class DeployResponse(BaseModel):
     region: str = "us-east-1"; estimated_time_seconds: int = 30
 
 
-import re, uuid
 DISCORD_TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]{24,}\.[A-Za-z0-9_-]{4,9}\.[A-Za-z0-9_-]{25,}$")
 
 
@@ -236,7 +237,8 @@ async def deploy_bot(request: DeployRequest) -> DeployResponse:
         await r.set(f"{DEPLOY_STATE_KEY}:{deploy_id}", json.dumps({"deploy_id": deploy_id, "bot_name": request.bot_name, "status": DeployStatus.PROVISIONING.value, "region": "us-east-1"}))
         log_entry = LogEntry(level=LogLevel.SYSTEM, source="deployer", message=f"Deployment initiated bot={request.bot_name} deploy_id={deploy_id}")
         await r.publish(LOG_CHANNEL, log_entry.model_dump_json())
-    except Exception: pass
+    except Exception as exc:
+        logger.warning("Could not persist deploy state for '%s': %s", request.bot_name, exc)
     return DeployResponse(status=DeployStatus.PROVISIONING, bot_name=request.bot_name, deploy_id=deploy_id, message=f"Deployment initiated for '{request.bot_name}'. Provisioning cloud resources in us-east-1.", region="us-east-1", estimated_time_seconds=30)
 
 
@@ -263,7 +265,7 @@ async def list_commands() -> list[BotCommandResponse]:
     commands = []
     for name, data in raw.items():
         try: commands.append(BotCommandResponse(name=name, **json.loads(data)))
-        except: continue
+        except (ValueError, TypeError) as exc: logger.warning("Skipping invalid command '%s': %s", name, exc); continue
     return commands
 
 
