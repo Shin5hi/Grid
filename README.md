@@ -46,15 +46,23 @@ Bot development should be **accessible, mobile-first, and professionally polishe
 discord-bot-maker-android/
 ├── README.md
 ├── COORDINATION.md              # Art direction & file ownership
-├── ui/
-│   ├── AppTheme.kt             # Material 3 theme, colors, typography
-│   ├── MainDashboardScreen.kt  # Landing hub with bot status & module grid
-│   └── AppNavigation.kt        # Compose Navigation graph
-├── LiveConsoleScreen.kt
+├── app/src/main/kotlin/com/discordbotmaker/android/
+│   ├── MainActivity.kt
+│   └── ui/                     # Compose UI (the only UI sources compiled by Gradle)
+│       ├── navigation/AppNavigation.kt   # AppNavGraph + AppRoutes
+│       ├── theme/                        # AppColors, AppTheme, NeonColors
+│       ├── splash/                       # SplashScreen, OriginLoadingScreen
+│       ├── dashboard/MainDashboardScreen.kt
+│       ├── library/ToolLibraryScreen.kt
+│       ├── components/OrionBubble.kt
+│       ├── doubt/DoubtAssistantScreen.kt
+│       ├── stats/StatsDashboardScreen.kt
+│       ├── music/MusicPlayerScreen.kt
+│       ├── automod/ commands/ console/ launch/
+├── LiveConsoleScreen.kt        # Root-level copies, pending cleanup (see CLEANUP_REPORT.md)
 ├── AutoModScreen.kt
 ├── BotCreationScreen.kt
 ├── CommandBuilderScreen.kt
-├── MusicPlayerScreen.kt
 ├── backend_api.py
 └── test_pr4_fixes.py
 ```

@@ -75,6 +75,18 @@ private val modules = listOf(
         icon = "🚀",
         description = "Connect token, configure & deploy a new bot instance.",
         accentColor = AppColors.AccentRocket
+    ),
+    ModuleCard(
+        title = "Music Player",
+        icon = "🎵",
+        description = "Stream music to Discord voice channels with a queue.",
+        accentColor = AppColors.AccentMusic
+    ),
+    ModuleCard(
+        title = "Statistics",
+        icon = "📊",
+        description = "Server reach, members and activity over time.",
+        accentColor = AppColors.AccentChart
     )
 )
 
@@ -83,7 +95,7 @@ private val modules = listOf(
 // Updated to include:
 // • "Login with Discord" button in the Discord OAuth2 style
 // • Bot status card with refined metrics
-// • 2×2 module grid with flat cards (8dp corners, 0 elevation)
+// • Module grid (2 columns) with flat cards (8dp corners, 0 elevation)
 // • Bottom navigation bar is handled in AppNavigation scaffold
 //
 // ───────────────────────────────────────────────────────────────────────────
@@ -95,13 +107,18 @@ fun MainDashboardScreen(
     onNavigateToAutoMod: () -> Unit = {},
     onNavigateToCommandBuilder: () -> Unit = {},
     onNavigateToBotCreation: () -> Unit = {},
+    onNavigateToMusic: () -> Unit = {},
+    onNavigateToStats: () -> Unit = {},
     onLoginWithDiscord: () -> Unit = {}
 ) {
+    // Order must match the `modules` list above.
     val callbacks = listOf(
         onNavigateToConsole,
         onNavigateToAutoMod,
         onNavigateToCommandBuilder,
-        onNavigateToBotCreation
+        onNavigateToBotCreation,
+        onNavigateToMusic,
+        onNavigateToStats
     )
 
     Column(

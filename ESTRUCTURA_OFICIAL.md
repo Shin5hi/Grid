@@ -87,17 +87,17 @@ object AppColors {
 
 | Screen | Path | Status | Notes |
 |--------|------|--------|-------|
-| **SplashScreen** | `ui/splash/SplashScreen.kt` | ❌ FALTA | 2-3 seg entry point |
-| **OriginLoadingScreen** | `ui/splash/OriginLoadingScreen.kt` | ⚠️ Existe en `ui/` | Grid Origin animated logo + slogan "Crea, Organiza, Avanza." |
-| **MainDashboardScreen** | `ui/dashboard/MainDashboardScreen.kt` | ❌ FALTA | Hub central con contadores |
-| **ToolLibraryScreen** | `ui/library/ToolLibraryScreen.kt` | ⚠️ Existe en `ui/` | Tree view con hierarchy lines |
+| **SplashScreen** | `app/src/main/kotlin/com/discordbotmaker/android/ui/splash/SplashScreen.kt` | ✅ Existe | 2-3 seg entry point (delega en OriginLoadingScreen) |
+| **OriginLoadingScreen** | `app/src/main/kotlin/com/discordbotmaker/android/ui/splash/OriginLoadingScreen.kt` | ✅ Existe | Grid Origin animated logo + slogan "Crea, Organiza, Avanza." |
+| **MainDashboardScreen** | `app/src/main/kotlin/com/discordbotmaker/android/ui/dashboard/MainDashboardScreen.kt` | ✅ Existe | Hub central (grid de módulos, sin contadores aún) |
+| **ToolLibraryScreen** | `app/src/main/kotlin/com/discordbotmaker/android/ui/library/ToolLibraryScreen.kt` | ✅ Existe | Tree view con hierarchy lines |
 | **CommandBuilderScreen** | `app/src/.../ui/commands/CommandBuilderScreen.kt` | ✅ Existe | Funcional |
 | **AutoModScreen** | `app/src/.../ui/automod/AutoModScreen.kt` | ✅ Existe | Funcional |
 | **BotCreationScreen** | `app/src/.../ui/launch/BotCreationScreen.kt` | ✅ Existe | Funcional |
 | **LiveConsoleScreen** | `app/src/.../ui/console/LiveConsoleScreen.kt` | ✅ Existe | Funcional |
-| **MusicPlayerScreen** | Existe en root | ⚠️ Parcial | Necesita integración |
-| **DoubtAssistantScreen** | `ui/DoubtAssistantScreen.kt` | ✅ Existe | Asistente Orión |
-| **StatsDashboardScreen** | ❌ FALTA | ❌ NO EXISTE | Stats/Analytics module |
+| **MusicPlayerScreen** | `app/src/main/kotlin/com/discordbotmaker/android/ui/music/MusicPlayerScreen.kt` | ✅ Integrado | Ruta `music_player` + tarjeta en dashboard |
+| **DoubtAssistantScreen** | `app/src/main/kotlin/com/discordbotmaker/android/ui/doubt/DoubtAssistantScreen.kt` | ✅ Existe | Asistente Orión |
+| **StatsDashboardScreen** | `app/src/main/kotlin/com/discordbotmaker/android/ui/stats/StatsDashboardScreen.kt` | ✅ Integrado | Ruta `stats` + tarjeta en dashboard |
 | **SettingsScreen** | ❌ FALTA | ❌ NO EXISTE | Settings placeholder |
 
 ---

@@ -29,7 +29,9 @@ import com.discordbotmaker.android.ui.dashboard.BotStatus
 import com.discordbotmaker.android.ui.dashboard.GridBottomNavBar
 import com.discordbotmaker.android.ui.dashboard.MainDashboardScreen
 import com.discordbotmaker.android.ui.launch.BotCreationScreen
+import com.discordbotmaker.android.ui.music.MusicPlayerScreen
 import com.discordbotmaker.android.ui.library.ToolLibraryScreen
+import com.discordbotmaker.android.ui.stats.StatsDashboardScreen
 import com.discordbotmaker.android.ui.splash.SplashScreen
 import com.discordbotmaker.android.ui.splash.OriginLoadingScreen
 import com.discordbotmaker.android.ui.doubt.DoubtAssistantScreen
@@ -45,6 +47,8 @@ object AppRoutes {
     const val AUTO_MOD             = "auto_mod"
     const val COMMAND_BUILDER      = "command_builder"
     const val BOT_CREATION         = "bot_creation"
+    const val MUSIC_PLAYER         = "music_player"
+    const val STATS                = "stats"
     const val DOUBT_ASSISTANT      = "doubt_assistant"
 }
 
@@ -144,6 +148,16 @@ fun AppNavGraph(
                                 launchSingleTop = true
                             }
                         },
+                        onNavigateToMusic = {
+                            navController.navigate(AppRoutes.MUSIC_PLAYER) {
+                                launchSingleTop = true
+                            }
+                        },
+                        onNavigateToStats = {
+                            navController.navigate(AppRoutes.STATS) {
+                                launchSingleTop = true
+                            }
+                        },
                         onLoginWithDiscord = {}
                     )
                 }
@@ -183,6 +197,14 @@ fun AppNavGraph(
 
                 composable(AppRoutes.DOUBT_ASSISTANT) {
                     DoubtAssistantScreen()
+                }
+
+                composable(AppRoutes.MUSIC_PLAYER) {
+                    MusicPlayerScreen()
+                }
+
+                composable(AppRoutes.STATS) {
+                    StatsDashboardScreen()
                 }
             }
 
