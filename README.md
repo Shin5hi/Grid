@@ -56,7 +56,7 @@ discord-bot-maker-android/
 ├── CommandBuilderScreen.kt
 ├── MusicPlayerScreen.kt
 ├── backend_api.py
-└── test_backend_api.py
+└── test_pr4_fixes.py
 ```
 
 ---
@@ -78,7 +78,7 @@ See COORDINATION.md for art direction and development conventions.
 ```bash
 # Clone the repo
 git clone https://github.com/BMA/discord-bot-maker-android.git
-cd discord-bot-maker-android/backend
+cd discord-bot-maker-android
 
 # Create virtual environment
 python -m venv .venv && source .venv/bin/activate
