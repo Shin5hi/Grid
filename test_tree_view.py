@@ -198,8 +198,8 @@ class TestOrionBubble:
     def test_has_offset_state(self):
         assert "offsetX" in self.content and "offsetY" in self.content
 
-    def test_uses_blurple_color(self):
-        assert "AppColors.Primary" in self.content
+    def test_uses_orion_blue(self):
+        assert "AppColors.Info" in self.content
 
     def test_has_circle_shape(self):
         assert "CircleShape" in self.content

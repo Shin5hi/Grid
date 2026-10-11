@@ -163,8 +163,8 @@ class TestOriginLoadingTypography:
     def test_title_font_size(self):
         assert "32.sp" in self.content
 
-    def test_logo_font_size(self):
-        assert "48.sp" in self.content
+    def test_logo_typography_replaced_by_mark(self):
+        assert "R.drawable.ic_grid_logo" in self.content
 
     def test_slogan_font_size(self):
         assert "14.sp" in self.content
@@ -210,8 +210,8 @@ class TestOriginLoadingLayout:
     def test_ring_size_140dp(self):
         assert "140.dp" in self.content
 
-    def test_rounded_corner_shape(self):
-        assert "RoundedCornerShape(20.dp)" in self.content
+    def test_logo_is_grid_mark(self):
+        assert "R.drawable.ic_grid_logo" in self.content
 
     def test_center_alignment(self):
         assert "Alignment.Center" in self.content
@@ -421,11 +421,11 @@ class TestAppThemeCharcoalColor:
         self.content = read_file("ui/AppTheme.kt")
 
     def test_background_is_313338(self):
-        assert "0xFF313338" in self.content
+        assert "0xFF0B0B14" in self.content
 
     def test_background_named_correctly(self):
         assert "val Background" in self.content
         for line in self.content.split('\n'):
             if 'val Background' in line:
-                assert '313338' in line, f"Background should be #313338, got: {line.strip()}"
+                assert '0B0B14' in line, f"Background should be #0B0B14, got: {line.strip()}"
                 break
