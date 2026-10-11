@@ -48,7 +48,21 @@ data class LogEntry(
 
 // ─── ViewModel (StateFlow-based log management) ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+/** Maps the backend's level names (INFO, WARN, ERROR, DEBUG, SYS) to [LogLevel]. */
+fun logLevelFromBackend(raw: String): LogLevel = when (raw.uppercase()) {
+    "WARN", "WARNING" -> LogLevel.WARN
+    "ERROR" -> LogLevel.ERROR
+    "DEBUG" -> LogLevel.DEBUG
+    "SYS", "SYSTEM" -> LogLevel.SYSTEM
+    else -> LogLevel.INFO
+}
+
 class LiveConsoleViewModel {
+
+    private companion object {
+        /** Oldest lines are dropped beyond this, so a long session cannot grow without bound. */
+        const val MAX_LOGS = 1000
+    }
 
     private val _logs = MutableStateFlow<List<LogEntry>>(emptyList())
     val logs: StateFlow<List<LogEntry>> = _logs
@@ -69,7 +83,19 @@ class LiveConsoleViewModel {
             source = source,
             message = message
         )
-        _logs.value = _logs.value + entry
+        _logs.value = (_logs.value + entry).takeLast(MAX_LOGS)
+    }
+
+    /** Appends a record from the backend, keeping the server's timestamp. */
+    fun appendRemote(level: LogLevel, source: String, message: String, timestampSeconds: Double) {
+        val entry = LogEntry(
+            id = nextId++,
+            timestamp = formatEpochSeconds(timestampSeconds),
+            level = level,
+            source = source,
+            message = message
+        )
+        _logs.value = (_logs.value + entry).takeLast(MAX_LOGS)
     }
 
     fun clearLogs() {
@@ -82,6 +108,11 @@ class LiveConsoleViewModel {
 
     fun toggleAutoScroll() {
         _autoScroll.value = !_autoScroll.value
+    }
+
+    private fun formatEpochSeconds(seconds: Double): String {
+        val sdf = java.text.SimpleDateFormat("HH:mm:ss.SSS", java.util.Locale.US)
+        return sdf.format(java.util.Date((seconds * 1000).toLong()))
     }
 
     private fun getCurrentTimestamp(): String {
@@ -210,7 +241,7 @@ private fun ConsoleHeader(
                     color = AppColors.Success,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     letterSpacing = 2.sp
                 )
                 Spacer(Modifier.width(12.dp))
@@ -227,7 +258,7 @@ private fun ConsoleHeader(
                     text = if (isConnected) "LIVE" else "OFFLINE",
                     color = statusColor,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -238,7 +269,7 @@ private fun ConsoleHeader(
                     text = "$logCount",
                     color = AppColors.TextSecondary,
                     fontSize = 11.sp,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = FontFamily.SansSerif
                 )
                 Spacer(Modifier.width(12.dp))
 
@@ -301,7 +332,7 @@ private fun LogEntryRow(entry: LogEntry) {
 
     Text(
         text = annotated,
-        fontFamily = FontFamily.Monospace,
+        fontFamily = FontFamily.SansSerif,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 1.dp)
@@ -327,14 +358,14 @@ private fun EmptyConsoleState() {
                 text = "Waiting for log stream…",
                 color = AppColors.TextSecondary,
                 fontSize = 14.sp,
-                fontFamily = FontFamily.Monospace
+                fontFamily = FontFamily.SansSerif
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = "Connect to your bot's backend to begin.",
                 color = AppColors.TextSecondary.copy(alpha = 0.6f),
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace
+                fontFamily = FontFamily.SansSerif
             )
         }
     }

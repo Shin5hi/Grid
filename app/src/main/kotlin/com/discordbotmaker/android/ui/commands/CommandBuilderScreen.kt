@@ -40,6 +40,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.discordbotmaker.android.ui.theme.NeonColors
+import com.discordbotmaker.android.ui.theme.AppColors
 
 // ─── Data Models ━━━━━━━━━━
 
@@ -60,7 +61,8 @@ data class BotCommand(
 @Composable
 fun CommandBuilderScreen(
     initialCommands: List<BotCommand> = emptyList(),
-    onSaveToCloud: (List<BotCommand>) -> Unit = {},
+    /** Must call the second argument when the sync finishes: `null` on success, or an error. */
+    onSaveToCloud: (List<BotCommand>, onDone: (String?) -> Unit) -> Unit = { _, done -> done(null) },
     onDeleteCommand: (BotCommand) -> Unit = {},
     onSaveCommand: (BotCommand) -> Unit = {}
 ) {
@@ -68,6 +70,8 @@ fun CommandBuilderScreen(
     var showAddDialog by remember { mutableStateOf(false) }
     var editingCommand by remember { mutableStateOf<BotCommand?>(null) }
     var isSaving by remember { mutableStateOf(false) }
+    var saveStatus by remember { mutableStateOf<String?>(null) }
+    var saveFailed by remember { mutableStateOf(false) }
 
     // Sync external state changes
     LaunchedEffect(initialCommands) { commands = initialCommands }
@@ -119,9 +123,25 @@ fun CommandBuilderScreen(
             isSaving = isSaving,
             onClick = {
                 isSaving = true
-                onSaveToCloud(commands)
+                saveStatus = null
+                onSaveToCloud(commands) { error ->
+                    isSaving = false
+                    saveFailed = error != null
+                    saveStatus = error ?: "Saved ${commands.size} command(s) to the backend"
+                }
             }
         )
+
+        saveStatus?.let { status ->
+            Spacer(Modifier.height(8.dp))
+            Text(
+                text = status,
+                color = if (saveFailed) AppColors.Error else AppColors.Success,
+                fontSize = 12.sp,
+                fontFamily = FontFamily.SansSerif,
+                modifier = Modifier.padding(horizontal = 16.dp)
+            )
+        }
 
         Spacer(Modifier.height(32.dp))
     }
@@ -166,7 +186,7 @@ private fun CommandBuilderHeader() {
                 color = NeonColors.NeonPurple,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 letterSpacing = 2.sp
             )
             Spacer(Modifier.height(4.dp))
@@ -174,7 +194,7 @@ private fun CommandBuilderHeader() {
                 text = "Create and manage custom bot commands visually.",
                 color = NeonColors.TextSecondary,
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace
+                fontFamily = FontFamily.SansSerif
             )
         }
     }
@@ -202,7 +222,7 @@ private fun CommandStatsBar(commandCount: Int) {
                 text = "REGISTERED COMMANDS",
                 color = NeonColors.TextSecondary,
                 fontSize = 10.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp
             )
@@ -211,7 +231,7 @@ private fun CommandStatsBar(commandCount: Int) {
             text = "$commandCount",
             color = NeonColors.NeonCyan,
             fontSize = 18.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold
         )
     }
@@ -230,7 +250,7 @@ private fun CommandListSection(
             text = "COMMANDS",
             color = NeonColors.TextSecondary,
             fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             letterSpacing = 2.sp
         )
@@ -255,7 +275,7 @@ private fun CommandListSection(
                         text = "No commands yet",
                         color = NeonColors.TextDim,
                         fontSize = 13.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = FontFamily.SansSerif,
                         fontWeight = FontWeight.Medium
                     )
                     Spacer(Modifier.height(2.dp))
@@ -263,7 +283,7 @@ private fun CommandListSection(
                         text = "Tap '+ Add Command' below to create one",
                         color = NeonColors.TextDim.copy(alpha = 0.7f),
                         fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = FontFamily.SansSerif
                     )
                 }
             }
@@ -326,7 +346,7 @@ private fun CommandRow(
                 text = "/",
                 color = command.responseType.accent,
                 fontSize = 18.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -339,7 +359,7 @@ private fun CommandRow(
                 text = "/${command.name}",
                 color = NeonColors.TextPrimary,
                 fontSize = 14.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis
@@ -355,7 +375,7 @@ private fun CommandRow(
                     text = command.responseType.label,
                     color = command.responseType.accent,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 0.5.sp
                 )
@@ -364,7 +384,7 @@ private fun CommandRow(
                     text = "• ${command.responseContent.take(30)}${if (command.responseContent.length > 30) "…" else ""}",
                     color = NeonColors.TextDim,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis
                 )
@@ -425,7 +445,7 @@ private fun AddCommandButton(onClick: () -> Unit) {
     ) {
         Text(
             text = "+ ADD COMMAND",
-            fontFamily = FontFamily.Monospace,
+            fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             fontSize = 13.sp,
             letterSpacing = 1.sp
@@ -472,7 +492,7 @@ private fun GlowingSaveToCloudButton(
                 text = "Syncing to cloud…",
                 color = NeonColors.NeonGreen,
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace
+                fontFamily = FontFamily.SansSerif
             )
         } else {
             Box(
@@ -520,7 +540,7 @@ private fun GlowingSaveToCloudButton(
                     text = "☁  SAVE TO CLOUD",
                     color = if (enabled) NeonColors.NeonGreen else NeonColors.TextDim,
                     fontSize = 16.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 2.sp,
                     textAlign = TextAlign.Center
@@ -581,7 +601,7 @@ private fun CommandEditorDialog(
                 text = if (isEditing) "✎ EDIT COMMAND" else "⊕ NEW COMMAND",
                 color = NeonColors.NeonPurple,
                 fontSize = 14.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 2.sp
             )
@@ -593,7 +613,7 @@ private fun CommandEditorDialog(
                     text = "COMMAND NAME",
                     color = NeonColors.TextSecondary,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 )
@@ -618,7 +638,7 @@ private fun CommandEditorDialog(
                         text = "/",
                         color = NeonColors.NeonPurple,
                         fontSize = 16.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = FontFamily.SansSerif,
                         fontWeight = FontWeight.Bold,
                         modifier = Modifier.padding(start = 12.dp)
                     )
@@ -638,7 +658,7 @@ private fun CommandEditorDialog(
                         textStyle = TextStyle(
                             color = if (isEditing) NeonColors.TextDim else NeonColors.TextPrimary,
                             fontSize = 14.sp,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = FontFamily.SansSerif
                         ),
                         singleLine = true,
                         cursorBrush = SolidColor(NeonColors.NeonPurple),
@@ -649,7 +669,7 @@ private fun CommandEditorDialog(
                                         text = "e.g. ping, hello, meme",
                                         color = NeonColors.TextDim,
                                         fontSize = 14.sp,
-                                        fontFamily = FontFamily.Monospace
+                                        fontFamily = FontFamily.SansSerif
                                     )
                                 }
                                 innerTextField()
@@ -664,7 +684,7 @@ private fun CommandEditorDialog(
                         text = nameError ?: "",
                         color = NeonColors.NeonRed,
                         fontSize = 10.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = FontFamily.SansSerif,
                         modifier = Modifier.padding(top = 4.dp)
                     )
                 }
@@ -676,7 +696,7 @@ private fun CommandEditorDialog(
                     text = "RESPONSE TYPE",
                     color = NeonColors.TextSecondary,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 )
@@ -704,7 +724,7 @@ private fun CommandEditorDialog(
                     text = "RESPONSE CONTENT",
                     color = NeonColors.TextSecondary,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 1.sp
                 )
@@ -733,7 +753,7 @@ private fun CommandEditorDialog(
                         textStyle = TextStyle(
                             color = NeonColors.TextPrimary,
                             fontSize = 13.sp,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = FontFamily.SansSerif
                         ),
                         cursorBrush = SolidColor(NeonColors.NeonPurple),
                         decorationBox = { innerTextField ->
@@ -743,7 +763,7 @@ private fun CommandEditorDialog(
                                         text = contentHint,
                                         color = NeonColors.TextDim,
                                         fontSize = 13.sp,
-                                        fontFamily = FontFamily.Monospace
+                                        fontFamily = FontFamily.SansSerif
                                     )
                                 }
                                 innerTextField()
@@ -758,7 +778,7 @@ private fun CommandEditorDialog(
                     text = "${responseContent.length}/500",
                     color = NeonColors.TextDim,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     modifier = Modifier.align(Alignment.End)
                 )
             }
@@ -784,7 +804,7 @@ private fun CommandEditorDialog(
             ) {
                 Text(
                     text = if (isEditing) "▸ UPDATE" else "▸ SAVE",
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.sp
@@ -801,7 +821,7 @@ private fun CommandEditorDialog(
             ) {
                 Text(
                     text = "CANCEL",
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.sp
@@ -845,7 +865,7 @@ private fun ResponseTypeChip(
                 text = type.label,
                 color = if (selected) type.accent else NeonColors.TextSecondary,
                 fontSize = 10.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
                 letterSpacing = 0.5.sp
             )
