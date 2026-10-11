@@ -2,8 +2,8 @@
 import re
 import pytest
 
-STATS_FILE = "ui/StatsDashboardScreen.kt"
-NAV_FILE = "ui/AppNavigation.kt"
+STATS_FILE = "app/src/main/kotlin/com/discordbotmaker/android/ui/stats/StatsDashboardScreen.kt"
+NAV_FILE = "app/src/main/kotlin/com/discordbotmaker/android/ui/navigation/AppNavigation.kt"
 COORD_FILE = "COORDINATION.md"
 
 def read(path):
