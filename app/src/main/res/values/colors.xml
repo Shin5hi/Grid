@@ -40,4 +40,5 @@
     <color name="accent_music">#ED4245</color>
     <color name="accent_gear">#99AAB5</color>
     <color name="accent_chart">#3BA55D</color>
+    <color name="launcher_background">#5865F2</color>
 </resources>
