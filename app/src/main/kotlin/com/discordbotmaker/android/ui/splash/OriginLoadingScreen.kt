@@ -1,5 +1,8 @@
 package com.discordbotmaker.android.ui.splash
 
+import androidx.compose.foundation.Image
+import androidx.compose.ui.res.painterResource
+import com.discordbotmaker.android.R
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -186,30 +189,19 @@ fun OriginLoadingScreen(
                     sweepColor = AppColors.Primary // Blurple #5865F2
                 )
 
-                // Blocky "G" logo --- Blurple (#5865F2) rounded square
-                Box(
-                    modifier = Modifier
-                        .size(96.dp)
-                        .clip(RoundedCornerShape(20.dp))
-                        .background(AppColors.Primary),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "G",
-                        color = Color.White,
-                        fontSize = 48.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.SansSerif,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                // Grid "G" mark
+                Image(
+                    painter = painterResource(R.drawable.ic_grid_logo),
+                    contentDescription = "Grid",
+                    modifier = Modifier.size(96.dp)
+                )
             }
 
             Spacer(Modifier.height(36.dp))
 
             // -- "Grid Origin" title --- bold, white --
             Text(
-                text = "Grid Origin",
+                text = "Grid",
                 color = AppColors.TextPrimary, // White
                 fontSize = 32.sp,
                 fontWeight = FontWeight.Bold,

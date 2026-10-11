@@ -1,14 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
+<!-- Grid "G" mark for the adaptive launcher icon. Drawn on a 1024 grid and scaled
+     into the 66dp safe zone. Source: approved Grid icon (2026-10-12). -->
 <vector xmlns:android="http://schemas.android.com/apk/res/android"
     android:width="108dp"
     android:height="108dp"
-    android:viewportWidth="108"
-    android:viewportHeight="108">
-    <!-- Rounded square inside the adaptive-icon safe zone (66dp). -->
-    <path
-        android:fillColor="#FFFFFFFF"
-        android:pathData="M36,30 L72,30 Q78,30 78,36 L78,72 Q78,78 72,78 L36,78 Q30,78 30,72 L30,36 Q30,30 36,30 Z" />
-    <path
-        android:fillColor="@color/launcher_background"
-        android:pathData="M48,48 L60,48 L60,60 L48,60 Z" />
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
+    <group
+        android:scaleX="0.72"
+        android:scaleY="0.72"
+        android:pivotX="512"
+        android:pivotY="512">
+        <path
+            android:fillColor="@color/blurple"
+            android:pathData="M190,355 L380,172 L672,172 L825,325 L825,392 L663,392 L583,312 L435,312 L333,413 L333,588 L430,687 L578,687 L675,578 L517,578 L517,465 L823,465 L823,655 L663,820 L365,820 L190,645 Z" />
+    </group>
 </vector>

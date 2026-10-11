@@ -10,74 +10,73 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
-// ─── Grid Branding Identity — High-Fidelity Discord Official ─────────────────
+// ─── Grid Branding Identity — Visual direction of 2026-10-12 ─────────────────
 //
-// Brand:    Grid — Discord Bot Maker
+// Brand:    Grid (by Shin5hi)
 // Logo:     Minimalist geometric "G" — intersecting grid lines within a
 //           rounded square. Rendered as vector/SVG for all density buckets.
-// Primary:  Discord Blurple (#5865F2) — THE brand color for all interactive
+// Primary:  Violet (#7C4DFF) — brand color for all interactive
 //           elements, active states, and CTA buttons.
-// Surface:  Deep Charcoal gray palette from Discord's dark theme spec.
+// Surface:  Deep Charcoal navy (#0B0B14 base, #151522 cards).
 // Typeface: Inter / Roboto — system SansSerif stack only. No monospace.
 //
-// High-Fidelity alignment: Every hex value verified against Discord's
-// official dark theme (desktop 2025/2026). Card corners at 8-12dp.
+// Card corners at 12-16dp. Blue (#4C7DFF) is reserved for the Orion assistant.
 // Zero elevation on all surfaces. Blurple accent on active/selected states.
 //
 // ─────────────────────────────────────────────────────────────────────────────
 
-// ─── Discord Design Language — Color Palette (Verified HiFi) ─────────────────
+// ─── Color Palette — Grid visual direction ───────────────────────────────────
 
 object AppColors {
-    // Backgrounds & surfaces — Discord dark theme exact values
-    val Background       = Color(0xFF313338)   // Main app background
-    val Surface          = Color(0xFF2B2D31)   // Cards, sheets, nav bars
-    val SurfaceVariant   = Color(0xFF232428)   // Elevated surfaces, sidebars
-    val SurfaceBorder    = Color(0xFF3F4147)   // Borders, outlines
-    val InputBackground  = Color(0xFF1E1F22)   // Text inputs, console body
-    val SurfaceOverlay   = Color(0xFF111214)   // Overlays, modal backdrops
+    // Backgrounds & surfaces
+    val Background       = Color(0xFF0B0B14)   // Main app background
+    val Surface          = Color(0xFF151522)   // Cards, sheets, nav bars
+    val SurfaceVariant   = Color(0xFF1B1B2B)   // Elevated surfaces, sidebars
+    val SurfaceBorder    = Color(0xFF272739)   // Borders, outlines
+    val InputBackground  = Color(0xFF10101A)   // Text inputs, console body
+    val SurfaceOverlay   = Color(0xFF07070C)   // Overlays, modal backdrops
 
-    // Primary accent — Discord Blurple (Grid brand primary)
-    val Primary          = Color(0xFF5865F2)   // Buttons, links, active states
-    val PrimaryLight     = Color(0xFF7984F5)   // Hover / highlighted Blurple
-    val PrimaryDim       = Color(0xFF4752C4)   // Pressed Blurple
-    val PrimarySubtle    = Color(0xFF5865F2).copy(alpha = 0.12f)  // Blurple tint bg
+    // Primary accent — Grid violet
+    val Primary          = Color(0xFF7C4DFF)   // Buttons, links, active states
+    val PrimaryLight     = Color(0xFFA78BFA)   // Hover / highlighted Blurple
+    val PrimaryDim       = Color(0xFF6237E0)   // Pressed Blurple
+    val PrimarySubtle    = Color(0xFF7C4DFF).copy(alpha = 0.14f)  // Blurple tint bg
 
-    // Semantic colors — Discord official
-    val Success          = Color(0xFF23A559)   // Online, confirmations
-    val Warning          = Color(0xFFFAA81A)   // Caution, moderate accents
+    // Semantic colors
+    val Success          = Color(0xFF34D399)   // Online, confirmations
+    val Warning          = Color(0xFFF5B841)   // Caution, moderate accents
     val Error            = Color(0xFFF23F43)   // Danger, offline, destructive
-    val Info             = Color(0xFF5865F2)   // Informational (maps to Blurple)
+    val Info             = Color(0xFF4C7DFF)   // Informational (maps to Blurple)
 
-    // Text tiers — Discord contrast hierarchy
-    val TextPrimary      = Color(0xFFFFFFFF)   // Headers, high-emphasis body
-    val TextSecondary    = Color(0xFFB5BAC1)   // Subtitles, descriptions
-    val TextMuted        = Color(0xFF80848E)   // Hints, timestamps, disabled
-    val TextLink         = Color(0xFF00A8FC)   // Hyperlinks
+    // Text tiers
+    val TextPrimary      = Color(0xFFF5F5FA)   // Headers, high-emphasis body
+    val TextSecondary    = Color(0xFFA3A7BD)   // Subtitles, descriptions
+    val TextMuted        = Color(0xFF6E7290)   // Hints, timestamps, disabled
+    val TextLink         = Color(0xFF8FB0FF)   // Hyperlinks
 
     // Utility tokens
-    val Divider          = Color(0xFF3F4147)   // Horizontal/vertical separators
-    val SwitchTrackOff   = Color(0xFF4E5058)   // Inactive toggles
-    val SliderInactive   = Color(0xFF4E5058)   // Inactive slider tracks
-    val ProgressTrack    = Color(0xFF4E5058)   // Progress bar backgrounds
+    val Divider          = Color(0xFF272739)   // Horizontal/vertical separators
+    val SwitchTrackOff   = Color(0xFF3A3A50)   // Inactive toggles
+    val SliderInactive   = Color(0xFF3A3A50)   // Inactive slider tracks
+    val ProgressTrack    = Color(0xFF3A3A50)   // Progress bar backgrounds
 
     // Bottom nav / tab bar tokens
-    val NavBarBackground = Color(0xFF1E1F22)   // Bottom nav background
+    val NavBarBackground = Color(0xFF0F0F18)   // Bottom nav background
     val NavItemActive    = Color(0xFFFFFFFF)   // Active nav icon/label
-    val NavItemInactive  = Color(0xFF80848E)   // Inactive nav icon/label
+    val NavItemInactive  = Color(0xFF6E7290)   // Inactive nav icon/label
 
     // Card module accent colors (for Tree/Library icons)
-    val AccentRocket     = Color(0xFF57F287)   // Launch / Deploy
-    val AccentShield     = Color(0xFFFEE75C)   // Moderation / Safety
-    val AccentBrain      = Color(0xFFEB459E)   // AI / Intelligence
-    val AccentBolt       = Color(0xFF5865F2)   // Commands / Utilities
-    val AccentMusic      = Color(0xFFED4245)   // Music / Audio
-    val AccentGear       = Color(0xFF99AAB5)   // Settings / Config
-    val AccentChart      = Color(0xFF3BA55D)   // Analytics / Stats
-    val AccentWelcome    = Color(0xFFFAA81A)   // Welcome / Onboarding
+    val AccentRocket     = Color(0xFF34D399)   // Launch / Deploy
+    val AccentShield     = Color(0xFFF5C451)   // Moderation / Safety
+    val AccentBrain      = Color(0xFFE879F9)   // AI / Intelligence
+    val AccentBolt       = Color(0xFF7C4DFF)   // Commands / Utilities
+    val AccentMusic      = Color(0xFFF87171)   // Music / Audio
+    val AccentGear       = Color(0xFF94A3B8)   // Settings / Config
+    val AccentChart      = Color(0xFF22C55E)   // Analytics / Stats
+    val AccentWelcome    = Color(0xFFF59E0B)   // Welcome / Onboarding
 }
 
-// ─── Material 3 Dark Color Scheme — Discord HiFi Mapping ─────────────────────
+// ─── Material 3 Dark Color Scheme — Grid mapping ─────────────────────────────
 
 private val AppDarkColorScheme = darkColorScheme(
     primary            = AppColors.Primary,
@@ -87,12 +86,12 @@ private val AppDarkColorScheme = darkColorScheme(
 
     secondary          = AppColors.Info,
     onSecondary        = AppColors.TextPrimary,
-    secondaryContainer = Color(0xFF2D2F6E),
+    secondaryContainer = Color(0xFF232A5C),
     onSecondaryContainer = AppColors.Info,
 
     tertiary           = AppColors.Success,
     onTertiary         = AppColors.TextPrimary,
-    tertiaryContainer  = Color(0xFF1A5C35),
+    tertiaryContainer  = Color(0xFF12482F),
     onTertiaryContainer = AppColors.Success,
 
     background         = AppColors.Background,
@@ -105,11 +104,11 @@ private val AppDarkColorScheme = darkColorScheme(
 
     error              = AppColors.Error,
     onError            = AppColors.TextPrimary,
-    errorContainer     = Color(0xFF601418),
+    errorContainer     = Color(0xFF5A1419),
     onErrorContainer   = AppColors.Error,
 
     outline            = AppColors.SurfaceBorder,
-    outlineVariant     = Color(0xFF35373C)
+    outlineVariant     = Color(0xFF30304A)
 )
 
 // ─── Typography — Inter / Roboto Sans-Serif (Grid Professional Identity) ─────
