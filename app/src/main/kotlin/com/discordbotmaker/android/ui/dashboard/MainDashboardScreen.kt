@@ -7,6 +7,7 @@ import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -20,12 +21,17 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.discordbotmaker.android.R
 import com.discordbotmaker.android.ui.theme.AppColors
 
 // ─── Bot Status Model ──────────────────────────────────────────────
@@ -103,6 +109,7 @@ private val modules = listOf(
 @Composable
 fun MainDashboardScreen(
     botStatus: BotStatus = BotStatus(),
+    greetingName: String = "Shin5hi",
     onNavigateToConsole: () -> Unit = {},
     onNavigateToAutoMod: () -> Unit = {},
     onNavigateToCommandBuilder: () -> Unit = {},
@@ -129,7 +136,11 @@ fun MainDashboardScreen(
     ) {
         DashboardHeader(botStatus)
 
-        Spacer(Modifier.height(8.dp))
+        Spacer(Modifier.height(20.dp))
+
+        GreetingBlock(name = greetingName)
+
+        Spacer(Modifier.height(20.dp))
 
         // Show Login or Bot Status based on auth state
         if (!botStatus.isLoggedIn) {
@@ -142,7 +153,7 @@ fun MainDashboardScreen(
 
         // Section heading
         Text(
-            text = "MODULES",
+            text = "ACCESO RÁPIDO",
             color = AppColors.TextMuted,
             fontSize = 11.sp,
             fontWeight = FontWeight.SemiBold,
@@ -152,7 +163,7 @@ fun MainDashboardScreen(
 
         Spacer(Modifier.height(10.dp))
 
-        ModuleGrid(modules, callbacks)
+        ModuleList(modules, callbacks)
 
         Spacer(Modifier.height(24.dp))
 
@@ -162,7 +173,7 @@ fun MainDashboardScreen(
         Spacer(Modifier.height(24.dp))
 
         Text(
-            text = "Grid Bot Maker v2.0",
+            text = "Grid by Shin5hi · v2.0",
             color = AppColors.TextMuted,
             fontSize = 10.sp,
             fontFamily = FontFamily.SansSerif,
@@ -175,6 +186,30 @@ fun MainDashboardScreen(
 }
 
 // ─── Header ───────────────────────────────────────────────────────────
+
+@Composable
+private fun GreetingBlock(name: String) {
+    Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp)) {
+        Text(
+            text = buildAnnotatedString {
+                append("Hola, ")
+                withStyle(SpanStyle(color = AppColors.Primary)) { append(name) }
+            },
+            color = AppColors.TextPrimary,
+            fontSize = 30.sp,
+            fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.SansSerif
+        )
+        Spacer(Modifier.height(4.dp))
+        Text(
+            text = "¿Qué vas a crear hoy?",
+            color = AppColors.TextSecondary,
+            fontSize = 16.sp,
+            fontFamily = FontFamily.SansSerif
+        )
+    }
+}
+
 
 @Composable
 private fun DashboardHeader(botStatus: BotStatus) {
@@ -191,22 +226,12 @@ private fun DashboardHeader(botStatus: BotStatus) {
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             Row(verticalAlignment = Alignment.CenterVertically) {
-                // Grid brand mark — Blurple rounded square
-                Box(
-                    modifier = Modifier
-                        .size(34.dp)
-                        .clip(RoundedCornerShape(8.dp))
-                        .background(AppColors.Primary),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(
-                        text = "G",
-                        color = Color.White,
-                        fontSize = 17.sp,
-                        fontWeight = FontWeight.Bold,
-                        fontFamily = FontFamily.SansSerif
-                    )
-                }
+                // Grid brand mark
+                Image(
+                    painter = painterResource(R.drawable.ic_grid_logo),
+                    contentDescription = "Grid",
+                    modifier = Modifier.size(30.dp)
+                )
 
                 Spacer(Modifier.width(10.dp))
 
@@ -526,99 +551,63 @@ private fun QuickActionChip(icon: String, label: String, modifier: Modifier = Mo
 // ─── 2×2 Module Grid ─────────────────────────────────────────────
 
 @Composable
-private fun ModuleGrid(cards: List<ModuleCard>, callbacks: List<() -> Unit>) {
+private fun ModuleList(cards: List<ModuleCard>, callbacks: List<() -> Unit>) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
             .padding(horizontal = 16.dp),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        for (row in cards.chunked(2)) {
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(10.dp)
-            ) {
-                for (card in row) {
-                    val globalIndex = cards.indexOf(card)
-                    ModuleCardItem(
-                        card = card,
-                        onClick = callbacks.getOrElse(globalIndex) { {} },
-                        modifier = Modifier.weight(1f)
-                    )
-                }
-                if (row.size == 1) {
-                    Spacer(modifier = Modifier.weight(1f))
-                }
-            }
+        cards.forEachIndexed { index, card ->
+            ModuleRow(card = card, onClick = callbacks.getOrElse(index) { {} })
         }
     }
 }
 
 @Composable
-private fun ModuleCardItem(
-    card: ModuleCard,
-    onClick: () -> Unit,
-    modifier: Modifier = Modifier
-) {
-    Card(
-        modifier = modifier
-            .aspectRatio(1f)
-            .clickable(onClick = onClick),
-        shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
-        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+private fun ModuleRow(card: ModuleCard, onClick: () -> Unit) {
+    Row(
+        modifier = Modifier
+            .fillMaxWidth()
+            .clip(RoundedCornerShape(14.dp))
+            .background(AppColors.Surface)
+            .clickable(onClick = onClick)
+            .padding(horizontal = 14.dp, vertical = 12.dp),
+        verticalAlignment = Alignment.CenterVertically
     ) {
-        Column(
+        Box(
             modifier = Modifier
-                .fillMaxSize()
-                .padding(14.dp),
-            verticalArrangement = Arrangement.SpaceBetween
+                .size(40.dp)
+                .clip(RoundedCornerShape(10.dp))
+                .background(card.accentColor.copy(alpha = 0.16f)),
+            contentAlignment = Alignment.Center
         ) {
-            Column {
-                Box(
-                    modifier = Modifier
-                        .size(36.dp)
-                        .clip(CircleShape)
-                        .background(card.accentColor.copy(alpha = 0.12f)),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Text(text = card.icon, fontSize = 18.sp)
-                }
-                Spacer(Modifier.height(8.dp))
-                Box(
-                    modifier = Modifier
-                        .width(24.dp)
-                        .height(3.dp)
-                        .background(card.accentColor, RoundedCornerShape(2.dp))
-                )
-            }
-
-            Column {
-                Text(
-                    text = card.title,
-                    color = AppColors.TextPrimary,
-                    fontSize = 14.sp,
-                    fontWeight = FontWeight.SemiBold,
-                    fontFamily = FontFamily.SansSerif,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis
-                )
-                Spacer(Modifier.height(4.dp))
-                Text(
-                    text = card.description,
-                    color = AppColors.TextSecondary,
-                    fontSize = 11.sp,
-                    fontFamily = FontFamily.SansSerif,
-                    lineHeight = 15.sp,
-                    maxLines = 3,
-                    overflow = TextOverflow.Ellipsis
-                )
-            }
+            Text(text = card.icon, fontSize = 18.sp)
         }
+
+        Spacer(Modifier.width(12.dp))
+
+        Column(modifier = Modifier.weight(1f)) {
+            Text(
+                text = card.title,
+                color = AppColors.TextPrimary,
+                fontSize = 15.sp,
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = FontFamily.SansSerif
+            )
+            Text(
+                text = card.description,
+                color = AppColors.TextSecondary,
+                fontSize = 12.sp,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis,
+                fontFamily = FontFamily.SansSerif
+            )
+        }
+
+        Text(text = "›", color = AppColors.TextMuted, fontSize = 22.sp)
     }
 }
-
-// ─── Bottom Navigation Bar ───────────────────────────────────────
 
 data class BottomNavItem(
     val route: String,
@@ -628,9 +617,9 @@ data class BottomNavItem(
 )
 
 val bottomNavItems = listOf(
-    BottomNavItem(route = "dashboard", label = "Home", icon = "🏠", activeIcon = "🏠"),
-    BottomNavItem(route = "tool_library", label = "Templates", icon = "🌳", activeIcon = "🌳"),
-    BottomNavItem(route = "settings", label = "Settings", icon = "⚙똏", activeIcon = "⚙️")
+    BottomNavItem(route = "dashboard", label = "Inicio", icon = "🏠", activeIcon = "🏠"),
+    BottomNavItem(route = "tool_library", label = "The Tree", icon = "🧩", activeIcon = "🧩"),
+    BottomNavItem(route = "settings", label = "Ajustes", icon = "⚙️", activeIcon = "⚙️")
 )
 
 @Composable
