@@ -142,6 +142,9 @@ async def health_check() -> dict:
 MUSIC_QUEUE_KEY: str = "bot:music:queue"
 MUSIC_STATE_KEY: str = "bot:music:state"
 MUSIC_CHANNEL: str = "bot:music:commands"
+MUSIC_PLAYBACK_KEY: str = "bot:music:playback"
+# Playback state written by each command. 'skip' keeps the current state.
+PLAYBACK_AFTER_ACTION: dict[str, str] = {"play": "playing", "resume": "playing", "pause": "paused", "stop": "stopped"}
 
 
 class MusicTrack(BaseModel):
@@ -152,7 +155,7 @@ class MusicTrack(BaseModel):
 
 
 class MusicPlayCommand(BaseModel):
-    action: str = Field(default="play", pattern=r"^(play|resume)$")
+    action: str = Field(default="play", pattern=r"^(play|resume|pause|skip|stop)$")
     track_url: str = Field(default="")
 
 
@@ -167,11 +170,15 @@ class MusicQueueResponse(BaseModel):
     queue: list[MusicTrack] = []
     length: int = 0
     now_playing: MusicTrack | None = None
+    playback_state: str = "stopped"
 
 
 @app.post("/api/music/play", status_code=200)
 async def music_play(command: MusicPlayCommand) -> dict:
-    r = await get_redis(); subscribers = await r.publish(MUSIC_CHANNEL, command.model_dump_json())
+    r = await get_redis()
+    new_state = PLAYBACK_AFTER_ACTION.get(command.action)
+    if new_state is not None: await r.set(MUSIC_PLAYBACK_KEY, new_state)
+    subscribers = await r.publish(MUSIC_CHANNEL, command.model_dump_json())
     log_entry = LogEntry(level=LogLevel.INFO, source="music", message=f"Play command sent action={command.action}")
     await r.publish(LOG_CHANNEL, log_entry.model_dump_json())
     return {"status": "ok", "action": command.action, "subscribers": subscribers}
@@ -188,7 +195,8 @@ async def music_get_queue() -> MusicQueueResponse:
     if raw_state:
         try: now_playing = MusicTrack.model_validate_json(raw_state)
         except ValueError as exc: logger.warning("Invalid music state data: %s", exc); now_playing = None
-    return MusicQueueResponse(queue=tracks, length=len(tracks), now_playing=now_playing)
+    playback_state = await r.get(MUSIC_PLAYBACK_KEY) or "stopped"
+    return MusicQueueResponse(queue=tracks, length=len(tracks), now_playing=now_playing, playback_state=playback_state)
 
 
 @app.post("/api/music/add", status_code=201)
