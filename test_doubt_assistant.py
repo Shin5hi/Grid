@@ -6,8 +6,16 @@ import os
 import re
 import pytest
 
-BASE_DIR = "/root/workspace/discord-bot-maker-android"
-UI_DIR = os.path.join(BASE_DIR, "ui")
+BASE_DIR = os.path.dirname(os.path.abspath(__file__))
+KOTLIN_ROOT = os.path.join(BASE_DIR, "app", "src", "main", "kotlin")
+
+
+def _kt(file_name: str) -> str:
+    """Screens live in feature packages under the Kotlin source root, so look them up by name."""
+    for dirpath, _dirs, files in os.walk(KOTLIN_ROOT):
+        if file_name in files:
+            return os.path.join(dirpath, file_name)
+    return os.path.join(KOTLIN_ROOT, file_name)
 
 def read_file(path):
     with open(path, "r") as f:
@@ -18,10 +26,10 @@ def read_file(path):
 class TestDoubtAssistantScreen:
     @pytest.fixture(autouse=True)
     def load_file(self):
-        self.content = read_file(os.path.join(UI_DIR, "DoubtAssistantScreen.kt"))
+        self.content = read_file(_kt("DoubtAssistantScreen.kt"))
 
     def test_file_exists(self):
-        assert os.path.exists(os.path.join(UI_DIR, "DoubtAssistantScreen.kt"))
+        assert os.path.exists(_kt("DoubtAssistantScreen.kt"))
 
     def test_correct_package(self):
         assert "package com.discordbotmaker.android.ui.doubt" in self.content
@@ -109,7 +117,7 @@ class TestDoubtAssistantScreen:
 class TestToolLibraryScreen:
     @pytest.fixture(autouse=True)
     def load_file(self):
-        self.content = read_file(os.path.join(UI_DIR, "ToolLibraryScreen.kt"))
+        self.content = read_file(_kt("ToolLibraryScreen.kt"))
 
     def test_doubt_assistant_in_utilities(self):
         assert "asistente-orión" in self.content and "STAGE" in self.content
@@ -147,7 +155,7 @@ class TestToolLibraryScreen:
 class TestAppNavigation:
     @pytest.fixture(autouse=True)
     def load_file(self):
-        self.content = read_file(os.path.join(UI_DIR, "AppNavigation.kt"))
+        self.content = read_file(_kt("AppNavigation.kt"))
 
     def test_doubt_assistant_route_constant(self):
         assert 'DOUBT_ASSISTANT' in self.content
@@ -205,23 +213,23 @@ class TestCoordinationMd:
 
 class TestCrossFileConsistency:
     def test_route_name_matches(self):
-        nav = read_file(os.path.join(UI_DIR, "AppNavigation.kt"))
+        nav = read_file(_kt("AppNavigation.kt"))
         coord = read_file(os.path.join(BASE_DIR, "COORDINATION.md"))
         assert "doubt_assistant" in nav
         assert "doubt_assistant" in coord
 
     def test_package_import_matches_declaration(self):
-        screen = read_file(os.path.join(UI_DIR, "DoubtAssistantScreen.kt"))
-        nav = read_file(os.path.join(UI_DIR, "AppNavigation.kt"))
+        screen = read_file(_kt("DoubtAssistantScreen.kt"))
+        nav = read_file(_kt("AppNavigation.kt"))
         # The package declared in screen should match the import in nav
         assert "package com.discordbotmaker.android.ui.doubt" in screen
         assert "import com.discordbotmaker.android.ui.doubt.DoubtAssistantScreen" in nav
 
     def test_all_four_files_exist(self):
         files = [
-            os.path.join(UI_DIR, "DoubtAssistantScreen.kt"),
-            os.path.join(UI_DIR, "ToolLibraryScreen.kt"),
-            os.path.join(UI_DIR, "AppNavigation.kt"),
+            _kt("DoubtAssistantScreen.kt"),
+            _kt("ToolLibraryScreen.kt"),
+            _kt("AppNavigation.kt"),
             os.path.join(BASE_DIR, "COORDINATION.md"),
         ]
         for f in files:
