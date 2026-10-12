@@ -21,8 +21,19 @@ UI_FILES = [
 ]
 
 
+def _find_kotlin_file(file_name: str) -> str:
+    """Screens live in feature packages under app/src/main/kotlin, so look them up by name."""
+    root = os.path.join(PROJECT_DIR, "app", "src", "main", "kotlin")
+    for dirpath, _dirs, files in os.walk(root):
+        if file_name in files:
+            return os.path.join(dirpath, file_name)
+    return os.path.join(PROJECT_DIR, file_name)
+
+
 def read_file(relative_path: str) -> str:
     full_path = os.path.join(PROJECT_DIR, relative_path)
+    if not os.path.exists(full_path):
+        full_path = _find_kotlin_file(os.path.basename(relative_path))
     with open(full_path, "r") as f:
         return f.read()
 
@@ -36,28 +47,28 @@ class TestAppThemeColors:
         self.content = read_file("ui/AppTheme.kt")
 
     def test_primary_blurple(self):
-        assert "0xFF5865F2" in self.content, "Primary Blurple #5865F2 missing"
+        assert "0xFF7C4DFF" in self.content, "Primary violet #7C4DFF missing"
 
     def test_background_color(self):
-        assert "0xFF313338" in self.content, "Background #313338 missing"
+        assert "0xFF0B0B14" in self.content, "Background #0B0B14 missing"
 
     def test_surface_color(self):
-        assert "0xFF2B2D31" in self.content, "Surface #2B2D31 missing"
+        assert "0xFF151522" in self.content, "Surface #151522 missing"
 
     def test_text_primary_white(self):
         assert "0xFFFFFFFF" in self.content, "TextPrimary #FFFFFF missing"
 
     def test_text_secondary(self):
-        assert "0xFFB5BAC1" in self.content, "TextSecondary #B5BAC1 missing"
+        assert "0xFFA3A7BD" in self.content, "TextSecondary #A3A7BD missing"
 
     def test_success_green(self):
-        assert "0xFF23A559" in self.content, "Success Green #23A559 missing"
+        assert "0xFF34D399" in self.content, "Success Green #34D399 missing"
 
     def test_danger_red(self):
         assert "0xFFF23F43" in self.content, "Danger Red #F23F43 missing"
 
     def test_input_background(self):
-        assert "0xFF1E1F22" in self.content, "InputBackground #1E1F22 missing"
+        assert "0xFF10101A" in self.content, "InputBackground #10101A missing"
 
     def test_no_old_generic_blue(self):
         assert "0xFF007BFF" not in self.content, "Old generic blue #007BFF should be removed"
@@ -144,7 +155,7 @@ class TestMainDashboardGridBranding:
         self.content = read_file("ui/MainDashboardScreen.kt")
 
     def test_grid_bot_maker_title(self):
-        assert "Grid Bot Maker" in self.content or "Grid Bot Hub" in self.content, "Header should show Grid branding"
+        assert 'text = "Grid"' in self.content, "Header should show the Grid wordmark"
 
     def test_no_generic_dashboard_only_title(self):
         # Should not have a standalone "Dashboard" as the main header text
@@ -155,10 +166,10 @@ class TestMainDashboardGridBranding:
                 pytest.fail("Generic 'Dashboard' title should be replaced with 'Grid Bot Hub'")
 
     def test_grid_brand_mark_in_header(self):
-        assert '"G"' in self.content, 'Grid "G" brand mark missing from header'
+        assert "ic_grid_logo" in self.content, "Grid logo mark missing from header"
 
     def test_version_string_branded(self):
-        assert "Grid Bot Maker v" in self.content or "Grid Bot Hub v" in self.content, "Version string should include Grid branding"
+        assert "Grid by Shin5hi" in self.content, "Footer should carry the Grid by Shin5hi branding"
 
     def test_no_old_version_string(self):
         assert "discord-bot-maker v" not in self.content, "Old version string still present"
@@ -254,7 +265,8 @@ class TestAllScreensUseAppColors:
 class TestRoundedCorners:
     """Verify cards and buttons use 8.dp rounded corners (Discord style)."""
 
-    SCREEN_FILES = [f for f in UI_FILES if f not in ("ui/AppTheme.kt", "ui/SplashScreen.kt")]
+    # OriginLoadingScreen shows the Grid G mark as a vector drawable, not a rounded box.
+    SCREEN_FILES = [f for f in UI_FILES if f not in ("ui/AppTheme.kt", "ui/SplashScreen.kt", "ui/OriginLoadingScreen.kt")]
 
     @pytest.mark.parametrize("filepath", SCREEN_FILES)
     def test_uses_8dp_corners(self, filepath):
@@ -310,7 +322,7 @@ class TestCoordinationMd:
         assert "#F23F43" in self.content
 
     def test_documents_success_green(self):
-        assert "#23A559" in self.content
+        assert "#34D399" in self.content
 
     def test_documents_grid_branding(self):
         assert "Grid Bot Hub" in self.content, "COORDINATION.md should document Grid branding"

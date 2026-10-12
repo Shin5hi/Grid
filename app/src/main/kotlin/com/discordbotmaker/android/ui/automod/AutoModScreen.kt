@@ -102,7 +102,7 @@ fun AutoModScreen(
                         text = "ACTION ON VIOLATION",
                         color = AppColors.TextSecondary,
                         fontSize = 10.sp,
-                        fontFamily = FontFamily.Monospace,
+                        fontFamily = FontFamily.SansSerif,
                         letterSpacing = 1.sp
                     )
                     Spacer(Modifier.height(8.dp))
@@ -151,7 +151,7 @@ fun AutoModScreen(
                         text = "Whitelisted: discord.com, youtube.com, github.com",
                         color = AppColors.TextMuted,
                         fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace
+                        fontFamily = FontFamily.SansSerif
                     )
                 }
             }
@@ -231,7 +231,7 @@ fun AutoModScreen(
         ) {
             Text(
                 text = "▸ DEPLOY AUTOMOD CONFIG",
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
                 letterSpacing = 1.sp
@@ -257,7 +257,7 @@ private fun ScreenHeader() {
                 color = AppColors.Success,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 letterSpacing = 2.sp
             )
             Spacer(Modifier.height(4.dp))
@@ -265,7 +265,7 @@ private fun ScreenHeader() {
                 text = "Configure AI-powered moderation rules for your server.",
                 color = AppColors.TextSecondary,
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace
+                fontFamily = FontFamily.SansSerif
             )
         }
     }
@@ -323,13 +323,13 @@ private fun ModCard(
                             color = if (enabled) accentColor else AppColors.TextPrimary,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = FontFamily.SansSerif
                         )
                         Text(
                             text = subtitle,
                             color = AppColors.TextMuted,
                             fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = FontFamily.SansSerif
                         )
                     }
                 }
@@ -370,14 +370,14 @@ private fun LabeledSlider(
                 text = label.uppercase(),
                 color = AppColors.TextSecondary,
                 fontSize = 10.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 letterSpacing = 1.sp
             )
             Text(
                 text = valueLabel,
                 color = accentColor,
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold
             )
         }
@@ -413,7 +413,7 @@ private fun NeonSwitchRow(
             text = label,
             color = AppColors.TextPrimary,
             fontSize = 13.sp,
-            fontFamily = FontFamily.Monospace
+            fontFamily = FontFamily.SansSerif
         )
         Switch(
             checked = checked,
@@ -456,7 +456,7 @@ private fun RowScope.ActionChip(
         Text(
             text = "${action.icon}\n${action.label}",
             fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = FontFamily.SansSerif,
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
             lineHeight = 16.sp
         )

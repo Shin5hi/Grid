@@ -10,7 +10,7 @@ Run:
     uvicorn backend_api:app --host 0.0.0.0 --port 8000 --reload
 
 Requirements:
-    pip install fastapi uvicorn redis[hiredis] pydantic
+    pip install fastapi uvicorn redis[hiredis] pydantic httpx
 """
 
 from __future__ import annotations
@@ -19,11 +19,14 @@ import asyncio
 import json
 import logging
 import os
+import re
 import time
+import uuid
 from contextlib import asynccontextmanager
 from enum import Enum
 from typing import AsyncGenerator
 
+import httpx
 import redis.asyncio as aioredis
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -50,7 +53,7 @@ async def get_redis() -> aioredis.Redis:
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     r = await get_redis(); await r.ping(); logger.info("Connected to Redis at %s", REDIS_URL)
     yield
-    if redis_pool: await redis_pool.close()
+    if redis_pool: await redis_pool.aclose()
 
 app = FastAPI(title="Discord Bot Maker API", version="0.1.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
@@ -90,7 +93,7 @@ async def websocket_log_stream(ws: WebSocket) -> None:
             message = await pubsub.get_message(ignore_subscribe_messages=True, timeout=1.0)
             if message and message["type"] == "message":
                 try: log_entry = LogEntry(**json.loads(message["data"]))
-                except: log_entry = LogEntry(level=LogLevel.INFO, source="raw", message=str(message["data"]))
+                except (ValueError, TypeError): log_entry = LogEntry(level=LogLevel.INFO, source="raw", message=str(message["data"]))
                 await ws.send_json(log_entry.model_dump())
             try:
                 client_msg = await asyncio.wait_for(ws.receive_text(), timeout=0.05)
@@ -126,7 +129,7 @@ async def get_automod_config() -> AutoModConfig:
 async def update_automod_config(config: AutoModConfig) -> AutoModConfig:
     r = await get_redis(); payload = config.model_dump_json()
     await r.set(AUTOMOD_CONFIG_KEY, payload)
-    change_event = LogEntry(level=LogLevel.SYSTEM, source="automod", message=f"AutoMod config updated")
+    change_event = LogEntry(level=LogLevel.SYSTEM, source="automod", message="AutoMod config updated")
     await r.publish(LOG_CHANNEL, change_event.model_dump_json())
     return config
 
@@ -140,6 +143,9 @@ async def health_check() -> dict:
 MUSIC_QUEUE_KEY: str = "bot:music:queue"
 MUSIC_STATE_KEY: str = "bot:music:state"
 MUSIC_CHANNEL: str = "bot:music:commands"
+MUSIC_PLAYBACK_KEY: str = "bot:music:playback"
+# Playback state written by each command. 'skip' keeps the current state.
+PLAYBACK_AFTER_ACTION: dict[str, str] = {"play": "playing", "resume": "playing", "pause": "paused", "stop": "stopped"}
 
 
 class MusicTrack(BaseModel):
@@ -150,7 +156,7 @@ class MusicTrack(BaseModel):
 
 
 class MusicPlayCommand(BaseModel):
-    action: str = Field(default="play", pattern=r"^(play|resume)$")
+    action: str = Field(default="play", pattern=r"^(play|resume|pause|skip|stop)$")
     track_url: str = Field(default="")
 
 
@@ -165,11 +171,15 @@ class MusicQueueResponse(BaseModel):
     queue: list[MusicTrack] = []
     length: int = 0
     now_playing: MusicTrack | None = None
+    playback_state: str = "stopped"
 
 
 @app.post("/api/music/play", status_code=200)
 async def music_play(command: MusicPlayCommand) -> dict:
-    r = await get_redis(); subscribers = await r.publish(MUSIC_CHANNEL, command.model_dump_json())
+    r = await get_redis()
+    new_state = PLAYBACK_AFTER_ACTION.get(command.action)
+    if new_state is not None: await r.set(MUSIC_PLAYBACK_KEY, new_state)
+    subscribers = await r.publish(MUSIC_CHANNEL, command.model_dump_json())
     log_entry = LogEntry(level=LogLevel.INFO, source="music", message=f"Play command sent action={command.action}")
     await r.publish(LOG_CHANNEL, log_entry.model_dump_json())
     return {"status": "ok", "action": command.action, "subscribers": subscribers}
@@ -181,12 +191,13 @@ async def music_get_queue() -> MusicQueueResponse:
     raw_queue = await r.get(MUSIC_QUEUE_KEY); tracks = []
     if raw_queue:
         try: tracks = [MusicTrack(**i) for i in json.loads(raw_queue)]
-        except: tracks = []
+        except (ValueError, TypeError) as exc: logger.warning("Invalid music queue data: %s", exc); tracks = []
     raw_state = await r.get(MUSIC_STATE_KEY); now_playing = None
     if raw_state:
         try: now_playing = MusicTrack.model_validate_json(raw_state)
-        except: now_playing = None
-    return MusicQueueResponse(queue=tracks, length=len(tracks), now_playing=now_playing)
+        except ValueError as exc: logger.warning("Invalid music state data: %s", exc); now_playing = None
+    playback_state = await r.get(MUSIC_PLAYBACK_KEY) or "stopped"
+    return MusicQueueResponse(queue=tracks, length=len(tracks), now_playing=now_playing, playback_state=playback_state)
 
 
 @app.post("/api/music/add", status_code=201)
@@ -196,7 +207,7 @@ async def music_add_track(request: MusicAddRequest) -> dict:
     raw_queue = await r.get(MUSIC_QUEUE_KEY); queue = []
     if raw_queue:
         try: queue = json.loads(raw_queue)
-        except: queue = []
+        except ValueError as exc: logger.warning("Invalid music queue data: %s", exc); queue = []
     queue.append(track.model_dump()); await r.set(MUSIC_QUEUE_KEY, json.dumps(queue))
     await r.publish(MUSIC_CHANNEL, json.dumps({"event": "track_added", "track": track.model_dump(), "queue_length": len(queue)}))
     log_entry = LogEntry(level=LogLevel.INFO, source="music", message=f"Track added to queue \"{track.title}\" by {track.artist}")
@@ -221,7 +232,6 @@ class DeployResponse(BaseModel):
     region: str = "us-east-1"; estimated_time_seconds: int = 30
 
 
-import re, uuid
 DISCORD_TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]{24,}\.[A-Za-z0-9_-]{4,9}\.[A-Za-z0-9_-]{25,}$")
 
 
@@ -236,7 +246,8 @@ async def deploy_bot(request: DeployRequest) -> DeployResponse:
         await r.set(f"{DEPLOY_STATE_KEY}:{deploy_id}", json.dumps({"deploy_id": deploy_id, "bot_name": request.bot_name, "status": DeployStatus.PROVISIONING.value, "region": "us-east-1"}))
         log_entry = LogEntry(level=LogLevel.SYSTEM, source="deployer", message=f"Deployment initiated bot={request.bot_name} deploy_id={deploy_id}")
         await r.publish(LOG_CHANNEL, log_entry.model_dump_json())
-    except Exception: pass
+    except Exception as exc:
+        logger.warning("Could not persist deploy state for '%s': %s", request.bot_name, exc)
     return DeployResponse(status=DeployStatus.PROVISIONING, bot_name=request.bot_name, deploy_id=deploy_id, message=f"Deployment initiated for '{request.bot_name}'. Provisioning cloud resources in us-east-1.", region="us-east-1", estimated_time_seconds=30)
 
 
@@ -263,7 +274,7 @@ async def list_commands() -> list[BotCommandResponse]:
     commands = []
     for name, data in raw.items():
         try: commands.append(BotCommandResponse(name=name, **json.loads(data)))
-        except: continue
+        except (ValueError, TypeError) as exc: logger.warning("Skipping invalid command '%s': %s", name, exc); continue
     return commands
 
 
@@ -284,3 +295,99 @@ async def delete_command(name: str) -> dict:
     log_entry = LogEntry(level=LogLevel.SYSTEM, source="commands", message=f"Command '/{name}' deleted")
     await r.publish(LOG_CHANNEL, log_entry.model_dump_json())
     return {"status": "deleted", "name": name}
+
+
+# ─── Status summary (dashboard) ───────────────────────────────────────────────
+
+@app.get("/api/status")
+async def get_status() -> dict:
+    """Real numbers the app can show without a bot runtime.
+
+    `bot_runtime` stays "not_connected" until a bot process publishes a heartbeat.
+    """
+    r = await get_redis()
+    try:
+        await r.ping()
+    except Exception as exc:  # Redis down: report it instead of failing the dashboard
+        logger.warning("Status: Redis unavailable: %s", exc)
+        return {"redis": "unavailable", "commands": 0, "deployments": 0,
+                "music": {"playback_state": "stopped", "queue_length": 0},
+                "bot_runtime": "not_connected"}
+
+    commands = await r.hlen(COMMANDS_HASH_KEY)
+    deployments = 0
+    async for _ in r.scan_iter(match=f"{DEPLOY_STATE_KEY}:*"):
+        deployments += 1
+    raw_queue = await r.get(MUSIC_QUEUE_KEY)
+    try:
+        queue_length = len(json.loads(raw_queue)) if raw_queue else 0
+    except (ValueError, TypeError):
+        queue_length = 0
+    playback_state = await r.get(MUSIC_PLAYBACK_KEY) or "stopped"
+    return {"redis": "connected", "commands": commands, "deployments": deployments,
+            "music": {"playback_state": playback_state, "queue_length": queue_length},
+            "bot_runtime": "not_connected"}
+
+
+# ─── Assistant (Orion) ────────────────────────────────────────────────────────
+
+ASSISTANT_SYSTEM_PROMPT: str = (
+    "You are Orion, the assistant inside Grid, an app that builds Discord bots. "
+    "Answer briefly and in the user's language. Explain how to configure commands, "
+    "AutoMod, music and deployment in this app. Never ask for a bot token in chat."
+)
+# Tests replace this with an httpx.MockTransport. None means real network calls.
+ASSISTANT_TRANSPORT: httpx.AsyncBaseTransport | None = None
+
+
+class AssistantRequest(BaseModel):
+    message: str = Field(..., min_length=1, max_length=2000)
+
+
+class AssistantResponse(BaseModel):
+    reply: str
+    provider: str
+
+
+def _assistant_settings() -> tuple[str, str, str]:
+    """Returns (provider, api_key, model). Empty key means the assistant is off."""
+    provider = os.getenv("ASSISTANT_PROVIDER", "").strip().lower()
+    model = os.getenv("ASSISTANT_MODEL", "").strip()
+    if provider == "anthropic":
+        return provider, os.getenv("ANTHROPIC_API_KEY", "").strip(), model
+    if provider == "openai":
+        return provider, os.getenv("OPENAI_API_KEY", "").strip(), model
+    return provider, "", model
+
+
+@app.post("/api/assistant", response_model=AssistantResponse)
+async def assistant_reply(request: AssistantRequest) -> AssistantResponse:
+    provider, api_key, model = _assistant_settings()
+    if not api_key or not model:
+        raise HTTPException(status_code=503, detail="Assistant is not configured on the server")
+    try:
+        async with httpx.AsyncClient(timeout=30, transport=ASSISTANT_TRANSPORT) as client:
+            if provider == "anthropic":
+                resp = await client.post(
+                    "https://api.anthropic.com/v1/messages",
+                    headers={"x-api-key": api_key, "anthropic-version": "2023-06-01"},
+                    json={"model": model, "max_tokens": 800, "system": ASSISTANT_SYSTEM_PROMPT,
+                          "messages": [{"role": "user", "content": request.message}]},
+                )
+                resp.raise_for_status()
+                blocks = resp.json().get("content", [])
+                reply = "".join(b.get("text", "") for b in blocks if b.get("type") == "text")
+            else:
+                resp = await client.post(
+                    "https://api.openai.com/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {api_key}"},
+                    json={"model": model, "max_tokens": 800,
+                          "messages": [{"role": "system", "content": ASSISTANT_SYSTEM_PROMPT},
+                                       {"role": "user", "content": request.message}]},
+                )
+                resp.raise_for_status()
+                reply = resp.json()["choices"][0]["message"]["content"]
+    except (httpx.HTTPError, KeyError, IndexError, ValueError) as exc:
+        logger.warning("Assistant provider failed: %s", exc)
+        raise HTTPException(status_code=502, detail="The assistant provider did not answer")
+    return AssistantResponse(reply=reply.strip() or "No tengo una respuesta para eso.", provider=provider)

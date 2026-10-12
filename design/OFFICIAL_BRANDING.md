@@ -1,9 +1,8 @@
-# 🏆 Identidad de Marca DEFINITIVA: Grid
+# Grid — Official Brand Identity
 
-Este es el único logotipo oficial de **Grid**. No se permiten más generaciones ni cambios.
+The visual direction is defined in [`branding.md`](branding.md). That file is the source of truth
+for the logo, the color tokens, and the layout.
 
-## 📍 Logotipo Elegido
-![Grid Chosen Logo](https://customer-assets.emergentagent.com/wingman/85fd1fa5-923c-402f-b2c2-f78866b3e4b5/attachments/d0e5ec43108c454e995393a525f67b57_photo.jpg)
-
----
-*Gaul: Memoria actualizada. Fase de diseño destruida y reemplazada por esta fuente de verdad absoluta.*
+**Update 2026-10-12:** the logo and palette were replaced by the approved Grid
+mockups (violet "G" on a light icon, near-black navy surfaces, "Hola, <name>" dashboard).
+The earlier Discord-blurple logo is retired.

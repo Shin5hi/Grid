@@ -1,50 +1,63 @@
-# Grid Origin — Brand Assets & Logo Specification
+# Grid — Brand Assets & Visual Specification
 
-## Official Logo
+Current direction, set on 2026-10-12 from the approved mockups. This file replaces the
+earlier Discord-blurple spec. The in-app values live in `ui/theme/AppTheme.kt`
+(`AppColors`) and `res/values/colors.xml`. Keep them in sync with this file.
 
-**Asset Name:** Grid Origin Logo
-**Shape:** Rounded square (20dp corner radius) with solid Discord Blurple (`#5865F2`) fill.
-**Glyph:** Bold uppercase **"G"** in white (#FFFFFF), centered within the square. Set at 48sp, `FontWeight.Bold`, system sans-serif (Inter / Roboto).
-**Dimensions:** 96×96dp logical size. Export at 1×, 1.5×, 2×, 3×, 4× density buckets for Android (`mdpi` through `xxxhdpi`).
+## Name
 
-### Loading Animation Ring
-A continuous sweep ring orbits the logo during the loading screen:
-- **Ring diameter:** 140dp (centered around the 96dp logo with 22dp clearance per side).
-- **Stroke:** 3dp, round cap.
-- **Color:** Blurple (`#5865F2`) with gradient opacity sweep (transparent → 60% → 100%).
-- **Background track:** Blurple at 10% opacity, full 360° circle.
-- **Rotation speed:** 1400ms per full revolution, linear easing, infinite repeat.
-- **Glow pulse:** Ring leading-edge alpha oscillates between 25%–60% at half the rotation period.
+- **Display name:** Grid
+- **Attribution line:** by Shin5hi
+- **Slogan:** Crea, Organiza, Avanza.
 
-## Brand Name
+## Logo
 
-**Full Name:** Grid Origin
-**Display Font:** System sans-serif (`FontFamily.SansSerif`), 32sp, `FontWeight.Bold`, `letterSpacing = 1.sp`.
-**Color:** White (`#FFFFFF`) on charcoal background.
+- **Mark:** a bold, geometric violet "G" (`#7C4DFF`), drawn as a vector.
+  - In-app: `res/drawable/ic_grid_logo.xml`
+  - Launcher: `res/drawable/ic_launcher_foreground.xml` on a light background
+    (`launcher_background`, `#F4F4F6`), scaled to the 66dp safe zone.
+- The vector is traced from the approved icon. It does not include the faint grid lines
+  of the original artwork. If an exact export is provided, replace the path data.
 
-## Slogan
+## Color tokens
 
-**Text:** "Crea, Organiza, Avanza."
-**Display Font:** System sans-serif, 14sp, `FontWeight.Normal`, `letterSpacing = 2.sp`.
-**Color:** `TextSecondary` (`#B5BAC1`).
+| Token              | Hex       | Role                                        |
+|--------------------|-----------|---------------------------------------------|
+| Background         | `#0B0B14` | Screen background (Deep Charcoal navy)      |
+| Surface            | `#151522` | Cards, bars                                 |
+| SurfaceVariant     | `#1B1B2B` | Raised rows, icon tiles                     |
+| SurfaceBorder      | `#272739` | Borders, dividers                           |
+| InputBackground    | `#10101A` | Inputs, console body                        |
+| Primary (violet)   | `#7C4DFF` | Brand, CTAs, active states, name highlight  |
+| PrimaryLight       | `#A78BFA` | Hover and highlights                        |
+| Info (blue)        | `#4C7DFF` | Orion assistant bubble                      |
+| Success            | `#34D399` | Online, confirmations                       |
+| Warning            | `#F5B841` | Caution                                     |
+| Error              | `#F23F43` | Danger                                      |
+| TextPrimary        | `#F5F5FA` | Headings                                    |
+| TextSecondary      | `#A3A7BD` | Descriptions, subtitles                     |
+| TextMuted          | `#6E7290` | Hints, footer, inactive nav                 |
 
-## Background
+Values are estimated from the approved screenshots. Adjust them if a design export is provided.
 
-**Loading Screen Background:** Solid deep charcoal `InputBackground` (`#1E1F22`) — the darkest surface in the Discord palette.
+## Layout
 
-## Color Tokens (Summary)
+- **Dashboard:** header with the G mark and wordmark, then the greeting
+  "Hola, <name>" with the name in violet, then "¿Qué vas a crear hoy?". Below that:
+  the status card, then "ACCESO RÁPIDO" as a list of rows (icon tile, title,
+  description, chevron).
+- **Bottom navigation:** Inicio, The Tree, Ajustes.
+- **Corners:** 12–16dp on cards and rows, 10dp on icon tiles.
+- **Typography:** system sans-serif only. No monospace.
 
-| Token            | Hex       | Role                          |
-|------------------|-----------|-------------------------------|
-| Blurple          | `#5865F2` | Logo fill, sweep ring, CTAs   |
-| Deep Charcoal    | `#1E1F22` | Loading screen background     |
-| White            | `#FFFFFF` | Logo glyph, title text        |
-| TextSecondary    | `#B5BAC1` | Slogan text                   |
-| TextMuted @40%   | `#80848E` | Version stamp                 |
+## Loading screen
 
-## Source Image Reference
+- Logo: the G mark (96dp), with a rotating sweep ring around it (140dp, 3dp stroke,
+  violet, 1400ms per revolution).
+- Title: "Grid", 32sp, bold.
+- Background: `Background` (`#0B0B14`).
 
-The official Grid Origin logo was provided by the user on 2026-05-03:
-`https://customer-assets.emergentagent.com/wingman/85fd1fa5-923c-402f-b2c2-f78866b3e4b5/attachments/d0e5ec43108c454e995393a525f67b57_photo.jpg`
+## Orion assistant
 
-This is a 2D blue robot with antenna dots and a `>_` prompt symbol. The in-app representation uses a simplified geometric "G" glyph as the scalable vector equivalent.
+- Floating bubble in Info blue (`#4C7DFF`) with a soft halo and a pulse.
+- Draggable. Opens the assistant screen.

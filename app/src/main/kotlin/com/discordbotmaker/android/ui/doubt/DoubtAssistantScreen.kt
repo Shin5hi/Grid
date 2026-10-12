@@ -42,11 +42,19 @@ data class ChatMessage(
     val id: String = UUID.randomUUID().toString(),
     val role: MessageRole,
     val content: String,
+    /** Shown above an assistant reply when it came from the local fallback. */
+    val notice: String? = null,
     val timestamp: Long = System.currentTimeMillis()
 )
 
+/**
+ * [onAsk] sends the question to the backend (Orion). When it fails, for example with a 503
+ * because the server has no assistant configured, the screen answers locally and says so.
+ */
 @Composable
-fun DoubtAssistantScreen() {
+fun DoubtAssistantScreen(
+    onAsk: suspend (String) -> Result<String> = { Result.failure(IllegalStateException("Sin conexión con el backend")) }
+) {
     var messages by remember {
         mutableStateOf(
             listOf(
@@ -89,9 +97,18 @@ fun DoubtAssistantScreen() {
                     isTyping = true
                     coroutineScope.launch { listState.animateScrollToItem(messages.size - 1) }
                     coroutineScope.launch {
-                        kotlinx.coroutines.delay(600L + (200L..800L).random())
+                        val remote = onAsk(query)
                         isTyping = false
-                        val aiResponse = ChatMessage(role = MessageRole.ASSISTANT, content = generateMockResponse(query))
+                        val aiResponse = remote.fold(
+                            onSuccess = { reply -> ChatMessage(role = MessageRole.ASSISTANT, content = reply) },
+                            onFailure = { error ->
+                                ChatMessage(
+                                    role = MessageRole.ASSISTANT,
+                                    content = generateMockResponse(query),
+                                    notice = "Orión en modo local: ${error.message ?: "el asistente del servidor no responde"}"
+                                )
+                            }
+                        )
                         messages = messages + aiResponse
                         listState.animateScrollToItem(messages.size - 1)
                     }
@@ -125,7 +142,7 @@ private fun ChatBubble(message: ChatMessage) {
     val isUser = message.role == MessageRole.USER
     val timeFormat = remember { SimpleDateFormat("HH:mm", Locale.getDefault()) }
     Column(modifier = Modifier.fillMaxWidth(), horizontalAlignment = if (isUser) Alignment.End else Alignment.Start) {
-        if (isUser) UserMessageBubble(message.content) else AssistantMessageCard(message.content)
+        if (isUser) UserMessageBubble(message.content) else AssistantMessageCard(message.content, message.notice)
         Text(text = timeFormat.format(Date(message.timestamp)), color = AppColors.TextMuted, fontSize = 10.sp, fontFamily = FontFamily.SansSerif, modifier = Modifier.padding(start = if (!isUser) 8.dp else 0.dp, end = if (isUser) 8.dp else 0.dp, top = 4.dp))
     }
 }
@@ -138,13 +155,17 @@ private fun UserMessageBubble(content: String) {
 }
 
 @Composable
-private fun AssistantMessageCard(content: String) {
+private fun AssistantMessageCard(content: String, notice: String? = null) {
     Card(modifier = Modifier.widthIn(max = 320.dp), shape = RoundedCornerShape(topStart = 4.dp, topEnd = 12.dp, bottomStart = 12.dp, bottomEnd = 12.dp), colors = CardDefaults.cardColors(containerColor = AppColors.SurfaceVariant), elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)) {
         Column(modifier = Modifier.padding(14.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Box(modifier = Modifier.size(18.dp).clip(CircleShape).background(AppColors.AccentBrain.copy(alpha = 0.15f)), contentAlignment = Alignment.Center) { Text(text = "\ud83e\udd16", fontSize = 10.sp) }
                 Spacer(Modifier.width(6.dp))
                 Text(text = "Ori\u00f3n", color = AppColors.AccentBrain, fontSize = 11.sp, fontWeight = FontWeight.SemiBold, fontFamily = FontFamily.SansSerif)
+            }
+            if (notice != null) {
+                Spacer(Modifier.height(4.dp))
+                Text(text = notice, color = AppColors.Warning, fontSize = 11.sp, fontFamily = FontFamily.SansSerif, lineHeight = 15.sp)
             }
             Spacer(Modifier.height(6.dp))
             Text(text = content, color = AppColors.TextPrimary, fontSize = 14.sp, fontFamily = FontFamily.SansSerif, lineHeight = 18.sp)

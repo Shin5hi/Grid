@@ -41,6 +41,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.discordbotmaker.android.ui.theme.NeonColors
+import com.discordbotmaker.android.ui.theme.AppColors
 
 // ─── Deployment Steps ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
@@ -66,9 +67,13 @@ fun isTokenFormatValid(token: String): Boolean =
 
 // ─── Bot Creation Screen ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+/**
+ * [onDeploy] must call [onResult] once the request finishes: `null` on success, or an error
+ * message. Without that call the screen would stay in the "Deploying" state forever.
+ */
 @Composable
 fun BotCreationScreen(
-    onDeploy: (token: String, botName: String) -> Unit = { _, _ -> }
+    onDeploy: (token: String, botName: String, onResult: (String?) -> Unit) -> Unit = { _, _, _ -> }
 ) {
     var token by remember { mutableStateOf("") }
     var botName by remember { mutableStateOf("") }
@@ -77,6 +82,7 @@ fun BotCreationScreen(
     var currentStep by remember { mutableStateOf(DeployStep.CONNECT) }
     var isDeploying by remember { mutableStateOf(false) }
     var deployComplete by remember { mutableStateOf(false) }
+    var deployError by remember { mutableStateOf<String?>(null) }
 
     // Validate token format reactively
     LaunchedEffect(token) {
@@ -147,10 +153,15 @@ fun BotCreationScreen(
                 botName = botName,
                 isDeploying = isDeploying,
                 deployComplete = deployComplete,
+                deployError = deployError,
                 onBack = { currentStep = DeployStep.CONFIG },
                 onDeploy = {
                     isDeploying = true
-                    onDeploy(token, botName)
+                    deployError = null
+                    onDeploy(token, botName) { error ->
+                        isDeploying = false
+                        if (error == null) deployComplete = true else deployError = error
+                    }
                 }
             )
         }
@@ -176,7 +187,7 @@ private fun LaunchHeader() {
                 color = NeonColors.NeonCyan,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 letterSpacing = 2.sp
             )
             Spacer(Modifier.height(4.dp))
@@ -184,7 +195,7 @@ private fun LaunchHeader() {
                 text = "Connect your Discord token, configure, and deploy.",
                 color = NeonColors.TextSecondary,
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace
+                fontFamily = FontFamily.SansSerif
             )
         }
     }
@@ -248,7 +259,7 @@ private fun StepIndicator(currentStep: DeployStep) {
                     text = step.label.uppercase(),
                     color = labelColor,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = if (isActive) FontWeight.Bold else FontWeight.Normal,
                     letterSpacing = 1.sp
                 )
@@ -287,7 +298,7 @@ private fun ConnectStepContent(
             text = "DISCORD BOT TOKEN",
             color = NeonColors.TextSecondary,
             fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             letterSpacing = 2.sp
         )
@@ -318,7 +329,7 @@ private fun ConnectStepContent(
                 else -> NeonColors.NeonRed
             },
             fontSize = 11.sp,
-            fontFamily = FontFamily.Monospace
+            fontFamily = FontFamily.SansSerif
         )
 
         Spacer(Modifier.height(20.dp))
@@ -346,7 +357,7 @@ private fun ConnectStepContent(
         ) {
             Text(
                 text = if (isTokenValid) "▸ VALIDATE & CONTINUE" else "▸ VALIDATE",
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
                 letterSpacing = 1.sp
@@ -409,7 +420,7 @@ private fun NeonTokenInput(
             textStyle = TextStyle(
                 color = NeonColors.TextPrimary,
                 fontSize = 13.sp,
-                fontFamily = FontFamily.Monospace
+                fontFamily = FontFamily.SansSerif
             ),
             singleLine = true,
             cursorBrush = SolidColor(NeonColors.NeonCyan),
@@ -422,7 +433,7 @@ private fun NeonTokenInput(
                             text = "NzM4NTk3…",
                             color = NeonColors.TextDim,
                             fontSize = 13.sp,
-                            fontFamily = FontFamily.Monospace
+                            fontFamily = FontFamily.SansSerif
                         )
                     }
                     innerTextField()
@@ -466,7 +477,7 @@ private fun ConfigStepContent(
             text = "BOT NAME",
             color = NeonColors.TextSecondary,
             fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             letterSpacing = 2.sp
         )
@@ -509,7 +520,7 @@ private fun ConfigStepContent(
                 textStyle = TextStyle(
                     color = NeonColors.TextPrimary,
                     fontSize = 14.sp,
-                    fontFamily = FontFamily.Monospace
+                    fontFamily = FontFamily.SansSerif
                 ),
                 singleLine = true,
                 cursorBrush = SolidColor(NeonColors.NeonMagenta),
@@ -520,7 +531,7 @@ private fun ConfigStepContent(
                                 text = "My Awesome Bot",
                                 color = NeonColors.TextDim,
                                 fontSize = 14.sp,
-                                fontFamily = FontFamily.Monospace
+                                fontFamily = FontFamily.SansSerif
                             )
                         }
                         innerTextField()
@@ -537,7 +548,7 @@ private fun ConfigStepContent(
             text = "This name will appear in your bot's dashboard and logs.",
             color = NeonColors.TextDim,
             fontSize = 11.sp,
-            fontFamily = FontFamily.Monospace
+            fontFamily = FontFamily.SansSerif
         )
 
         Spacer(Modifier.height(24.dp))
@@ -560,7 +571,7 @@ private fun ConfigStepContent(
             ) {
                 Text(
                     text = "◂ BACK",
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.sp
@@ -584,7 +595,7 @@ private fun ConfigStepContent(
             ) {
                 Text(
                     text = "CONTINUE ▸",
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.sp
@@ -601,6 +612,7 @@ private fun DeployStepContent(
     botName: String,
     isDeploying: Boolean,
     deployComplete: Boolean,
+    deployError: String?,
     onBack: () -> Unit,
     onDeploy: () -> Unit
 ) {
@@ -622,7 +634,7 @@ private fun DeployStepContent(
                     text = "DEPLOYMENT SUMMARY",
                     color = NeonColors.NeonCyan,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 2.sp
                 )
@@ -653,9 +665,20 @@ private fun DeployStepContent(
                 text = "Deploying…",
                 color = NeonColors.NeonGreen,
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace
+                fontFamily = FontFamily.SansSerif
             )
             Spacer(Modifier.height(16.dp))
+        }
+
+        if (deployError != null) {
+            Text(
+                text = "✖ $deployError",
+                color = AppColors.Error,
+                fontSize = 12.sp,
+                fontFamily = FontFamily.SansSerif,
+                textAlign = TextAlign.Center
+            )
+            Spacer(Modifier.height(12.dp))
         }
 
         if (deployComplete) {
@@ -663,7 +686,7 @@ private fun DeployStepContent(
                 text = "✓ DEPLOYED SUCCESSFULLY",
                 color = NeonColors.NeonGreen,
                 fontSize = 14.sp,
-                fontFamily = FontFamily.Monospace,
+                fontFamily = FontFamily.SansSerif,
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp
             )
@@ -689,7 +712,7 @@ private fun DeployStepContent(
             ) {
                 Text(
                     text = "◂ BACK TO CONFIG",
-                    fontFamily = FontFamily.Monospace,
+                    fontFamily = FontFamily.SansSerif,
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.sp
@@ -711,13 +734,13 @@ private fun SummaryRow(label: String, value: String) {
             text = label.uppercase(),
             color = NeonColors.TextDim,
             fontSize = 11.sp,
-            fontFamily = FontFamily.Monospace
+            fontFamily = FontFamily.SansSerif
         )
         Text(
             text = value,
             color = NeonColors.TextPrimary,
             fontSize = 11.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold
         )
     }
@@ -787,7 +810,7 @@ private fun GlowingDeployButton(onClick: () -> Unit) {
             text = "🚀  DEPLOY TO CLOUD",
             color = NeonColors.NeonGreen,
             fontSize = 16.sp,
-            fontFamily = FontFamily.Monospace,
+            fontFamily = FontFamily.SansSerif,
             fontWeight = FontWeight.Bold,
             letterSpacing = 2.sp,
             textAlign = TextAlign.Center

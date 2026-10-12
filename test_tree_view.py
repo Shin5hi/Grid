@@ -13,8 +13,19 @@ import pytest
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
+def _find_kotlin_file(file_name: str) -> str:
+    """Screens live in feature packages under app/src/main/kotlin, so look them up by name."""
+    root = os.path.join(PROJECT_DIR, "app", "src", "main", "kotlin")
+    for dirpath, _dirs, files in os.walk(root):
+        if file_name in files:
+            return os.path.join(dirpath, file_name)
+    return os.path.join(PROJECT_DIR, file_name)
+
+
 def read_file(relative_path: str) -> str:
     full_path = os.path.join(PROJECT_DIR, relative_path)
+    if not os.path.exists(full_path):
+        full_path = _find_kotlin_file(os.path.basename(relative_path))
     with open(full_path, "r") as f:
         return f.read()
 
@@ -187,8 +198,8 @@ class TestOrionBubble:
     def test_has_offset_state(self):
         assert "offsetX" in self.content and "offsetY" in self.content
 
-    def test_uses_blurple_color(self):
-        assert "AppColors.Primary" in self.content
+    def test_uses_orion_blue(self):
+        assert "AppColors.Info" in self.content
 
     def test_has_circle_shape(self):
         assert "CircleShape" in self.content

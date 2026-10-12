@@ -46,17 +46,25 @@ Bot development should be **accessible, mobile-first, and professionally polishe
 discord-bot-maker-android/
 ├── README.md
 ├── COORDINATION.md              # Art direction & file ownership
-├── ui/
-│   ├── AppTheme.kt             # Material 3 theme, colors, typography
-│   ├── MainDashboardScreen.kt  # Landing hub with bot status & module grid
-│   └── AppNavigation.kt        # Compose Navigation graph
-├── LiveConsoleScreen.kt
+├── app/src/main/kotlin/com/discordbotmaker/android/
+│   ├── MainActivity.kt
+│   └── ui/                     # Compose UI (the only UI sources compiled by Gradle)
+│       ├── navigation/AppNavigation.kt   # AppNavGraph + AppRoutes
+│       ├── theme/                        # AppColors, AppTheme, NeonColors
+│       ├── splash/                       # SplashScreen, OriginLoadingScreen
+│       ├── dashboard/MainDashboardScreen.kt
+│       ├── library/ToolLibraryScreen.kt
+│       ├── components/OrionBubble.kt
+│       ├── doubt/DoubtAssistantScreen.kt
+│       ├── stats/StatsDashboardScreen.kt
+│       ├── music/MusicPlayerScreen.kt
+│       ├── automod/ commands/ console/ launch/
+├── LiveConsoleScreen.kt        # Root-level copies, pending cleanup (see CLEANUP_REPORT.md)
 ├── AutoModScreen.kt
 ├── BotCreationScreen.kt
 ├── CommandBuilderScreen.kt
-├── MusicPlayerScreen.kt
 ├── backend_api.py
-└── test_backend_api.py
+└── test_pr4_fixes.py
 ```
 
 ---
@@ -78,13 +86,13 @@ See COORDINATION.md for art direction and development conventions.
 ```bash
 # Clone the repo
 git clone https://github.com/BMA/discord-bot-maker-android.git
-cd discord-bot-maker-android/backend
+cd discord-bot-maker-android
 
 # Create virtual environment
 python -m venv .venv && source .venv/bin/activate
 
 # Install dependencies
-pip install fastapi uvicorn redis aioredis websockets pydantic
+pip install fastapi uvicorn redis aioredis websockets pydantic httpx
 
 # Start Redis (Docker)
 docker run -d --name redis-dbm -p 6379:6379 redis:7.4-alpine

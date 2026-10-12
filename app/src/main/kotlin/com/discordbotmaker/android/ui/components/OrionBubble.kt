@@ -70,7 +70,7 @@ fun OrionBubble(
                 .size((56 * pulseScale).dp)
                 .align(Alignment.Center)
                 .clip(CircleShape)
-                .background(AppColors.Primary.copy(alpha = 0.18f))
+                .background(AppColors.Info.copy(alpha = 0.22f))
         )
 
         Surface(
@@ -80,7 +80,7 @@ fun OrionBubble(
                 .align(Alignment.Center)
                 .shadow(6.dp, CircleShape),
             shape = CircleShape,
-            color = AppColors.Primary,
+            color = AppColors.Info,
             tonalElevation = 0.dp
         ) {
             Box(

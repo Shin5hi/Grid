@@ -11,8 +11,19 @@ import pytest
 PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 
 
+def _find_kotlin_file(file_name: str) -> str:
+    """Screens live in feature packages under app/src/main/kotlin, so look them up by name."""
+    root = os.path.join(PROJECT_DIR, "app", "src", "main", "kotlin")
+    for dirpath, _dirs, files in os.walk(root):
+        if file_name in files:
+            return os.path.join(dirpath, file_name)
+    return os.path.join(PROJECT_DIR, file_name)
+
+
 def read_file(relative_path: str) -> str:
     full_path = os.path.join(PROJECT_DIR, relative_path)
+    if not os.path.exists(full_path):
+        full_path = _find_kotlin_file(os.path.basename(relative_path))
     with open(full_path, "r") as f:
         return f.read()
 
@@ -152,8 +163,8 @@ class TestOriginLoadingTypography:
     def test_title_font_size(self):
         assert "32.sp" in self.content
 
-    def test_logo_font_size(self):
-        assert "48.sp" in self.content
+    def test_logo_typography_replaced_by_mark(self):
+        assert "R.drawable.ic_grid_logo" in self.content
 
     def test_slogan_font_size(self):
         assert "14.sp" in self.content
@@ -199,8 +210,8 @@ class TestOriginLoadingLayout:
     def test_ring_size_140dp(self):
         assert "140.dp" in self.content
 
-    def test_rounded_corner_shape(self):
-        assert "RoundedCornerShape(20.dp)" in self.content
+    def test_logo_is_grid_mark(self):
+        assert "R.drawable.ic_grid_logo" in self.content
 
     def test_center_alignment(self):
         assert "Alignment.Center" in self.content
@@ -410,11 +421,11 @@ class TestAppThemeCharcoalColor:
         self.content = read_file("ui/AppTheme.kt")
 
     def test_background_is_313338(self):
-        assert "0xFF313338" in self.content
+        assert "0xFF0B0B14" in self.content
 
     def test_background_named_correctly(self):
         assert "val Background" in self.content
         for line in self.content.split('\n'):
             if 'val Background' in line:
-                assert '313338' in line, f"Background should be #313338, got: {line.strip()}"
+                assert '0B0B14' in line, f"Background should be #0B0B14, got: {line.strip()}"
                 break

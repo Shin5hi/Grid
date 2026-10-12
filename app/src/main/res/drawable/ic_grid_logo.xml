@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Grid "G" mark for in-app use (headers, splash). Same geometry as the launcher icon. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="96dp"
+    android:height="96dp"
+    android:viewportWidth="1024"
+    android:viewportHeight="1024">
+    <path
+        android:fillColor="@color/blurple"
+        android:pathData="M190,355 L380,172 L672,172 L825,325 L825,392 L663,392 L583,312 L435,312 L333,413 L333,588 L430,687 L578,687 L675,578 L517,578 L517,465 L823,465 L823,655 L663,820 L365,820 L190,645 Z" />
+</vector>
