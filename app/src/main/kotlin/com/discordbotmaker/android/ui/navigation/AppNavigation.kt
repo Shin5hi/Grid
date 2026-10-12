@@ -44,6 +44,7 @@ import com.discordbotmaker.android.ui.console.LiveConsoleScreen
 import com.discordbotmaker.android.ui.console.LiveConsoleViewModel
 import com.discordbotmaker.android.ui.console.logLevelFromBackend
 import com.discordbotmaker.android.ui.dashboard.BotStatus
+import com.discordbotmaker.android.ui.dashboard.DashboardSummary
 import com.discordbotmaker.android.ui.dashboard.GridBottomNavBar
 import com.discordbotmaker.android.ui.dashboard.MainDashboardScreen
 import com.discordbotmaker.android.ui.doubt.DoubtAssistantScreen
@@ -91,6 +92,9 @@ private val hideOrionRoutes = setOf(
 
 /** How often the music queue is refreshed while the player is open. */
 private const val MUSIC_POLL_MS = 4_000L
+
+/** How often the dashboard summary tiles are refreshed. */
+private const val DASHBOARD_POLL_MS = 15_000L
 
 @Composable
 fun AppNavGraph(
@@ -156,8 +160,28 @@ fun AppNavGraph(
                 }
 
                 composable(AppRoutes.DASHBOARD) {
+                    // Summary tiles: real counts from the backend, refreshed while the dashboard is visible.
+                    var summary by remember { mutableStateOf<DashboardSummary?>(null) }
+                    LaunchedEffect(Unit) {
+                        while (true) {
+                            services.client.status()
+                                .onSuccess { status ->
+                                    summary = DashboardSummary(
+                                        backendOnline = status.redis == "connected",
+                                        commands = status.commands,
+                                        deployments = status.deployments,
+                                        queueLength = status.musicQueueLength,
+                                        playbackState = status.musicPlaybackState
+                                    )
+                                }
+                                .onFailure { summary = DashboardSummary(backendOnline = false) }
+                            delay(DASHBOARD_POLL_MS)
+                        }
+                    }
+
                     MainDashboardScreen(
                         botStatus = botStatus,
+                        summary = summary,
                         onNavigateToConsole = {
                             navController.navigate(AppRoutes.LIVE_CONSOLE) { launchSingleTop = true }
                         },
@@ -342,7 +366,7 @@ fun AppNavGraph(
                 }
 
                 composable(AppRoutes.DOUBT_ASSISTANT) {
-                    DoubtAssistantScreen()
+                    DoubtAssistantScreen(onAsk = { question -> services.client.askAssistant(question) })
                 }
             }
 

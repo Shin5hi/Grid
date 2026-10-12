@@ -53,7 +53,7 @@ class TestDoubtAssistantScreen:
         assert "📡" in self.content
 
     def test_composable_function_exists(self):
-        assert "fun DoubtAssistantScreen()" in self.content
+        assert "fun DoubtAssistantScreen(" in self.content
 
     def test_chat_message_data_class(self):
         assert "data class ChatMessage(" in self.content
@@ -168,7 +168,7 @@ class TestAppNavigation:
         assert "composable(AppRoutes.DOUBT_ASSISTANT)" in self.content
 
     def test_doubt_assistant_screen_called(self):
-        assert "DoubtAssistantScreen()" in self.content
+        assert "DoubtAssistantScreen(" in self.content
 
     def test_tool_library_navigates_to_doubt(self):
         assert '"Asistente Orión" -> navController.navigate(AppRoutes.DOUBT_ASSISTANT)' in self.content

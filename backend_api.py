@@ -10,7 +10,7 @@ Run:
     uvicorn backend_api:app --host 0.0.0.0 --port 8000 --reload
 
 Requirements:
-    pip install fastapi uvicorn redis[hiredis] pydantic
+    pip install fastapi uvicorn redis[hiredis] pydantic httpx
 """
 
 from __future__ import annotations
@@ -26,6 +26,7 @@ from contextlib import asynccontextmanager
 from enum import Enum
 from typing import AsyncGenerator
 
+import httpx
 import redis.asyncio as aioredis
 from fastapi import FastAPI, WebSocket, WebSocketDisconnect, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
@@ -52,7 +53,7 @@ async def get_redis() -> aioredis.Redis:
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     r = await get_redis(); await r.ping(); logger.info("Connected to Redis at %s", REDIS_URL)
     yield
-    if redis_pool: await redis_pool.close()
+    if redis_pool: await redis_pool.aclose()
 
 app = FastAPI(title="Discord Bot Maker API", version="0.1.0", lifespan=lifespan)
 app.add_middleware(CORSMiddleware, allow_origins=["*"], allow_credentials=True, allow_methods=["*"], allow_headers=["*"])
@@ -294,3 +295,99 @@ async def delete_command(name: str) -> dict:
     log_entry = LogEntry(level=LogLevel.SYSTEM, source="commands", message=f"Command '/{name}' deleted")
     await r.publish(LOG_CHANNEL, log_entry.model_dump_json())
     return {"status": "deleted", "name": name}
+
+
+# ─── Status summary (dashboard) ───────────────────────────────────────────────
+
+@app.get("/api/status")
+async def get_status() -> dict:
+    """Real numbers the app can show without a bot runtime.
+
+    `bot_runtime` stays "not_connected" until a bot process publishes a heartbeat.
+    """
+    r = await get_redis()
+    try:
+        await r.ping()
+    except Exception as exc:  # Redis down: report it instead of failing the dashboard
+        logger.warning("Status: Redis unavailable: %s", exc)
+        return {"redis": "unavailable", "commands": 0, "deployments": 0,
+                "music": {"playback_state": "stopped", "queue_length": 0},
+                "bot_runtime": "not_connected"}
+
+    commands = await r.hlen(COMMANDS_HASH_KEY)
+    deployments = 0
+    async for _ in r.scan_iter(match=f"{DEPLOY_STATE_KEY}:*"):
+        deployments += 1
+    raw_queue = await r.get(MUSIC_QUEUE_KEY)
+    try:
+        queue_length = len(json.loads(raw_queue)) if raw_queue else 0
+    except (ValueError, TypeError):
+        queue_length = 0
+    playback_state = await r.get(MUSIC_PLAYBACK_KEY) or "stopped"
+    return {"redis": "connected", "commands": commands, "deployments": deployments,
+            "music": {"playback_state": playback_state, "queue_length": queue_length},
+            "bot_runtime": "not_connected"}
+
+
+# ─── Assistant (Orion) ────────────────────────────────────────────────────────
+
+ASSISTANT_SYSTEM_PROMPT: str = (
+    "You are Orion, the assistant inside Grid, an app that builds Discord bots. "
+    "Answer briefly and in the user's language. Explain how to configure commands, "
+    "AutoMod, music and deployment in this app. Never ask for a bot token in chat."
+)
+# Tests replace this with an httpx.MockTransport. None means real network calls.
+ASSISTANT_TRANSPORT: httpx.AsyncBaseTransport | None = None
+
+
+class AssistantRequest(BaseModel):
+    message: str = Field(..., min_length=1, max_length=2000)
+
+
+class AssistantResponse(BaseModel):
+    reply: str
+    provider: str
+
+
+def _assistant_settings() -> tuple[str, str, str]:
+    """Returns (provider, api_key, model). Empty key means the assistant is off."""
+    provider = os.getenv("ASSISTANT_PROVIDER", "").strip().lower()
+    model = os.getenv("ASSISTANT_MODEL", "").strip()
+    if provider == "anthropic":
+        return provider, os.getenv("ANTHROPIC_API_KEY", "").strip(), model
+    if provider == "openai":
+        return provider, os.getenv("OPENAI_API_KEY", "").strip(), model
+    return provider, "", model
+
+
+@app.post("/api/assistant", response_model=AssistantResponse)
+async def assistant_reply(request: AssistantRequest) -> AssistantResponse:
+    provider, api_key, model = _assistant_settings()
+    if not api_key or not model:
+        raise HTTPException(status_code=503, detail="Assistant is not configured on the server")
+    try:
+        async with httpx.AsyncClient(timeout=30, transport=ASSISTANT_TRANSPORT) as client:
+            if provider == "anthropic":
+                resp = await client.post(
+                    "https://api.anthropic.com/v1/messages",
+                    headers={"x-api-key": api_key, "anthropic-version": "2023-06-01"},
+                    json={"model": model, "max_tokens": 800, "system": ASSISTANT_SYSTEM_PROMPT,
+                          "messages": [{"role": "user", "content": request.message}]},
+                )
+                resp.raise_for_status()
+                blocks = resp.json().get("content", [])
+                reply = "".join(b.get("text", "") for b in blocks if b.get("type") == "text")
+            else:
+                resp = await client.post(
+                    "https://api.openai.com/v1/chat/completions",
+                    headers={"Authorization": f"Bearer {api_key}"},
+                    json={"model": model, "max_tokens": 800,
+                          "messages": [{"role": "system", "content": ASSISTANT_SYSTEM_PROMPT},
+                                       {"role": "user", "content": request.message}]},
+                )
+                resp.raise_for_status()
+                reply = resp.json()["choices"][0]["message"]["content"]
+    except (httpx.HTTPError, KeyError, IndexError, ValueError) as exc:
+        logger.warning("Assistant provider failed: %s", exc)
+        raise HTTPException(status_code=502, detail="The assistant provider did not answer")
+    return AssistantResponse(reply=reply.strip() or "No tengo una respuesta para eso.", provider=provider)

@@ -34,6 +34,16 @@ data class MusicQueueDto(
 
 data class DeployResultDto(val deployId: String, val message: String)
 
+/** Real counts from GET /api/status. [botRuntime] is "not_connected" until a bot reports in. */
+data class BackendStatusDto(
+    val redis: String,
+    val commands: Int,
+    val deployments: Int,
+    val musicPlaybackState: String,
+    val musicQueueLength: Int,
+    val botRuntime: String
+)
+
 private val JSON_MEDIA = "application/json; charset=utf-8".toMediaType()
 
 /**
@@ -114,6 +124,25 @@ class BackendClient(
             deployId = json.optString("deploy_id"),
             message = json.optString("message")
         )
+    }
+
+    suspend fun status(): Result<BackendStatusDto> = call {
+        val json = JSONObject(send("GET", "/api/status"))
+        val music = json.optJSONObject("music") ?: JSONObject()
+        BackendStatusDto(
+            redis = json.optString("redis", "unavailable"),
+            commands = json.optInt("commands"),
+            deployments = json.optInt("deployments"),
+            musicPlaybackState = music.optString("playback_state", "stopped"),
+            musicQueueLength = music.optInt("queue_length"),
+            botRuntime = json.optString("bot_runtime", "not_connected")
+        )
+    }
+
+    /** Asks Orion through the backend. Fails with the server's detail when the assistant is off. */
+    suspend fun askAssistant(message: String): Result<String> = call {
+        val json = JSONObject(send("POST", "/api/assistant", JSONObject().put("message", message)))
+        json.optString("reply")
     }
 
     private suspend fun <T> call(block: () -> T): Result<T> =

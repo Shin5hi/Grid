@@ -48,6 +48,18 @@ data class BotStatus(
     val username: String = ""
 )
 
+/**
+ * Real numbers for the summary tiles, from GET /api/status.
+ * A null count means "not loaded yet"; the tile shows a dash.
+ */
+data class DashboardSummary(
+    val backendOnline: Boolean,
+    val commands: Int? = null,
+    val deployments: Int? = null,
+    val queueLength: Int? = null,
+    val playbackState: String? = null
+)
+
 // ─── Module Card Descriptor ────────────────────────────────────────
 
 private data class ModuleCard(
@@ -110,6 +122,7 @@ private val modules = listOf(
 fun MainDashboardScreen(
     botStatus: BotStatus = BotStatus(),
     greetingName: String = "Shin5hi",
+    summary: DashboardSummary? = null,
     onNavigateToConsole: () -> Unit = {},
     onNavigateToAutoMod: () -> Unit = {},
     onNavigateToCommandBuilder: () -> Unit = {},
@@ -139,6 +152,10 @@ fun MainDashboardScreen(
         Spacer(Modifier.height(20.dp))
 
         GreetingBlock(name = greetingName)
+
+        Spacer(Modifier.height(20.dp))
+
+        SummaryGrid(summary)
 
         Spacer(Modifier.height(20.dp))
 
@@ -674,6 +691,106 @@ fun GridBottomNavBar(
                     )
                 }
             }
+        }
+    }
+}
+
+// ─── Summary tiles (2 x 2) ─────────────────────────────────────────
+
+@Composable
+private fun SummaryGrid(summary: DashboardSummary?) {
+    val dash = "—"
+    val playback = when (summary?.playbackState) {
+        "playing" -> "reproduciendo"
+        "paused" -> "en pausa"
+        "stopped" -> "detenido"
+        else -> "sin datos"
+    }
+    Column(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+        verticalArrangement = Arrangement.spacedBy(10.dp)
+    ) {
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+            SummaryTile(
+                label = "Comandos",
+                value = summary?.commands?.toString() ?: dash,
+                hint = "guardados en el backend",
+                accent = AppColors.AccentBolt,
+                modifier = Modifier.weight(1f)
+            )
+            SummaryTile(
+                label = "Despliegues",
+                value = summary?.deployments?.toString() ?: dash,
+                hint = "bots lanzados",
+                accent = AppColors.AccentRocket,
+                modifier = Modifier.weight(1f)
+            )
+        }
+        Row(horizontalArrangement = Arrangement.spacedBy(10.dp), modifier = Modifier.fillMaxWidth()) {
+            SummaryTile(
+                label = "Cola de música",
+                value = summary?.queueLength?.toString() ?: dash,
+                hint = playback,
+                accent = AppColors.AccentMusic,
+                modifier = Modifier.weight(1f)
+            )
+            SummaryTile(
+                label = "Backend",
+                value = when (summary) {
+                    null -> dash
+                    else -> if (summary.backendOnline) "En línea" else "Sin conexión"
+                },
+                hint = if (summary?.backendOnline == true) "Redis conectado" else "revisa la URL en Ajustes",
+                accent = if (summary?.backendOnline == true) AppColors.Success else AppColors.Error,
+                modifier = Modifier.weight(1f)
+            )
+        }
+    }
+}
+
+@Composable
+private fun SummaryTile(
+    label: String,
+    value: String,
+    hint: String,
+    accent: Color,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier,
+        shape = RoundedCornerShape(8.dp),
+        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
+        elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
+    ) {
+        Column(modifier = Modifier.padding(14.dp)) {
+            Text(
+                text = label,
+                color = accent,
+                fontSize = 12.sp,
+                fontWeight = FontWeight.SemiBold,
+                fontFamily = FontFamily.SansSerif,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(Modifier.height(6.dp))
+            Text(
+                text = value,
+                color = AppColors.TextPrimary,
+                fontSize = 22.sp,
+                fontWeight = FontWeight.Bold,
+                fontFamily = FontFamily.SansSerif,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
+            Spacer(Modifier.height(2.dp))
+            Text(
+                text = hint,
+                color = AppColors.TextMuted,
+                fontSize = 11.sp,
+                fontFamily = FontFamily.SansSerif,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
+            )
         }
     }
 }

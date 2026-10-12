@@ -92,7 +92,7 @@ cd discord-bot-maker-android
 python -m venv .venv && source .venv/bin/activate
 
 # Install dependencies
-pip install fastapi uvicorn redis aioredis websockets pydantic
+pip install fastapi uvicorn redis aioredis websockets pydantic httpx
 
 # Start Redis (Docker)
 docker run -d --name redis-dbm -p 6379:6379 redis:7.4-alpine
