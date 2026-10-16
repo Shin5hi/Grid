@@ -93,20 +93,39 @@ fun OrionBubble(
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.Bottom,
                         modifier = Modifier.fillMaxWidth()
                     ) {
+                        // Left antenna: stem + glowing tip
                         Box(
                             modifier = Modifier
-                                .size(3.dp)
-                                .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.8f))
+                                .width(2.dp)
+                                .height(5.dp)
+                                .clip(RoundedCornerShape(1.dp))
+                                .background(Color.White.copy(alpha = 0.6f))
                         )
-                        Spacer(Modifier.width(8.dp))
+                        Box(
+                            modifier = Modifier
+                                .padding(start = 1.dp)
+                                .size(3.dp)
+                                .clip(CircleShape)
+                                .background(Color.White.copy(alpha = 0.85f))
+                        )
+                        Spacer(Modifier.width(6.dp))
+                        // Right antenna: glowing tip + stem
                         Box(
                             modifier = Modifier
                                 .size(3.dp)
                                 .clip(CircleShape)
-                                .background(Color.White.copy(alpha = 0.8f))
+                                .background(Color.White.copy(alpha = 0.85f))
+                        )
+                        Box(
+                            modifier = Modifier
+                                .padding(start = 1.dp)
+                                .width(2.dp)
+                                .height(5.dp)
+                                .clip(RoundedCornerShape(1.dp))
+                                .background(Color.White.copy(alpha = 0.6f))
                         )
                     }
 
@@ -143,7 +162,7 @@ fun OrionBubble(
                     Spacer(Modifier.height(1.dp))
 
                     Text(
-                        text = "Orion",
+                        text = "Orión",
                         color = Color.White,
                         fontSize = 7.sp,
                         fontWeight = FontWeight.Bold,

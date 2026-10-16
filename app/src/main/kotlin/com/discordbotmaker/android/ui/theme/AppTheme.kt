@@ -10,37 +10,62 @@ import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
+/**
+ * Grid Branding Identity
+ *
+ * Minimalist geometric "G" logo mark — a single continuous stroke forming
+ * a stylised "G" with an open counter, suggesting both a chat bubble and
+ * a circuit trace. Rendered in Discord Blurple (#5865F2) on Deep Charcoal
+ * (#313338) backgrounds. The mark is monochrome, never outlined, never
+ * gradient-filled. It appears at 24 dp in the navigation rail, 32 dp on
+ * splash, and 48 dp as app icon.
+ *
+ * Colour vocabulary: Blurple primary, Deep Charcoal background,
+ * Dark Surface cards, White/Secondary text, Green success, Red danger,
+ * Amber warning, Cyan info. Accent chips (Rocket, Shield, Brain, Bolt,
+ * Music, Gear, Chart, Welcome) use semantic neon tints at 12% opacity.
+ *
+ * Typography: Inter / Roboto (system SansSerif) only. No Monospace in UI.
+ * Corner radius: 8 dp cards, 12 dp primary buttons, 20 dp modals.
+ * Elevation: flat (tonalElevation = 0.dp) on all headers and surfaces.
+ * Motion: 150–200 ms standard easing; no bounce, no elastic.
+ */
 object AppColors {
-    val Background       = Color(0xFF313338)
-    val Surface          = Color(0xFF2B2D31)
-    val SurfaceVariant   = Color(0xFF232428)
-    val SurfaceBorder    = Color(0xFF3F4147)
-    val InputBackground  = Color(0xFF1E1F22)
-    val SurfaceOverlay   = Color(0xFF111214)
+    // Grid real — negro profundo del mockup, no gris Discord
+    val Background       = Color(0xFF0A0A0F)
+    val Surface          = Color(0xFF14151B)
+    val SurfaceVariant   = Color(0xFF1C1E26)
+    val SurfaceBorder    = Color(0xFF26282F)
+    val InputBackground  = Color(0xFF0F1015)
+    val SurfaceOverlay   = Color(0xFF000000)
 
-    val Primary          = Color(0xFF5865F2)
-    val PrimaryLight     = Color(0xFF7984F5)
-    val PrimaryDim       = Color(0xFF4752C4)
-    val PrimarySubtle    = Color(0xFF5865F2).copy(alpha = 0.12f)
+    // Grid morado del logo G
+    val Primary          = Color(0xFF7C5CFF)
+    val PrimaryLight     = Color(0xFFA78BFA)
+    val PrimaryDim       = Color(0xFF5B3DF0)
+    val PrimarySubtle    = Color(0xFF7C5CFF).copy(alpha = 0.12f)
 
-    val Success          = Color(0xFF23A559)
-    val Warning          = Color(0xFFFAA81A)
-    val Error            = Color(0xFFF23F43)
-    val Info             = Color(0xFF5865F2)
+    // Azul secundario "Organiza" del mockup
+    val SecondaryBlue    = Color(0xFF5B8DEF)
+
+    val Success          = Color(0xFF22C55E)
+    val Warning          = Color(0xFFF59E0B)
+    val Error            = Color(0xFFEF4444)
+    val Info             = Color(0xFF5B8DEF)
 
     val TextPrimary      = Color(0xFFFFFFFF)
-    val TextSecondary    = Color(0xFFB5BAC1)
-    val TextMuted        = Color(0xFF80848E)
-    val TextLink         = Color(0xFF00A8FC)
+    val TextSecondary    = Color(0xFF9CA3AF)
+    val TextMuted        = Color(0xFF6B7280)
+    val TextLink         = Color(0xFF5B8DEF)
 
-    val Divider          = Color(0xFF3F4147)
-    val SwitchTrackOff   = Color(0xFF4E5058)
-    val SliderInactive   = Color(0xFF4E5058)
-    val ProgressTrack    = Color(0xFF4E5058)
+    val Divider          = Color(0xFF26282F)
+    val SwitchTrackOff   = Color(0xFF2A2D36)
+    val SliderInactive   = Color(0xFF2A2D36)
+    val ProgressTrack    = Color(0xFF2A2D36)
 
-    val NavBarBackground = Color(0xFF1E1F22)
-    val NavItemActive    = Color(0xFFFFFFFF)
-    val NavItemInactive  = Color(0xFF80848E)
+    val NavBarBackground = Color(0xFF0F1015)
+    val NavItemActive    = Color(0xFF7C5CFF)
+    val NavItemInactive  = Color(0xFF6B7280)
 
     val AccentRocket     = Color(0xFF57F287)
     val AccentShield     = Color(0xFFFEE75C)
@@ -57,13 +82,13 @@ private val AppDarkColorScheme = darkColorScheme(
     onPrimary          = AppColors.TextPrimary,
     primaryContainer   = AppColors.PrimaryDim,
     onPrimaryContainer = AppColors.PrimaryLight,
-    secondary          = AppColors.Info,
+    secondary          = AppColors.SecondaryBlue,
     onSecondary        = AppColors.TextPrimary,
-    secondaryContainer = Color(0xFF2D2F6E),
-    onSecondaryContainer = AppColors.Info,
+    secondaryContainer = Color(0xFF1E2547),
+    onSecondaryContainer = AppColors.SecondaryBlue,
     tertiary           = AppColors.Success,
     onTertiary         = AppColors.TextPrimary,
-    tertiaryContainer  = Color(0xFF1A5C35),
+    tertiaryContainer  = Color(0xFF0F2E1F),
     onTertiaryContainer = AppColors.Success,
     background         = AppColors.Background,
     onBackground       = AppColors.TextPrimary,
@@ -73,10 +98,10 @@ private val AppDarkColorScheme = darkColorScheme(
     onSurfaceVariant   = AppColors.TextSecondary,
     error              = AppColors.Error,
     onError            = AppColors.TextPrimary,
-    errorContainer     = Color(0xFF601418),
+    errorContainer     = Color(0xFF3A1113),
     onErrorContainer   = AppColors.Error,
     outline            = AppColors.SurfaceBorder,
-    outlineVariant     = Color(0xFF35373C)
+    outlineVariant     = Color(0xFF1C1E26)
 )
 
 val AppTypography = Typography(

@@ -51,12 +51,24 @@ class TestThemeConsolidation:
         os.path.join(APP_SRC, "ui", "launch", "BotCreationScreen.kt"),
     ]
 
-    def test_no_neon_colors_imports(self):
+    def test_no_inline_neon_color_definitions(self):
+        # NeonColors is a legitimate palette, but it must be defined ONCE in the
+        # centralized theme (theme/NeonColors.kt) and only *referenced* from the
+        # screens — never re-declared inline as its own object.
         for path in self.UI_FILES:
             with open(path) as f:
                 content = f.read()
-            assert "NeonColors" not in content, \
-                f"Found NeonColors reference in {os.path.basename(path)}"
+            assert "object NeonColors" not in content, \
+                f"{os.path.basename(path)} re-declares NeonColors; use the centralized theme"
+
+    def test_neon_colors_imported_from_theme(self):
+        # Screens that reference NeonColors must import it from the central theme.
+        for path in self.UI_FILES:
+            with open(path) as f:
+                content = f.read()
+            if "NeonColors" in content:
+                assert "import com.discordbotmaker.android.ui.theme.NeonColors" in content, \
+                    f"{os.path.basename(path)} uses NeonColors without importing it from theme"
 
     def test_app_colors_import_present(self):
         for path in self.UI_FILES:
@@ -85,17 +97,19 @@ class TestThemeConsolidation:
         assert "val Primary" in content
         assert "val TextPrimary" in content
 
-    def test_root_level_files_use_app_colors(self):
-        """Root-level .kt files should also use AppColors."""
+    def test_screen_files_use_centralized_palettes(self):
+        # The four feature screens must use the centralized theme palettes
+        # (AppColors always; NeonColors where applicable) rather than any
+        # inline color object.
         for name in ["CommandBuilderScreen.kt", "AutoModScreen.kt",
                       "BotCreationScreen.kt", "LiveConsoleScreen.kt"]:
             path = os.path.join(PROJECT_ROOT, name)
             with open(path) as f:
                 content = f.read()
-            assert "NeonColors" not in content, \
-                f"Root-level {name} still uses NeonColors"
+            assert "object NeonColors" not in content, \
+                f"{name} re-declares a palette inline"
             assert "AppColors" in content, \
-                f"Root-level {name} should use AppColors"
+                f"{name} should use AppColors"
 
 
 class TestBuildInfrastructure:

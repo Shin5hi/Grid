@@ -1,4 +1,4 @@
-package com.discordbotmaker.android.ui.automod
+﻿package com.discordbotmaker.android.ui.automod
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -16,7 +16,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -24,11 +23,11 @@ import kotlin.math.roundToInt
 
 import com.discordbotmaker.android.ui.theme.AppColors
 
-// ─── AutoMod Configuration State ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ AutoMod Configuration State â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 data class AutoModConfig(
     val toxicityFilterEnabled: Boolean = false,
-    val toxicitySensitivity: Float = 0.7f,       // 0.0 – 1.0
+    val toxicitySensitivity: Float = 0.7f,       // 0.0 â€“ 1.0
     val toxicityAction: ToxicityAction = ToxicityAction.DELETE,
     val linkBlockingEnabled: Boolean = false,
     val allowWhitelistedLinks: Boolean = true,
@@ -39,13 +38,13 @@ data class AutoModConfig(
 )
 
 enum class ToxicityAction(val label: String, val icon: String) {
-    WARN("Warn", "⚠"),
-    DELETE("Delete", "🗑"),
-    MUTE("Mute", "🔇"),
-    BAN("Ban", "🚫")
+    WARN("Warn", "âš "),
+    DELETE("Delete", "ðŸ—‘"),
+    MUTE("Mute", "ðŸ”‡"),
+    BAN("Ban", "ðŸš«")
 }
 
-// ─── AutoMod Screen ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ AutoMod Screen â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 fun AutoModScreen(
@@ -66,16 +65,16 @@ fun AutoModScreen(
             .background(AppColors.Background)
             .verticalScroll(rememberScrollState())
     ) {
-        // ── Header ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // â”€â”€ Header â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
         ScreenHeader()
 
         Spacer(Modifier.height(16.dp))
 
-        // ── 1. AI Toxicity Filter (Gemini) ━━━━━━━━━━━━━━
+        // â”€â”€ 1. AI Toxicity Filter (Gemini) â”â”â”â”â”â”â”â”â”â”â”â”â”â”
         ModCard(
             title = "AI Toxicity Filter",
             subtitle = "Powered by Google Gemini",
-            icon = "🧠",
+            icon = "ðŸ§ ",
             accentColor = AppColors.Primary,
             enabled = state.toxicityFilterEnabled,
             onToggle = { update { copy(toxicityFilterEnabled = it) } }
@@ -102,7 +101,7 @@ fun AutoModScreen(
                         text = "ACTION ON VIOLATION",
                         color = AppColors.TextSecondary,
                         fontSize = 10.sp,
-                        fontFamily = FontFamily.Monospace,
+                        
                         letterSpacing = 1.sp
                     )
                     Spacer(Modifier.height(8.dp))
@@ -125,11 +124,11 @@ fun AutoModScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        // ── 2. Link Blocking ━━━━━━━━━━━━━━━━━━━━
+        // â”€â”€ 2. Link Blocking â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
         ModCard(
             title = "Link Blocking",
             subtitle = "Block unauthorized URLs in messages",
-            icon = "🔗",
+            icon = "ðŸ”—",
             accentColor = AppColors.Warning,
             enabled = state.linkBlockingEnabled,
             onToggle = { update { copy(linkBlockingEnabled = it) } }
@@ -151,7 +150,7 @@ fun AutoModScreen(
                         text = "Whitelisted: discord.com, youtube.com, github.com",
                         color = AppColors.TextMuted,
                         fontSize = 11.sp,
-                        fontFamily = FontFamily.Monospace
+                        
                     )
                 }
             }
@@ -159,11 +158,11 @@ fun AutoModScreen(
 
         Spacer(Modifier.height(12.dp))
 
-        // ── 3. Spam Protection ━━━━━━━━━━━━━━━━━━━━
+        // â”€â”€ 3. Spam Protection â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
         ModCard(
             title = "Spam Protection",
             subtitle = "Rate limiting & auto-mute for spam",
-            icon = "🛡️",
+            icon = "ðŸ›¡ï¸",
             accentColor = AppColors.Info,
             enabled = state.spamProtectionEnabled,
             onToggle = { update { copy(spamProtectionEnabled = it) } }
@@ -216,7 +215,7 @@ fun AutoModScreen(
 
         Spacer(Modifier.height(24.dp))
 
-        // ── Save Button ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        // â”€â”€ Save Button â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
         Button(
             onClick = { onConfigChanged(state) },
             modifier = Modifier
@@ -230,8 +229,8 @@ fun AutoModScreen(
             )
         ) {
             Text(
-                text = "▸ DEPLOY AUTOMOD CONFIG",
-                fontFamily = FontFamily.Monospace,
+                text = "â–¸ DEPLOY AUTOMOD CONFIG",
+                
                 fontWeight = FontWeight.Bold,
                 fontSize = 14.sp,
                 letterSpacing = 1.sp
@@ -242,22 +241,22 @@ fun AutoModScreen(
     }
 }
 
-// ─── Screen Header ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Screen Header â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun ScreenHeader() {
     Surface(
         color = AppColors.Surface,
-        tonalElevation = 4.dp,
+        tonalElevation = 0.dp,
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)) {
             Text(
-                text = "▌ AUTOMOD",
+                text = "â–Œ AUTOMOD",
                 color = AppColors.Success,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
+                
                 letterSpacing = 2.sp
             )
             Spacer(Modifier.height(4.dp))
@@ -265,13 +264,13 @@ private fun ScreenHeader() {
                 text = "Configure AI-powered moderation rules for your server.",
                 color = AppColors.TextSecondary,
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace
+                
             )
         }
     }
 }
 
-// ─── Reusable Mod Card ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Reusable Mod Card â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun ModCard(
@@ -323,13 +322,13 @@ private fun ModCard(
                             color = if (enabled) accentColor else AppColors.TextPrimary,
                             fontSize = 14.sp,
                             fontWeight = FontWeight.Bold,
-                            fontFamily = FontFamily.Monospace
+                            
                         )
                         Text(
                             text = subtitle,
                             color = AppColors.TextMuted,
                             fontSize = 11.sp,
-                            fontFamily = FontFamily.Monospace
+                            
                         )
                     }
                 }
@@ -351,7 +350,7 @@ private fun ModCard(
     }
 }
 
-// ─── Labeled Slider ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Labeled Slider â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun LabeledSlider(
@@ -370,14 +369,14 @@ private fun LabeledSlider(
                 text = label.uppercase(),
                 color = AppColors.TextSecondary,
                 fontSize = 10.sp,
-                fontFamily = FontFamily.Monospace,
+                
                 letterSpacing = 1.sp
             )
             Text(
                 text = valueLabel,
                 color = accentColor,
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace,
+                
                 fontWeight = FontWeight.Bold
             )
         }
@@ -395,7 +394,7 @@ private fun LabeledSlider(
     }
 }
 
-// ─── Neon Switch Row ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Neon Switch Row â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun NeonSwitchRow(
@@ -413,7 +412,7 @@ private fun NeonSwitchRow(
             text = label,
             color = AppColors.TextPrimary,
             fontSize = 13.sp,
-            fontFamily = FontFamily.Monospace
+            
         )
         Switch(
             checked = checked,
@@ -428,7 +427,7 @@ private fun NeonSwitchRow(
     }
 }
 
-// ─── Action Chip ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Action Chip â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun RowScope.ActionChip(
@@ -456,9 +455,10 @@ private fun RowScope.ActionChip(
         Text(
             text = "${action.icon}\n${action.label}",
             fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace,
+            
             fontWeight = if (selected) FontWeight.Bold else FontWeight.Normal,
             lineHeight = 16.sp
         )
     }
 }
+

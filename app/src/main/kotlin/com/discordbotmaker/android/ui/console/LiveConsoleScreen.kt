@@ -17,7 +17,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.buildAnnotatedString
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
@@ -158,7 +157,7 @@ fun LiveConsoleScreen(viewModel: LiveConsoleViewModel) {
                 }
             }
 
-            // Scanline overlay for retro CRT effect
+            // Scanline overlay for retro effect
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -186,7 +185,7 @@ private fun ConsoleHeader(
 
     Surface(
         color = AppColors.Surface,
-        tonalElevation = 4.dp,
+        tonalElevation = 0.dp,
         modifier = Modifier.fillMaxWidth()
     ) {
         Row(
@@ -210,7 +209,6 @@ private fun ConsoleHeader(
                     color = AppColors.Success,
                     fontSize = 16.sp,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily.Monospace,
                     letterSpacing = 2.sp
                 )
                 Spacer(Modifier.width(12.dp))
@@ -227,7 +225,6 @@ private fun ConsoleHeader(
                     text = if (isConnected) "LIVE" else "OFFLINE",
                     color = statusColor,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
                     fontWeight = FontWeight.Medium
                 )
             }
@@ -238,7 +235,7 @@ private fun ConsoleHeader(
                     text = "$logCount",
                     color = AppColors.TextSecondary,
                     fontSize = 11.sp,
-                    fontFamily = FontFamily.Monospace
+                    fontWeight = FontWeight.Medium
                 )
                 Spacer(Modifier.width(12.dp))
 
@@ -301,7 +298,7 @@ private fun LogEntryRow(entry: LogEntry) {
 
     Text(
         text = annotated,
-        fontFamily = FontFamily.Monospace,
+        fontSize = 12.sp,
         modifier = Modifier
             .fillMaxWidth()
             .padding(vertical = 1.dp)
@@ -326,15 +323,13 @@ private fun EmptyConsoleState() {
             Text(
                 text = "Waiting for log stream…",
                 color = AppColors.TextSecondary,
-                fontSize = 14.sp,
-                fontFamily = FontFamily.Monospace
+                fontSize = 14.sp
             )
             Spacer(Modifier.height(4.dp))
             Text(
                 text = "Connect to your bot's backend to begin.",
                 color = AppColors.TextSecondary.copy(alpha = 0.6f),
-                fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace
+                fontSize = 12.sp
             )
         }
     }

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Blocky "G" mark, centered within the 72dp adaptive safe zone -->
+    <path
+        android:fillColor="#FFFFFF"
+        android:pathData="M46,40h14v8h-6v12a8,8 0 0 0 6,-2.5l5,5a16,16 0 1 1 -4,-15.5v7.5a9,9 0 1 0 3,6.5v-20h-18z" />
+</vector>

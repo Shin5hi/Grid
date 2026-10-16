@@ -1,5 +1,13 @@
-package com.discordbotmaker.android.ui.navigation
+﻿package com.discordbotmaker.android.ui.navigation
 
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalAnimatedVisibilityApi
+import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +24,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.NavHost
+import androidx.navigation.compose.AnimatedNavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
@@ -33,6 +41,8 @@ import com.discordbotmaker.android.ui.library.ToolLibraryScreen
 import com.discordbotmaker.android.ui.splash.SplashScreen
 import com.discordbotmaker.android.ui.splash.OriginLoadingScreen
 import com.discordbotmaker.android.ui.doubt.DoubtAssistantScreen
+import com.discordbotmaker.android.ui.stats.StatsDashboardScreen
+import com.discordbotmaker.android.ui.music.MusicPlayerScreen
 import com.discordbotmaker.android.ui.theme.AppColors
 
 object AppRoutes {
@@ -46,13 +56,11 @@ object AppRoutes {
     const val COMMAND_BUILDER      = "command_builder"
     const val BOT_CREATION         = "bot_creation"
     const val DOUBT_ASSISTANT      = "doubt_assistant"
+    const val STATS_DASHBOARD      = "stats_dashboard"
+    const val MUSIC_PLAYER         = "music_player"
 }
 
-private val bottomNavRoutes = setOf(
-    AppRoutes.DASHBOARD,
-    AppRoutes.TOOL_LIBRARY,
-    AppRoutes.SETTINGS
-)
+private val bottomNavRoutes = setOf(AppRoutes.DASHBOARD, AppRoutes.BOT_CREATION, AppRoutes.TOOL_LIBRARY, AppRoutes.DOUBT_ASSISTANT, AppRoutes.SETTINGS)
 
 // Screens where the Orion FAB should NOT appear
 private val hideOrionRoutes = setOf(
@@ -92,10 +100,23 @@ fun AppNavGraph(
         containerColor = AppColors.Background
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
-            NavHost(
+            AnimatedNavHost(
                 navController = navController,
                 startDestination = AppRoutes.SPLASH,
-                modifier = Modifier.fillMaxSize()
+                modifier = Modifier.fillMaxSize(),
+                enterTransition = { _, scope ->
+                    scope.fadeIn(
+                        animationSpec = tween(durationMillis = 280)
+                    ) + scope.slideInVertically(
+                        initialOffsetY = { it.height / 4 },
+                        animationSpec = tween(durationMillis = 320, easing = FastOutSlowInEasing)
+                    )
+                },
+                exitTransition = { _, scope ->
+                    scope.fadeOut(
+                        animationSpec = tween(durationMillis = 160)
+                    )
+                }
             ) {
                 composable(AppRoutes.SPLASH) {
                     SplashScreen(
@@ -151,14 +172,31 @@ fun AppNavGraph(
                 composable(AppRoutes.TOOL_LIBRARY) {
                     ToolLibraryScreen(
                         onToolSelected = { toolName ->
-                            when (toolName) {
-                                "Asistente Orion" -> navController.navigate(AppRoutes.DOUBT_ASSISTANT) {
+                            // Normalize: trim + case-insensitive, so accented
+                            // "Asistente OriÃ³n" matches regardless of Unicode form.
+                            val key = toolName.trim().lowercase().replace(" ", "-")
+                            val route = when (key) {
+                                "asistente-orion", "asistente orion" -> AppRoutes.DOUBT_ASSISTANT
+                                "stats-dashboard" -> AppRoutes.STATS_DASHBOARD
+                                "music-player" -> AppRoutes.MUSIC_PLAYER
+                                "settings" -> AppRoutes.SETTINGS
+                                else -> null
+                            }
+                            route?.let { r ->
+                                navController.navigate(r) {
                                     launchSingleTop = true
                                 }
-                                else -> { }
                             }
                         }
                     )
+                }
+
+                composable(AppRoutes.STATS_DASHBOARD) {
+                    StatsDashboardScreen()
+                }
+
+                composable(AppRoutes.MUSIC_PLAYER) {
+                    MusicPlayerScreen()
                 }
 
                 composable(AppRoutes.SETTINGS) {
@@ -212,7 +250,7 @@ private fun SettingsPlaceholderScreen() {
         contentAlignment = Alignment.Center
     ) {
         Column(horizontalAlignment = Alignment.CenterHorizontally) {
-            Text(text = "⚙", fontSize = 48.sp)
+            Text(text = "âš™", fontSize = 48.sp)
             Text(
                 text = "Settings",
                 color = AppColors.TextPrimary,
@@ -231,3 +269,6 @@ private fun SettingsPlaceholderScreen() {
         }
     }
 }
+
+
+

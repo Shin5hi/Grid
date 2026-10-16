@@ -1,4 +1,4 @@
-package com.discordbotmaker.android.ui.launch
+﻿package com.discordbotmaker.android.ui.launch
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateColorAsState
@@ -40,17 +40,18 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.discordbotmaker.android.ui.theme.AppColors
 import com.discordbotmaker.android.ui.theme.NeonColors
 
-// ─── Deployment Steps ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Deployment Steps â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 enum class DeployStep(val label: String, val icon: String, val index: Int) {
-    CONNECT("Connect", "🔗", 0),
-    CONFIG("Config", "⚙", 1),
-    DEPLOY("Deploy", "🚀", 2)
+    CONNECT("Connect", "ðŸ”—", 0),
+    CONFIG("Config", "âš™", 1),
+    DEPLOY("Deploy", "ðŸš€", 2)
 }
 
-// ─── Token Validation ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Token Validation â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 /**
  * Discord bot tokens follow the format: Base64(bot_id).timestamp.HMAC
@@ -64,7 +65,7 @@ private val DISCORD_TOKEN_REGEX = Regex(
 fun isTokenFormatValid(token: String): Boolean =
     DISCORD_TOKEN_REGEX.matches(token.trim())
 
-// ─── Bot Creation Screen ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Bot Creation Screen â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 fun BotCreationScreen(
@@ -86,20 +87,20 @@ fun BotCreationScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(NeonColors.Background)
+            .background(AppColors.Background)
             .verticalScroll(rememberScrollState())
     ) {
-        // ── Header ━━━━━━━━━━
+        // â”€â”€ Header â”â”â”â”â”â”â”â”â”â”
         LaunchHeader()
 
         Spacer(Modifier.height(20.dp))
 
-        // ── Step Progress Indicator ━━━━━━━━━━━━━━━━━
+        // â”€â”€ Step Progress Indicator â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
         StepIndicator(currentStep = currentStep)
 
         Spacer(Modifier.height(24.dp))
 
-        // ── Step 1: Connect — Token Input ━━━━━━━━━━━━━━━
+        // â”€â”€ Step 1: Connect â€” Token Input â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
         AnimatedVisibility(
             visible = currentStep == DeployStep.CONNECT,
             enter = fadeIn() + expandVertically(),
@@ -119,7 +120,7 @@ fun BotCreationScreen(
             )
         }
 
-        // ── Step 2: Config — Bot Name ━━━━━━━━
+        // â”€â”€ Step 2: Config â€” Bot Name â”â”â”â”â”â”â”â”
         AnimatedVisibility(
             visible = currentStep == DeployStep.CONFIG,
             enter = fadeIn() + expandVertically(),
@@ -137,7 +138,7 @@ fun BotCreationScreen(
             )
         }
 
-        // ── Step 3: Deploy ━━━━━━━━━━━━━━━━━━━━━━
+        // â”€â”€ Step 3: Deploy â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
         AnimatedVisibility(
             visible = currentStep == DeployStep.DEPLOY,
             enter = fadeIn() + expandVertically(),
@@ -159,24 +160,24 @@ fun BotCreationScreen(
     }
 }
 
-// ─── Screen Header ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Screen Header â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun LaunchHeader() {
     Surface(
         color = NeonColors.SurfaceCard,
-        tonalElevation = 4.dp,
+        tonalElevation = 0.dp,
         modifier = Modifier.fillMaxWidth()
     ) {
         Column(
             modifier = Modifier.padding(horizontal = 16.dp, vertical = 16.dp)
         ) {
             Text(
-                text = "▌ BOT LAUNCH",
+                text = "â–Œ BOT LAUNCH",
                 color = NeonColors.NeonCyan,
                 fontSize = 18.sp,
                 fontWeight = FontWeight.Bold,
-                fontFamily = FontFamily.Monospace,
+                
                 letterSpacing = 2.sp
             )
             Spacer(Modifier.height(4.dp))
@@ -184,13 +185,13 @@ private fun LaunchHeader() {
                 text = "Connect your Discord token, configure, and deploy.",
                 color = NeonColors.TextSecondary,
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace
+                
             )
         }
     }
 }
 
-// ─── Step Progress Indicator (Connect → Config → Deploy) ━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Step Progress Indicator (Connect â†’ Config â†’ Deploy) â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun StepIndicator(currentStep: DeployStep) {
@@ -238,7 +239,7 @@ private fun StepIndicator(currentStep: DeployStep) {
                     contentAlignment = Alignment.Center
                 ) {
                     Text(
-                        text = if (isCompleted) "✓" else step.icon,
+                        text = if (isCompleted) "âœ“" else step.icon,
                         fontSize = if (isCompleted) 16.sp else 14.sp,
                         color = dotColor
                     )
@@ -248,7 +249,7 @@ private fun StepIndicator(currentStep: DeployStep) {
                     text = step.label.uppercase(),
                     color = labelColor,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    
                     fontWeight = if (isActive) FontWeight.Bold else FontWeight.Normal,
                     letterSpacing = 1.sp
                 )
@@ -270,7 +271,7 @@ private fun StepIndicator(currentStep: DeployStep) {
     }
 }
 
-// ─── Step 1: Connect — Token Input ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Step 1: Connect â€” Token Input â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun ConnectStepContent(
@@ -287,7 +288,7 @@ private fun ConnectStepContent(
             text = "DISCORD BOT TOKEN",
             color = NeonColors.TextSecondary,
             fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace,
+            
             fontWeight = FontWeight.Bold,
             letterSpacing = 2.sp
         )
@@ -308,9 +309,9 @@ private fun ConnectStepContent(
         // Validation hint
         Text(
             text = when {
-                token.isEmpty() -> "⊙ Paste your bot token from the Discord Developer Portal"
-                isTokenValid -> "✓ Token format looks valid"
-                else -> "✖ Invalid token format — expected: Base64.Timestamp.HMAC"
+                token.isEmpty() -> "âŠ™ Paste your bot token from the Discord Developer Portal"
+                isTokenValid -> "âœ“ Token format looks valid"
+                else -> "âœ– Invalid token format â€” expected: Base64.Timestamp.HMAC"
             },
             color = when {
                 token.isEmpty() -> NeonColors.TextDim
@@ -318,7 +319,7 @@ private fun ConnectStepContent(
                 else -> NeonColors.NeonRed
             },
             fontSize = 11.sp,
-            fontFamily = FontFamily.Monospace
+            
         )
 
         Spacer(Modifier.height(20.dp))
@@ -345,8 +346,8 @@ private fun ConnectStepContent(
             )
         ) {
             Text(
-                text = if (isTokenValid) "▸ VALIDATE & CONTINUE" else "▸ VALIDATE",
-                fontFamily = FontFamily.Monospace,
+                text = if (isTokenValid) "â–¸ VALIDATE & CONTINUE" else "â–¸ VALIDATE",
+                
                 fontWeight = FontWeight.Bold,
                 fontSize = 13.sp,
                 letterSpacing = 1.sp
@@ -355,7 +356,7 @@ private fun ConnectStepContent(
     }
 }
 
-// ─── Neon Token Input Field ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Neon Token Input Field â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun NeonTokenInput(
@@ -392,7 +393,7 @@ private fun NeonTokenInput(
     ) {
         // Lock icon
         Text(
-            text = "🔑",
+            text = "ðŸ”‘",
             fontSize = 16.sp,
             modifier = Modifier.padding(start = 14.dp)
         )
@@ -409,20 +410,20 @@ private fun NeonTokenInput(
             textStyle = TextStyle(
                 color = NeonColors.TextPrimary,
                 fontSize = 13.sp,
-                fontFamily = FontFamily.Monospace
+                
             ),
             singleLine = true,
             cursorBrush = SolidColor(NeonColors.NeonCyan),
             visualTransformation = if (showToken) VisualTransformation.None
-                else PasswordVisualTransformation('•'),
+                else PasswordVisualTransformation('\u2022'),
             decorationBox = { innerTextField ->
                 Box {
                     if (value.isEmpty()) {
                         Text(
-                            text = "NzM4NTk3…",
+                            text = "NzM4NTk3\u2026",
                             color = NeonColors.TextDim,
                             fontSize = 13.sp,
-                            fontFamily = FontFamily.Monospace
+                            
                         )
                     }
                     innerTextField()
@@ -442,7 +443,7 @@ private fun NeonTokenInput(
             contentAlignment = Alignment.Center
         ) {
             Text(
-                text = if (showToken) "🙈" else "👁",
+                text = if (showToken) "ðŸ™ˆ" else "ðŸ‘",
                 fontSize = 16.sp
             )
         }
@@ -451,7 +452,7 @@ private fun NeonTokenInput(
     }
 }
 
-// ─── Step 2: Config — Bot Name ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Step 2: Config â€” Bot Name â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun ConfigStepContent(
@@ -466,7 +467,7 @@ private fun ConfigStepContent(
             text = "BOT NAME",
             color = NeonColors.TextSecondary,
             fontSize = 10.sp,
-            fontFamily = FontFamily.Monospace,
+            
             fontWeight = FontWeight.Bold,
             letterSpacing = 2.sp
         )
@@ -493,7 +494,7 @@ private fun ConfigStepContent(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = "🤖",
+                text = "ðŸ¤–",
                 fontSize = 16.sp,
                 modifier = Modifier.padding(start = 14.dp)
             )
@@ -509,7 +510,7 @@ private fun ConfigStepContent(
                 textStyle = TextStyle(
                     color = NeonColors.TextPrimary,
                     fontSize = 14.sp,
-                    fontFamily = FontFamily.Monospace
+                    
                 ),
                 singleLine = true,
                 cursorBrush = SolidColor(NeonColors.NeonMagenta),
@@ -520,7 +521,7 @@ private fun ConfigStepContent(
                                 text = "My Awesome Bot",
                                 color = NeonColors.TextDim,
                                 fontSize = 14.sp,
-                                fontFamily = FontFamily.Monospace
+                                
                             )
                         }
                         innerTextField()
@@ -537,7 +538,7 @@ private fun ConfigStepContent(
             text = "This name will appear in your bot's dashboard and logs.",
             color = NeonColors.TextDim,
             fontSize = 11.sp,
-            fontFamily = FontFamily.Monospace
+            
         )
 
         Spacer(Modifier.height(24.dp))
@@ -559,8 +560,8 @@ private fun ConfigStepContent(
                 )
             ) {
                 Text(
-                    text = "◂ BACK",
-                    fontFamily = FontFamily.Monospace,
+                    text = "â—‚ BACK",
+                    
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.sp
@@ -583,8 +584,8 @@ private fun ConfigStepContent(
                 )
             ) {
                 Text(
-                    text = "CONTINUE ▸",
-                    fontFamily = FontFamily.Monospace,
+                    text = "CONTINUE â–¸",
+                    
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.sp
@@ -594,7 +595,7 @@ private fun ConfigStepContent(
     }
 }
 
-// ─── Step 3: Deploy ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Step 3: Deploy â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun DeployStepContent(
@@ -622,7 +623,7 @@ private fun DeployStepContent(
                     text = "DEPLOYMENT SUMMARY",
                     color = NeonColors.NeonCyan,
                     fontSize = 10.sp,
-                    fontFamily = FontFamily.Monospace,
+                    
                     fontWeight = FontWeight.Bold,
                     letterSpacing = 2.sp
                 )
@@ -630,7 +631,7 @@ private fun DeployStepContent(
 
                 SummaryRow(label = "Bot Name", value = botName)
                 Spacer(Modifier.height(6.dp))
-                SummaryRow(label = "Token", value = "••••••••••••••••••••")
+                SummaryRow(label = "Token", value = "â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢")
                 Spacer(Modifier.height(6.dp))
                 SummaryRow(label = "Target", value = "Cloud (Auto-scaled)")
                 Spacer(Modifier.height(6.dp))
@@ -650,27 +651,27 @@ private fun DeployStepContent(
             )
             Spacer(Modifier.height(8.dp))
             Text(
-                text = "Deploying…",
+                text = "Deployingâ€¦",
                 color = NeonColors.NeonGreen,
                 fontSize = 12.sp,
-                fontFamily = FontFamily.Monospace
+                
             )
             Spacer(Modifier.height(16.dp))
         }
 
         if (deployComplete) {
             Text(
-                text = "✓ DEPLOYED SUCCESSFULLY",
+                text = "âœ“ DEPLOYED SUCCESSFULLY",
                 color = NeonColors.NeonGreen,
                 fontSize = 14.sp,
-                fontFamily = FontFamily.Monospace,
+                
                 fontWeight = FontWeight.Bold,
                 letterSpacing = 1.sp
             )
             Spacer(Modifier.height(16.dp))
         }
 
-        // ── DEPLOY TO CLOUD — Glowing Neon Button ━━━━━━━━━━━━━━━━━━━━
+        // â”€â”€ DEPLOY TO CLOUD â€” Glowing Neon Button â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
         if (!isDeploying && !deployComplete) {
             GlowingDeployButton(onClick = onDeploy)
 
@@ -688,8 +689,8 @@ private fun DeployStepContent(
                 )
             ) {
                 Text(
-                    text = "◂ BACK TO CONFIG",
-                    fontFamily = FontFamily.Monospace,
+                    text = "â—‚ BACK TO CONFIG",
+                    
                     fontWeight = FontWeight.Bold,
                     fontSize = 12.sp,
                     letterSpacing = 1.sp
@@ -699,7 +700,7 @@ private fun DeployStepContent(
     }
 }
 
-// ─── Summary Row ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Summary Row â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun SummaryRow(label: String, value: String) {
@@ -711,19 +712,19 @@ private fun SummaryRow(label: String, value: String) {
             text = label.uppercase(),
             color = NeonColors.TextDim,
             fontSize = 11.sp,
-            fontFamily = FontFamily.Monospace
+            
         )
         Text(
             text = value,
             color = NeonColors.TextPrimary,
             fontSize = 11.sp,
-            fontFamily = FontFamily.Monospace,
+            
             fontWeight = FontWeight.Bold
         )
     }
 }
 
-// ─── Glowing Neon Deploy Button ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+// â”€â”€â”€ Glowing Neon Deploy Button â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
 @Composable
 private fun GlowingDeployButton(onClick: () -> Unit) {
@@ -784,13 +785,14 @@ private fun GlowingDeployButton(onClick: () -> Unit) {
         contentAlignment = Alignment.Center
     ) {
         Text(
-            text = "🚀  DEPLOY TO CLOUD",
+            text = "ðŸš€  DEPLOY TO CLOUD",
             color = NeonColors.NeonGreen,
             fontSize = 16.sp,
-            fontFamily = FontFamily.Monospace,
+            
             fontWeight = FontWeight.Bold,
             letterSpacing = 2.sp,
             textAlign = TextAlign.Center
         )
     }
 }
+

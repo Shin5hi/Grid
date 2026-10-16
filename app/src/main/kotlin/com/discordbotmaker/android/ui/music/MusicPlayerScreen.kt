@@ -48,7 +48,7 @@ private fun fmtTime(s: Int): String { return "%d:%02d".format(s / 60, s % 60) }
                     }
                     Spacer(Modifier.height(14.dp))
                     val prog = if (ct.durationSeconds > 0) (ps.progressSeconds.toFloat() / ct.durationSeconds).coerceIn(0f, 1f) else 0f
-                    val ap by animateFloatAsState(prog, tween(300, easing = LinearEasing), "prog")
+                    val ap by animateFloatAsState(prog, tween(300, easing = LinearEasing), label = "prog")
                     Box(Modifier.fillMaxWidth().height(6.dp).clip(RoundedCornerShape(3.dp)).background(AppColors.ProgressTrack)) { Box(Modifier.fillMaxHeight().fillMaxWidth(ap).clip(RoundedCornerShape(3.dp)).background(AppColors.Primary)) }
                     Spacer(Modifier.height(6.dp))
                     Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) { Text(fmtTime(ps.progressSeconds), color = AppColors.Primary, fontSize = 11.sp); Text(fmtTime(ct.durationSeconds), color = AppColors.TextMuted, fontSize = 11.sp) }

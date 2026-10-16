@@ -1,0 +1,467 @@
+﻿package com.discordbotmaker.android.ui.dashboard
+
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Surface
+import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
+import com.discordbotmaker.android.ui.theme.AppColors
+
+import androidx.compose.animation.AnimatedVisibilityScope
+import androidx.compose.animation.ExperimentalAnimatedVisibilityApi
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.slideInVertically
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.setValue
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.viewModelScope
+import kotlinx.coroutines.launch
+
+// Grid real: Hola Shin5hi + Resumen + Acceso rapido (mockup negro/morado).
+data class BotStatus(
+    val isOnline: Boolean = false,
+    val botName: String = "MyDiscordBot",
+    val serverCount: Int = 0,
+    val memberCount: Int = 0,
+    val uptimeFormatted: String = "-",
+    val ping: Int = 0,
+    val isLoggedIn: Boolean = false,
+    val avatarUrl: String = "",
+    val username: String = ""
+)
+
+@Composable
+fun MainDashboardScreen(
+    botStatus: BotStatus = BotStatus(),
+    onNavigateToConsole: () -> Unit = {},
+    onNavigateToAutoMod: () -> Unit = {},
+    onNavigateToCommandBuilder: () -> Unit = {},
+    onNavigateToBotCreation: () -> Unit = {},
+    onLoginWithDiscord: () -> Unit = {},
+    viewModel: DashboardViewModel = viewModel()
+) {
+    val uiState by viewModel.uiState.collectAsState()
+
+    when (uiState) {
+        is DashboardUiState.Loading -> {
+            Column(
+                modifier = Modifier.fillMaxSize().background(AppColors.Background)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier.size(38.dp).clip(RoundedCornerShape(11.dp))
+                            .background(AppColors.Primary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "G", color = AppColors.TextPrimary, fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
+                    }
+                    Spacer(Modifier.width(10.dp))
+                    Text(text = "Grid", color = AppColors.TextSecondary, fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold, fontFamily = FontFamily.SansSerif)
+                }
+                Spacer(Modifier.height(40.dp))
+                Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
+                    Text(text = "Hola, ", color = AppColors.TextPrimary, fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
+                    Text(text = "Shin5hi", color = AppColors.Primary, fontSize = 32.sp,
+                        fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
+                }
+                Spacer(Modifier.height(40.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Center
+                ) {
+                    CircularProgressIndicator(
+                        color = AppColors.Primary,
+                        strokeWidth = 4.dp
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Text(
+                        text = "Cargando tu dashboard...",
+                        color = AppColors.TextSecondary,
+                        fontSize = 14.sp,
+                        fontFamily = FontFamily.SansSerif
+                    )
+                }
+            }
+        }
+
+        is DashboardUiState.Error -> {
+            Column(
+                modifier = Modifier.fillMaxSize().background(AppColors.Background)
+            ) {
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier.size(38.dp).clip(RoundedCornerShape(11.dp))
+                            .background(AppColors.Primary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "G", color = AppColors.TextPrimary, fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
+                    }
+                    Spacer(Modifier.width(10.dp))
+                    Text(text = "Grid", color = AppColors.TextSecondary, fontSize = 18.sp,
+                        fontWeight = FontWeight.SemiBold, fontFamily = FontFamily.SansSerif)
+                }
+                Spacer(Modifier.height(40.dp))
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+                    horizontalArrangement = Arrangement.Center,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        text = "\u26A0",
+                        color = AppColors.Error,
+                        fontSize = 40.sp
+                    )
+                    Spacer(Modifier.width(12.dp))
+                    Column {
+                        Text(
+                            text = uiState.message,
+                            color = AppColors.TextPrimary,
+                            fontSize = 16.sp,
+                            fontWeight = FontWeight.SemiBold,
+                            fontFamily = FontFamily.SansSerif,
+                            textAlign = TextAlign.Center
+                        )
+                        Spacer(Modifier.height(8.dp))
+                        Text(
+                            text = "Revisa tu conexi\u00F3n e intenta de nuevo.",
+                            color = AppColors.TextSecondary,
+                            fontSize = 13.sp,
+                            fontFamily = FontFamily.SansSerif,
+                            textAlign = TextAlign.Center
+                        )
+                    }
+                }
+                Spacer(Modifier.height(24.dp))
+                Button(
+                    onClick = uiState.onRetry,
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 40.dp).height(48.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = AppColors.Primary,
+                        contentColor = Color.White
+                    ),
+                    elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
+                ) {
+                    Text(text = "Reintentar", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                }
+            }
+        }
+
+        is DashboardUiState.Content -> {
+            Column(
+                modifier = Modifier.fillMaxSize().background(AppColors.Background)
+                    .verticalScroll(rememberScrollState()).padding(bottom = 84.dp)
+            ) {
+
+                Row(
+                    modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 14.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    AnimatedVisibility(
+                        enter = fadeIn(animationSpec = tween(300)) +
+                            slideInVertically(initialOffsetY = { 20f }, animationSpec = tween(350)),
+                        modifier = Modifier.size(38.dp).clip(RoundedCornerShape(11.dp))
+                            .background(AppColors.Primary),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(text = "G", color = AppColors.TextPrimary, fontSize = 20.sp,
+                            fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
+                    }
+                    Spacer(Modifier.width(10.dp))
+                    AnimatedVisibility(
+                        enter = fadeIn(animationSpec = tween(350)) +
+                            slideInVertically(initialOffsetY = { 20f }, animationSpec = tween(400)),
+                        modifier = Modifier.padding(horizontal = 20.dp)
+                    ) {
+                        Text(text = "Grid", color = AppColors.TextSecondary, fontSize = 18.sp,
+                            fontWeight = FontWeight.SemiBold, fontFamily = FontFamily.SansSerif)
+                    }
+                }
+
+            color = AppColors.TextSecondary, fontSize = 16.sp,
+            fontFamily = FontFamily.SansSerif,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 2.dp)
+        )
+        Spacer(Modifier.height(18.dp))
+        Text(
+            text = "Que vas a crear hoy?",
+            color = AppColors.TextSecondary, fontSize = 16.sp,
+            fontFamily = FontFamily.SansSerif,
+            modifier = Modifier.padding(horizontal = 20.dp, vertical = 2.dp)
+        )
+        Spacer(Modifier.height(18.dp))
+        Text(
+            text = "RESUMEN INTELIGENTE",
+            color = AppColors.TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold,
+            fontFamily = FontFamily.SansSerif,
+            modifier = Modifier.padding(horizontal = 20.dp)
+        )
+        Spacer(Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Box(Modifier.weight(1f)) {
+                AnimatedStatCard(title = "Proyectos", value = "12", icon = "[]",
+                    iconColor = AppColors.Primary, delayMs = 0)
+            }
+            Box(Modifier.weight(1f)) {
+                AnimatedStatCard(title = "Tareas", value = "28", icon = "ok",
+                    iconColor = AppColors.Primary, delayMs = 80)
+            }
+        }
+        Spacer(Modifier.height(10.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(10.dp)
+        ) {
+            Box(Modifier.weight(1f)) {
+                AnimatedStatCard(title = "Herramientas", value = "156", icon = "+",
+                    iconColor = AppColors.SecondaryBlue, delayMs = 160)
+            }
+            Box(Modifier.weight(1f)) {
+                AnimatedStatCard(title = "Notas", value = "89", icon = "=",
+                    iconColor = AppColors.SecondaryBlue, delayMs = 240)
+            }
+        }
+        Spacer(Modifier.height(22.dp))
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.SpaceBetween,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            Text(text = "ACCESO RAPIDO", color = AppColors.TextMuted, fontSize = 11.sp,
+                fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
+            Text(text = "Ver todo", color = AppColors.Primary, fontSize = 13.sp,
+                fontWeight = FontWeight.Medium, fontFamily = FontFamily.SansSerif)
+        }
+        Spacer(Modifier.height(10.dp))
+        AnimatedQuickItem(title = "The Tree", subtitle = "Biblioteca de herramientas",
+            icon = "T", onClick = onNavigateToCommandBuilder, delayMs = 0)
+        AnimatedQuickItem(title = "Proyectos", subtitle = "Tus proyectos activos",
+            icon = "P", onClick = onNavigateToBotCreation, delayMs = 80)
+        AnimatedQuickItem(title = "Notas", subtitle = "Ideas y documentacion",
+            icon = "N", onClick = onNavigateToAutoMod, delayMs = 160)
+        AnimatedQuickItem(title = "Plantillas", subtitle = "Puntos de partida",
+            icon = "S", onClick = onNavigateToConsole, delayMs = 240)
+            }
+        }
+    }
+}
+
+@Composable
+private fun AnimatedStatCard(
+    title: String,
+    value: String,
+    icon: String,
+    iconColor: androidx.compose.ui.graphics.Color,
+    delayMs: Long
+) {
+    AnimatedVisibility(
+        enter = fadeIn(
+            animationSpec = tween(durationMillis = 400, delayMillis = delayMs)
+        ) + slideInVertically(
+            initialOffsetY = { 30f },
+            animationSpec = tween(durationMillis = 450, delayMillis = delayMs)
+        ),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        GridStatCard(title = title, value = value, icon = icon, iconColor = iconColor)
+    }
+}
+
+@Composable
+private fun AnimatedQuickItem(
+    title: String,
+    subtitle: String,
+    icon: String,
+    onClick: () -> Unit,
+    delayMs: Long
+) {
+    AnimatedVisibility(
+        enter = fadeIn(
+            animationSpec = tween(durationMillis = 400, delayMillis = delayMs)
+        ) + slideInVertically(
+            initialOffsetY = { 30f },
+            animationSpec = tween(durationMillis = 450, delayMillis = delayMs)
+        ),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        GridQuickItem(title = title, subtitle = subtitle, icon = icon, onClick = onClick)
+    }
+}
+
+@Composable
+private fun GridStatCard(
+    title: String,
+    value: String,
+    icon: String,
+    iconColor: androidx.compose.ui.graphics.Color
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
+        elevation = CardDefaults.cardElevation(0.dp)
+    ) {
+        Column(modifier = Modifier.padding(16.dp)) {
+            Text(text = title, color = AppColors.TextSecondary, fontSize = 13.sp,
+                fontFamily = FontFamily.SansSerif)
+            Spacer(Modifier.height(4.dp))
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = value, color = AppColors.TextPrimary, fontSize = 30.sp,
+                    fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif,
+                    modifier = Modifier.weight(1f))
+                Text(text = icon, color = iconColor, fontSize = 18.sp)
+            }
+        }
+    }
+}
+
+@Composable
+private fun GridQuickItem(
+    title: String,
+    subtitle: String,
+    icon: String,
+    onClick: () -> Unit
+) {
+    Card(
+        modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 5.dp)
+            .clickable { onClick() },
+        shape = RoundedCornerShape(16.dp),
+        colors = CardDefaults.cardColors(containerColor = AppColors.Surface),
+        elevation = CardDefaults.cardElevation(0.dp)
+    ) {
+        Row(modifier = Modifier.padding(14.dp), verticalAlignment = Alignment.CenterVertically) {
+            Box(
+                modifier = Modifier.size(44.dp).clip(RoundedCornerShape(12.dp))
+                    .background(AppColors.SurfaceVariant),
+                contentAlignment = Alignment.Center
+            ) {
+                Text(text = icon, color = AppColors.TextPrimary, fontSize = 18.sp)
+            }
+            Spacer(Modifier.width(12.dp))
+            Column(modifier = Modifier.weight(1f)) {
+                Text(text = title, color = AppColors.TextPrimary, fontSize = 15.sp,
+                    fontWeight = FontWeight.SemiBold, fontFamily = FontFamily.SansSerif)
+                Text(text = subtitle, color = AppColors.TextSecondary, fontSize = 12.sp,
+                    fontFamily = FontFamily.SansSerif)
+            }
+            Text(text = ">", color = AppColors.TextMuted, fontSize = 20.sp)
+        }
+    }
+}
+
+data class BottomNavItem(val route: String, val label: String, val icon: String)
+
+val bottomNavItems = listOf(
+    BottomNavItem(route = "dashboard", label = "Inicio", icon = "H"),
+    BottomNavItem(route = "bot_creation", label = "Proyectos", icon = "P"),
+    BottomNavItem(route = "tool_library", label = "The Tree", icon = "T"),
+    BottomNavItem(route = "doubt_assistant", label = "Notas", icon = "N"),
+    BottomNavItem(route = "settings", label = "Ajustes", icon = "A")
+)
+
+@Composable
+fun GridBottomNavBar(currentRoute: String, onNavigate: (String) -> Unit) {
+    Surface(
+        color = AppColors.NavBarBackground,
+        tonalElevation = 0.dp,
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier.fillMaxWidth().padding(vertical = 10.dp),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            bottomNavItems.forEach { item ->
+                val isActive = currentRoute == item.route
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.clickable { onNavigate(item.route) }
+                        .padding(horizontal = 10.dp, vertical = 2.dp)
+                ) {
+                    Text(
+                        text = item.icon,
+                        fontSize = 18.sp,
+                        color = if (isActive) AppColors.NavItemActive else AppColors.NavItemInactive
+                    )
+                    Spacer(Modifier.height(3.dp))
+                    Text(
+                        text = item.label,
+                        color = if (isActive) AppColors.NavItemActive else AppColors.NavItemInactive,
+                        fontSize = 10.sp,
+                        fontWeight = if (isActive) FontWeight.SemiBold else FontWeight.Normal,
+                        fontFamily = FontFamily.SansSerif
+                    )
+                }
+            }
+        }
+    }
+}
+
+// ═════════════════════════════════════════════════════════════════════════════════
+// Dashboard ViewModel — estado de pantalla (carga / éxito / error)
+// ═════════════════════════════════════════════════════════════════════════════════
+
+sealed class DashboardUiState {
+    object Loading : DashboardUiState()
+    data class Content(val isLoggedIn: Boolean = false) : DashboardUiState()
+    data class Error(val message: String, val onRetry: () -> Unit) : DashboardUiState()
+}
+
+class DashboardViewModel : ViewModel() {
+    private val _uiState = MutableStateFlow<DashboardUiState>(DashboardUiState.Loading)
+    val uiState: StateFlow<DashboardUiState> = _uiState.stateIn(
+        scope = viewModelScope,
+        started = kotlinx.coroutines.flow.SharingStarted.WhileSubscribed(5000),
+        initialValue = DashboardUiState.Loading
+    )
+
+    init {
+        viewModelScope.launch {
+            // Simula carga de datos del bot / backend
+            kotlinx.coroutines.delay(800)
+            _uiState.value = DashboardUiState.Content(isLoggedIn = false)
+        }
+    }
+
+    fun retry() {
+        _uiState.value = DashboardUiState.Loading
+        viewModelScope.launch {
+            kotlinx.coroutines.delay(600)
+            _uiState.value = DashboardUiState.Content(isLoggedIn = false)
+        }
+    }
+}
+
+

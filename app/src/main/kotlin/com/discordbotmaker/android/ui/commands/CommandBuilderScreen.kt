@@ -39,6 +39,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.discordbotmaker.android.ui.theme.AppColors
 import com.discordbotmaker.android.ui.theme.NeonColors
 
 // ─── Data Models ━━━━━━━━━━
@@ -75,7 +76,7 @@ fun CommandBuilderScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .background(NeonColors.Background)
+            .background(AppColors.Background)
             .verticalScroll(rememberScrollState())
     ) {
         // ── Header ━━━━━━━━━━
