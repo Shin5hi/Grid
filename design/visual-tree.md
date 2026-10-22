@@ -1,17 +1,17 @@
-# 🌳 Estructura del Árbol Visual (Tool Library)
+# 🌳 Visual Tree Structure (Tool Library)
 
-La interfaz principal de herramientas imita el árbol de canales de un servidor de Discord.
+The main tools interface mirrors the channel tree of a Discord server.
 
-## 📁 Categorías
-1. **Moderación:** AutoMod, Logs, Búnker de Seguridad.
-2. **Interacción:** Bienvenidas, Encuestas, Sorteos.
-3. **Economía:** Niveles, Rangos, Tienda.
-4. **Utilidad:** Comandos Custom, Tareas Programadas.
+## 📁 Categories
+1. **Moderation:** AutoMod, Logs, Security Vault.
+2. **Interaction:** Welcome Messages, Polls, Giveaways.
+3. **Economy:** Levels, Ranks, Store.
+4. **Utility:** Custom Commands, Scheduled Tasks.
 
-## 📋 Especificaciones Técnicas de UI
-- **Componente:** `ToolLibraryScreen.kt`.
-- **Visual:** Líneas de jerarquía verticales y horizontales dibujadas en Canvas.
-- **Iconos:**
-  - `#` para canales de texto.
-  - `🔊` para canales de audio.
-  - `🏰` o `🛡️` para el Búnker de seguridad.
+## 📋 Technical UI Specifications
+- **Component:** `ToolLibraryScreen.kt`.
+- **Visual:** vertical and horizontal hierarchy lines drawn on `Canvas`.
+- **Icons:**
+  - `#` for text channels.
+  - `🔊` for voice channels.
+  - `🏰` or `🛡️` for the Security Vault.

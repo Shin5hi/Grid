@@ -1,70 +1,65 @@
 # 🤝 Grid & Codex Collaboration Board
 
-## ⚠️ ORDEN DIRECTA: 100% FIDELIDAD VISUAL
-El jefe ha aprobado el Mockup Maestro definitivo. 
+## ⚠️ DIRECT ORDER: 100% VISUAL FIDELITY
+The boss has approved the definitive master mockup.
 
-**Codex / Sprite / Gaul:** 
-Queda prohibido cualquier cambio estético que no esté presente en `design/OFFICIAL_MOCKUP.md`. 
-- El backend debe soportar la densidad de datos mostrada (Proyectos, Tareas, Herramientas, Notas).
-- El frontend (Android) debe ser un clon de esta imagen.
+**Codex / Sprite / Gaul:**
+No aesthetic changes are allowed unless they are present in `design/OFFICIAL_MOCKUP.md`.
+- The backend must support the density of data shown (Projects, Tasks, Tools, Notes).
+- The frontend (Android) must be a clone of this image.
 
-¡A trabajar! 🚀
+Time to work! 🚀
 
 ---
 
 ## Migration Status
 
-La migración del frontend Android está en curso. Estado actual:
+The Android frontend migration is in progress. Current status:
 
-- **pending / waiting**: la pantalla de Billing sigue pendiente de implementación (placeholder).
-- Permisos por organización (org permissions): cada servidor pertenece a una organización y sus
-  permisos se resuelven por rol. Pendiente conectar el backend de permisos por org.
-- Fork personal del autor: `Shin5hi/discord-bot-maker-android`.
+- **pending / waiting**: the Billing screen remains pending implementation (placeholder).
+- Organization permissions (org permissions): each server belongs to an organization and its permissions are resolved by role. The backend connection for org-based permissions is still pending.
+- Personal fork of the author: `Shin5hi/discord-bot-maker-android`.
 
 ## Server Tree View
 
-La pantalla de herramientas usa un **Tree View** jerárquico tipo servidor de Discord:
+The tools screen uses a Discord-style hierarchical **Tree View**:
 
-- Categorías colapsables (compact / high-density) con ramas (branch lines) dibujadas mediante
-  `Canvas` + `drawLine` para conectar padres e hijos.
-- Tipos de datos `TreeChannel` y `TreeCategory` en `ui/library/ToolLibraryScreen.kt`.
-- Layout de alta densidad (high-density) para que quepan muchos canales por pantalla.
+- Collapsible categories (compact / high-density) with branch lines drawn via `Canvas` + `drawLine` to connect parents and children.
+- Data types `TreeChannel` and `TreeCategory` in `ui/library/ToolLibraryScreen.kt`.
+- High-density layout so many channels can fit on screen.
 
-## Asistente Orión (OrionBubble FAB)
+## Orion Assistant (OrionBubble FAB)
 
-- `ui/components/OrionBubble.kt`: botón flotante (FAB) arrastrable (`pointerInput` +
-  `detectDragGestures`) con antenas, ojos y animación de pulso (`rememberInfiniteTransition`).
-- Integrado en el `Scaffold` de `ui/navigation/AppNavigation.kt`; navega al Asistente Orión
-  (`DoubtAssistantScreen`).
-- Se oculta en la ruta `SPLASH` (y en la propia pantalla de Orión) vía el set `hideOrionRoutes`
-  y la bandera `showOrionBubble`.
+- `ui/components/OrionBubble.kt`: draggable floating action button (`pointerInput` + `detectDragGestures`) with antennas, eyes, and pulse animation (`rememberInfiniteTransition`).
+- Integrated into the `Scaffold` in `ui/navigation/AppNavigation.kt`; it navigates to the Orion Assistant (`DoubtAssistantScreen`).
+- Hidden on the `SPLASH` route (and on the Orion screen itself) via the `hideOrionRoutes` set and the `showOrionBubble` flag.
 
 ## Stats Dashboard Module
 
-Módulo de métricas del bot.
+Bot metrics module.
 
-- **Archivo (ownership, estado Active):** `ui/StatsDashboardScreen.kt`
-- **Ruta:** `stats_dashboard`
-- **Modelos:** `BotStats`, `ActivityDataPoint`
-- **Componentes:** `StatsCardGrid` / `StatCard`, `ActivityChart`
-- Cumple la dirección de arte: tarjetas planas con elevación `0.dp` y esquinas `8.dp`.
+- **File (ownership, status Active):** `ui/StatsDashboardScreen.kt`
+- **Path:** `stats_dashboard`
+- **Models:** `BotStats`, `ActivityDataPoint`
+- **Components:** `StatsCardGrid` / `StatCard`, `ActivityChart`
+- Follows the art direction: flat cards with elevation `0.dp` and corners `8.dp`.
 
 ## Art Direction
 
-- Blurple primario: `#5865F2`
-- Fondo charcoal: `#313338`
-- Superficie: `#2B2D31`
-- Tarjetas planas: elevación `0.dp`, esquinas `8.dp`.
+- Primary Blurple: `#5865F2`
+- Charcoal background: `#313338`
+- Surface: `#2B2D31`
+- Flat cards: elevation `0.dp`, corners `8.dp`.
 
 ## Conventions
 
-- Todos los colores se referencian vía `AppColors.*`; nunca colores hexadecimales inline en pantallas.
-- Tipografía por defecto de Material (nada de `FontFamily.Monospace`).
-- Código Kotlin en el source set `app/src/main/kotlin/...` con un paquete por pantalla.
+- All colors are referenced via `AppColors.*`; never use inline hex colors on screens.
+- Default Material typography (nothing like `FontFamily.Monospace`).
+- Kotlin code in the source set `app/src/main/kotlin/...` with one package per screen.
 
 ## File Ownership
 
-| Archivo | Owner | Estado |
+| File | Owner | Status |
 |---|---|---|
 | `app/src/main/kotlin/.../ui/theme/AppTheme.kt` | Codex | Active |
 | `app/src/main/kotlin/.../ui/theme/NeonColors.kt` | Codex | Active |

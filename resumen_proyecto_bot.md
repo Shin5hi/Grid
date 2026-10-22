@@ -1,14 +1,14 @@
-# 🤖 Resumen del Proyecto: Grid - Discord Bot Maker
+# 🤖 Project Summary: Grid - Discord Bot Maker
 
-## 📌 Visión
-"Crea, Organiza, Avanza." 
-La plataforma definitiva para gestionar bots de Discord desde Android con una experiencia visual premium.
+## 📌 Vision
+"Create, Organize, Advance."
+This is the definitive platform for managing Discord bots from Android with a premium visual experience.
 
-## 👥 Equipo
-- **Gaul (Arquitecto):** Orquestación y UI.
-- **Donna (Diseño):** Identidad visual finalizada.
-- **Codex (Backend):** Programación pesada.
-- **Sprite (IA):** Lógica de Orión.
+## 👥 Team
+- **Gaul (Architect):** orchestration and UI.
+- **Donna (Design):** final visual identity.
+- **Codex (Backend):** heavy programming.
+- **Sprite (AI):** Orion logic.
 
 ---
-*Nota: Branding oficial establecido según el mockup 'Grid Premium'.*
+*Note: official branding established according to the 'Grid Premium' mockup.*
