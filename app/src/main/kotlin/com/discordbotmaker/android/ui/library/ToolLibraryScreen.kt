@@ -1,4 +1,4 @@
-﻿package com.discordbotmaker.android.ui.library
+package com.discordbotmaker.android.ui.library
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -28,13 +28,13 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.discordbotmaker.android.ui.theme.AppColors
 
-// â”€â”€â”€ Tool Library â€” High-Density Server Tree View â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Tool Library — High-Density Server Tree View ──────────────────────────
 //
 // Discord-style collapsible tree: UPPERCASE category headers with branch lines
-// (drawn on a Canvas), kebab-case channel rows, a compact 30dp row height, and
-// a Featured "Asistente OriÃ³n" banner. No Monospace anywhere â€” uses SansSerif.
+// (drawn on a Canvas), kebab-case channel rows, a compact 30dp row height,
+// and a Featured "Orion Assistant" banner. No monospace anywhere — uses SansSerif.
 //
-// â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─────────────────────────────────────────────────────────────────────────────
 
 enum class ChannelType { TEXT, VOICE, ANNOUNCEMENT, STAGE }
 
@@ -46,9 +46,9 @@ private val sansSerif = FontFamily.SansSerif
 
 private fun iconForType(type: ChannelType): String = when (type) {
     ChannelType.TEXT -> "#"
-    ChannelType.VOICE -> "ðŸ”Š"
-    ChannelType.ANNOUNCEMENT -> "ðŸ“¢"
-    ChannelType.STAGE -> "ðŸ“¡"
+    ChannelType.VOICE -> "🔊"
+    ChannelType.ANNOUNCEMENT -> "📣"
+    ChannelType.STAGE -> "🎙️"
 }
 
 private val categories = listOf(
@@ -145,7 +145,7 @@ fun ToolLibraryScreen(
 
         Spacer(Modifier.height(8.dp))
 
-        FeaturedOrionBanner(onClick = { onToolSelected("Asistente OriÃ³n") })
+        FeaturedOrionBanner(onClick = { onToolSelected("Orion Assistant") })
 
         Spacer(Modifier.height(8.dp))
 
@@ -183,7 +183,7 @@ private fun filterCategories(
     }
 }
 
-// â”€â”€â”€ Header with Grid brand mark â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Header with Grid brand mark ─────────────────────────────────────────────
 
 @Composable
 private fun TreeHeader() {
@@ -229,7 +229,7 @@ private fun TreeHeader() {
     }
 }
 
-// â”€â”€â”€ Search bar â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Search bar ──────────────────────────────────────────────────────────────
 
 @Composable
 private fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
@@ -264,7 +264,7 @@ private fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
     }
 }
 
-// â”€â”€â”€ Featured "Asistente OriÃ³n" compact banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Featured "Orion Assistant" compact banner ─────────────────────────────
 
 @Composable
 private fun FeaturedOrionBanner(onClick: () -> Unit) {
@@ -278,10 +278,10 @@ private fun FeaturedOrionBanner(onClick: () -> Unit) {
             .padding(horizontal = 12.dp, vertical = 10.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Text(text = "ðŸ“¡", fontSize = 16.sp)
+        Text(text = "📣", fontSize = 16.sp)
         Spacer(Modifier.width(10.dp))
         Text(
-            text = "Asistente OriÃ³n",
+            text = "Orion Assistant",
             color = AppColors.TextPrimary,
             fontSize = 14.sp,
             fontWeight = FontWeight.SemiBold,
@@ -299,7 +299,7 @@ private fun FeaturedOrionBanner(onClick: () -> Unit) {
             )
         }
         Spacer(Modifier.width(8.dp))
-        Text(text = "\u203A", color = AppColors.TextMuted, fontSize = 16.sp)
+        Text(text = "›", color = AppColors.TextMuted, fontSize = 16.sp)
     }
 }
 
@@ -344,7 +344,7 @@ private fun TreeCategorySection(
                 label = "chevronRotation"
             )
             Text(
-                text = "â€º",
+                text = "›",
                 color = AppColors.TextMuted,
                 fontSize = 16.sp,
                 fontFamily = sansSerif,
@@ -367,7 +367,7 @@ private fun TreeCategorySection(
     }
 }
 
-// â”€â”€â”€ Channel row with a Canvas-drawn branch line â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// ─── Channel row with a Canvas-drawn branch line ─────────────────────────────
 
 @Composable
 private fun ChannelRow(
@@ -449,4 +449,3 @@ private fun CountChip(count: Int) {
         Text(text = count.toString(), color = AppColors.TextSecondary, fontSize = 10.sp, fontWeight = FontWeight.Medium, fontFamily = sansSerif, modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp))
     }
 }
-
