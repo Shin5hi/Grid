@@ -1,18 +1,40 @@
 <div align="center">
 
-# Discord Bot Maker for Android
+# Grid
+## Discord Bot Maker for Android
 
-**Build, deploy, and manage Discord bots — straight from your phone.**
+**Build, deploy, and manage Discord bots — from your phone.**
 
 </div>
 
 ---
 
+## Overview
+
+Grid is a modern Android app for creating, testing, and managing Discord bots directly from a mobile device. Built with Kotlin and Jetpack Compose, Grid brings together bot creation, deployment, monitoring, and automation in a clean, premium mobile-first experience.
+
+The product is designed to remove the friction of desktop-only bot management, giving creators a polished and efficient workflow from their phone.
+
+---
+
 ## Mission
 
-Discord Bot Maker for Android eliminates the need for a desktop setup to build and manage Discord bots. Full control over your bot's behavior, moderation rules, and real-time logs right from your Android device.
+Grid exists to make Discord bot development accessible, fast, and elegant.
 
-Bot development should be **accessible, mobile-first, and professionally polished**.
+By combining a streamlined Android interface with backend orchestration and real-time status updates, Grid enables users to:
+- build and manage bots from mobile
+- monitor logs and performance in real time
+- configure moderation and automation tools
+- deploy changes quickly
+- operate a bot ecosystem from a single app
+
+---
+
+## Why Grid
+
+Discord bot development is powerful, but often fragmented across desktop tools, APIs, and manual workflows. Grid brings that experience into one mobile-first platform with a premium design language and a practical user flow.
+
+It is built for creators, communities, and developers who want clarity, control, and speed without sacrificing quality.
 
 ---
 
@@ -20,92 +42,41 @@ Bot development should be **accessible, mobile-first, and professionally polishe
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **Frontend** | Kotlin Multiplatform + Jetpack Compose | Cross-platform UI with a clean, professional dark theme |
-| **Backend** | FastAPI (Python) | REST + WebSocket API for bot orchestration |
-| **Cache / PubSub** | Redis 7.4 | Real-time log streaming, session state, rate limiting |
-| **AI Moderation** | Google Gemini API | Toxicity detection for AutoMod filters |
-| **Bot Runtime** | discord.py / Pycord | Discord gateway connection and event handling |
+| **Frontend** | Kotlin + Jetpack Compose | Modern Android interface |
+| **Backend** | FastAPI (Python) | API and orchestration layer |
+| **Realtime** | WebSockets | Log streaming and status updates |
+| **State / Cache** | Redis | Event handling and runtime state |
+| **AI Moderation** | Google Gemini API | Content moderation and filtering |
+| **Bot Runtime** | discord.py / Pycord | Discord bot execution |
 
 ---
 
-## Key Features
+## Core Features
 
-- **Live Console** — Real-time terminal that streams bot logs over WebSocket.
-- **AI AutoMod** — Configure AI-powered toxicity filtering, link blocking, and spam protection.
-- **Instant Deploy** — Push bot configuration changes from your phone.
-- **WebSocket Streaming** — Low-latency bidirectional communication via Redis Pub/Sub.
-- **Professional Dark UI** — Clean, minimalist Material Design 3 dark theme with a professional SaaS aesthetic.
-- **Music Player** — Stream music to Discord voice channels with playback controls and queue management.
-- **Custom Command Builder** — Create and manage custom bot commands visually.
+- **Bot dashboard** — real-time overview of bot status and activity
+- **Live console** — monitor logs and runtime events as they happen
+- **Command builder** — design and manage bot commands visually
+- **AI AutoMod** — moderation tools and content filtering
+- **Deploy workflow** — push updates and configuration directly from the app
+- **Music controls** — manage playback and audio-related bot actions
+- **Statistics** — track bot usage and operational metrics
+- **Premium dark UI** — modern Android experience built for mobile
 
 ---
 
 ## Project Structure
 
-```
-discord-bot-maker-android/
+```text
+Grid/
 ├── README.md
-├── COORDINATION.md              # Art direction & file ownership
-├── ui/
-│   ├── AppTheme.kt             # Material 3 theme, colors, typography
-│   ├── MainDashboardScreen.kt  # Landing hub with bot status & module grid
-│   └── AppNavigation.kt        # Compose Navigation graph
-├── LiveConsoleScreen.kt
-├── AutoModScreen.kt
-├── BotCreationScreen.kt
-├── CommandBuilderScreen.kt
-├── MusicPlayerScreen.kt
-├── backend_api.py
-└── test_backend_api.py
-```
-
----
-
-## Getting Started
-
-See COORDINATION.md for art direction and development conventions.
-
-### Prerequisites
-
-- Android Studio Hedgehog (2024.1) or later
-- Python 3.11+
-- Redis 7.x running locally or via Docker
-- A Discord Bot Token ([Discord Developer Portal](https://discord.com/developers/applications))
-- Google Gemini API Key (for AI moderation)
-
-### Backend Setup
-
-```bash
-# Clone the repo
-git clone https://github.com/BMA/discord-bot-maker-android.git
-cd discord-bot-maker-android/backend
-
-# Create virtual environment
-python -m venv .venv && source .venv/bin/activate
-
-# Install dependencies
-pip install fastapi uvicorn redis aioredis websockets pydantic
-
-# Start Redis (Docker)
-docker run -d --name redis-dbm -p 6379:6379 redis:7.4-alpine
-
-# Run the backend
-uvicorn backend_api:app --host 0.0.0.0 --port 8000 --reload
-```
-
-### Android App
-
-1. Open the project root in Android Studio.
-2. Sync Gradle and let dependencies resolve.
-3. Update `local.properties` with your backend URL:
-   ```properties
-   BACKEND_WS_URL=ws://YOUR_SERVER_IP:8000/ws/logs
-   BACKEND_API_URL=http://YOUR_SERVER_IP:8000
-   ```
-4. Build and run on your device or emulator.
-
----
-
-## License
-
-MIT License
+├── app/
+├── backend/
+├── gradlew
+├── gradlew.bat
+├── settings.gradle.kts
+├── build.gradle.kts
+├── gradle.properties
+├── .gitignore
+├── ESTRUCTURA_OFICIAL.md
+├── COORDINATION.md
+└── ...
