@@ -58,9 +58,9 @@ who want speed, clarity, and control without sacrificing quality.
 
 | Layer | Technology | Purpose |
 |-------|-----------|---------|
-| **📱 Frontend** | Kotlin + Jetpack Compose | Modern Android UI |
+| **📱 Frontend** | Kotlin + Jetpack Compose | Modern Android interface |
 | **⚙️ Backend** | FastAPI (Python) | API and orchestration layer |
-| **🔄 Realtime** | WebSockets | Log streaming and event updates |
+| **🔄 Realtime** | WebSockets | Log streaming and status updates |
 | **🗄️ Cache / State** | Redis | Runtime state and event handling |
 | **🧠 AI Moderation** | Google Gemini API | Content moderation and filtering |
 | **🤖 Bot Runtime** | discord.py / Pycord | Discord bot execution |
@@ -91,22 +91,6 @@ Grid is built as a multi-layer system designed to keep the experience smooth whi
 - **🧠 AI layer** → Gemini-powered moderation and filtering
 
 This structure keeps the app lightweight while still supporting real-time workflows and scalable bot operations.
-
----
-
-## 📸 Screenshots
-
-<div align="center">
-
-<img src="https://via.placeholder.com/1200x700.png?text=Grid+App+Preview" width="900" />
-
-<img src="https://via.placeholder.com/1200x700.png?text=Bot+Dashboard" width="900" />
-
-<img src="https://via.placeholder.com/1200x700.png?text=Live+Console" width="900" />
-
-</div>
-
-> Replace the placeholder previews with your real app screenshots for a production-ready README.
 
 ---
 
