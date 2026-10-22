@@ -17,7 +17,7 @@ Time to work! 🚀
 The Android frontend migration is in progress. Current status:
 
 - **pending / waiting**: the Billing screen remains pending implementation (placeholder).
-- Organization permissions (org permissions): each server belongs to an organization and its permissions are resolved by role. Pending connection of the org-level backend permissions.
+- Organization permissions (org permissions): each server belongs to an organization and its permissions are resolved by role. The backend connection for org-based permissions is still pending.
 - Personal fork of the author: `Shin5hi/discord-bot-maker-android`.
 
 ## Server Tree View
@@ -53,7 +53,7 @@ Bot metrics module.
 
 ## Conventions
 
-- All colors are referenced via `AppColors.*`; never inline hex colors on screens.
+- All colors are referenced via `AppColors.*`; never use inline hex colors on screens.
 - Default Material typography (nothing like `FontFamily.Monospace`).
 - Kotlin code in the source set `app/src/main/kotlin/...` with one package per screen.
 

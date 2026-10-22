@@ -40,7 +40,7 @@ The repository contains **~60 KB of duplicated/outdated code** and structural ar
 TOTAL TO REMOVE: ~67 KB
 ```
 
-**Reason**: They were created to validate PR changes, not formal unit tests.
+**Reason**: these were created to validate PR changes, not formal unit tests.
 
 ### 3. Outdated Documentation
 ```
@@ -78,7 +78,7 @@ ui/BillingScreen.kt (26 bytes - EMPTY)
 
 ### 5. Backend API - Technical Debt
 
-**Line 240 - Truncated string:**
+**Line 240 - truncated string:**
 ```python
 message=f"Deployment initiated for '{request.bot_name}'. Provisioning cloud resources i[...]"
 ```
@@ -143,7 +143,7 @@ mkdir -p app/src/main/kotlin/com/discordbotmaker/android/ui/{
 # (only if there are no important duplicates)
 ```
 
-**Note**: This requires manual verification because some `.kt` files at the root may contain changes not reflected in `ui/`.
+**Note**: this requires manual verification because some `.kt` files at the root may contain changes not reflected in `ui/`.
 
 ### PHASE 3: Fix Backend (30 min)
 
@@ -169,7 +169,7 @@ except Exception as e:
 ### PHASE 4: Update Documentation (20 min)
 
 - [ ] Rewrite `README.md` - update paths to the canonical structure
-- [ ] Update `ESTRUCTURA_OFICIAL.md` - mark items as completed
+- [ ] Update `ESTRUCTURA_OFICIAL.md` - mark completed items
 - [ ] Create `MIGRATION_GUIDE.md` - explain what was cleaned and why
 - [ ] Close obsolete PRs (#3, #4, #5) if they are cleanup-related
 
@@ -199,7 +199,7 @@ Build success:   95% (only real screen integration remains)
 
 1. ✅ **This week**: Run PHASE 1 + PHASE 2 + PHASE 3
 2. **Next week**: Phase 4 + resolve pending PRs
-3. **Final goal**: A compilable and deployable app for the Play Store
+3. **Final goal**: a compilable and deployable app for the Play Store
 
 ---
 

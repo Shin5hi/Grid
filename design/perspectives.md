@@ -8,11 +8,11 @@ Reflects the sobriety and contrast of Blurple against the Charcoal background.
 
 ## 🔍 Tree Detail (Tree View)
 [Angular close-up](https://static.prod-images.emergentagent.com/jobs/85fd1fa5-923c-402f-b2c2-f78866b3e4b5/images/a38aad3ec0b262721405ec9c128266252bda9eba7de464b4fbe6ff920f28f327.png)
-Shows the precision of hierarchy lines and the Inter/Roboto typography.
+Shows the precision of the hierarchy lines and the Inter/Roboto typography.
 
 ## ☕ Lifestyle View
 [Real use in hand](https://static.prod-images.emergentagent.com/jobs/85fd1fa5-923c-402f-b2c2-f78866b3e4b5/images/a5e07ff041d34a0e4b67a82177d40e1a2a35025e5f66e46884a4b22ce5afa3e7.png)
 Reference for interacting with the floating **Orion** bubble.
 
---- 
+---
 *Note: These assets will be used for the technical sheet in the Play Store.*

@@ -8,7 +8,7 @@
 
 This is an Android project that is **100% designed** but **50% implemented**.
 
-**Official Mockup**: https://customer-assets.emergentagent.com/wingman/85fd1fa5-923c-402f-b2c2-f78866b3e4b5/attachments/5c703d3ae1ea419b82c37f9ef848a102_photo.jpg
+**Official mockup**: https://customer-assets.emergentagent.com/wingman/85fd1fa5-923c-402f-b2c2-f78866b3e4b5/attachments/5c703d3ae1ea419b82c37f9ef848a102_photo.jpg
 
 ---
 
@@ -33,14 +33,14 @@ MainDashboardScreen (central hub - "Hello, Shin5hi")
         ├─ LiveConsoleScreen
         └─ MusicPlayerScreen
 
-    + ToolLibraryScreen (Right sidebar / split view)
+    + ToolLibraryScreen (right sidebar / split view)
         ├─ ORGANIZE (AutoMod, Logs, Security)
         ├─ CREATE (Welcome, Polls, Giveaways)
         ├─ AUTOMATE (Levels, Ranks, Shop)
         └─ DEVELOP (Custom Commands, Tasks)
 
 DoubtAssistantScreen (Orion Assistant - modal/push)
-StatsDashboardScreen (Statistics - new)
+StatsDashboardScreen (statistics - new)
 ```
 
 ---
@@ -114,7 +114,7 @@ object AppColors {
 - **Diameter**: 140dp (around 96dp logo)
 - **Stroke**: 3dp, round cap, Blurple with opacity sweep
 - **Speed**: 1400ms per revolution (linear)
-- **Glow**: Alpha oscillates 25%-60% at half rotation period
+- **Glow**: alpha oscillates 25%-60% at half rotation period
 
 ### **Slogan**
 ```
@@ -176,7 +176,7 @@ discord-bot-maker-android/
 │   │   │   └── components/
 │   │   │       ├── OrionBubble.kt
 │   │   │       ├── GridBottomNavBar.kt
-│   │   │       └── Common composables
+│   │   │       └── common composables
 │   │   │
 │   │   └── models/
 │   │       ├── BotCommand.kt
@@ -254,7 +254,7 @@ discord-bot-maker-android/
 **Correct flow:**
 ```
 MainActivity.kt
-  → AppNavGraph() 
+  → AppNavGraph()
     → startDestination = SplashScreen
       → (2-3s delay)
       → OriginLoadingScreen (animated logo)
@@ -295,7 +295,7 @@ MainActivity.kt
 ### **PHASE 3: Integration (1 hour)**
 1. Connect `MainActivity.kt` → `AppNavGraph()`
 2. Run `./gradlew :app:assembleDebug`
-3. Test on emulator
+3. Test on an emulator
 
 ### **PHASE 4: Refinement (2-3 hours)**
 1. Visual details matching the mockup
