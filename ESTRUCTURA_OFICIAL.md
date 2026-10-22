@@ -1,46 +1,46 @@
-# 📐 ESTRUCTURA OFICIAL DEL PROYECTO - Grid Discord Bot Maker
+# 📐 OFFICIAL PROJECT STRUCTURE - Grid Discord Bot Maker
 
-**Basado en**: `design/OFFICIAL_MOCKUP.md` + `design/branding.md` + `design/visual-tree.md`
-
----
-
-## 🎯 VISIÓN GENERAL
-
-Este es un proyecto Android **100% completamente diseñado** pero **50% implementado**.
-
-**Mockup Oficial**: https://customer-assets.emergentagent.com/wingman/85fd1fa5-923c-402f-b2c2-f78866b3e4b5/attachments/5c703d3ae1ea419b82c37f9ef848a102_photo.jpg
+**Based on**: `design/OFFICIAL_MOCKUP.md` + `design/branding.md` + `design/visual-tree.md`
 
 ---
 
-## 🏗️ ARQUITECTURA OFICIAL REQUERIDA
+## 🎯 OVERVIEW
 
-### **FLUJO DE NAVEGACIÓN CORRECTO**
+This is an Android project that is **100% designed** but **50% implemented**.
+
+**Official mockup**: https://customer-assets.emergentagent.com/wingman/85fd1fa5-923c-402f-b2c2-f78866b3e4b5/attachments/5c703d3ae1ea419b82c37f9ef848a102_photo.jpg
+
+---
+
+## 🏗️ REQUIRED OFFICIAL ARCHITECTURE
+
+### **Correct Navigation Flow**
 
 ```
-SplashScreen (2-3 seg)
+SplashScreen (2-3 sec)
     ↓
 OriginLoadingScreen (Grid Origin animated logo)
     ↓
-MainDashboardScreen (Hub central - "Hola, Shin5hi")
-    ├─→ Proyectos (Counter)
-    ├─→ Tareas (Counter)
-    ├─→ Herramientas (Counter)
-    ├─→ Notas (Counter)
-    └─→ Accesos Rápidos:
+MainDashboardScreen (central hub - "Hello, Shin5hi")
+    ├─→ Projects (Counter)
+    ├─→ Tasks (Counter)
+    ├─→ Tools (Counter)
+    ├─→ Notes (Counter)
+    └─→ Quick actions:
         ├─ CommandBuilderScreen
         ├─ AutoModScreen
         ├─ BotCreationScreen
         ├─ LiveConsoleScreen
         └─ MusicPlayerScreen
-    
-    + ToolLibraryScreen (Right Sidebar / Split view)
+
+    + ToolLibraryScreen (right sidebar / split view)
         ├─ ORGANIZE (AutoMod, Logs, Security)
         ├─ CREATE (Welcome, Polls, Giveaways)
         ├─ AUTOMATE (Levels, Ranks, Shop)
         └─ DEVELOP (Custom Commands, Tasks)
 
-DoubtAssistantScreen (Asistente Orión - Modal/Push)
-StatsDashboardScreen (Estadísticas - New)
+DoubtAssistantScreen (Orion Assistant - modal/push)
+StatsDashboardScreen (statistics - new)
 ```
 
 ---
@@ -56,17 +56,17 @@ object AppColors {
     Surface          = #2B2D31  // Cards
     SurfaceVariant   = #232428  // Elevated
     InputBackground  = #1E1F22  // Console/Inputs
-    
+
     // PRIMARY ACCENT
     Primary          = #5865F2  // Blurple (Grid Brand Color)
     PrimaryLight     = #7984F5
     PrimaryDim       = #4752C4
-    
+
     // Semantic
     Success          = #23A559
     Error            = #F23F43
     Warning          = #FAA81A
-    
+
     // Text Hierarchy
     TextPrimary      = #FFFFFF
     TextSecondary    = #B5BAC1
@@ -83,22 +83,22 @@ object AppColors {
 
 ---
 
-## 📱 SCREENS REQUERIDAS (CANONICAL PATHS)
+## 📱 REQUIRED SCREENS (CANONICAL PATHS)
 
 | Screen | Path | Status | Notes |
 |--------|------|--------|-------|
-| **SplashScreen** | `ui/splash/SplashScreen.kt` | ❌ FALTA | 2-3 seg entry point |
-| **OriginLoadingScreen** | `ui/splash/OriginLoadingScreen.kt` | ⚠️ Existe en `ui/` | Grid Origin animated logo + slogan "Crea, Organiza, Avanza." |
-| **MainDashboardScreen** | `ui/dashboard/MainDashboardScreen.kt` | ❌ FALTA | Hub central con contadores |
-| **ToolLibraryScreen** | `ui/library/ToolLibraryScreen.kt` | ⚠️ Existe en `ui/` | Tree view con hierarchy lines |
-| **CommandBuilderScreen** | `app/src/.../ui/commands/CommandBuilderScreen.kt` | ✅ Existe | Funcional |
-| **AutoModScreen** | `app/src/.../ui/automod/AutoModScreen.kt` | ✅ Existe | Funcional |
-| **BotCreationScreen** | `app/src/.../ui/launch/BotCreationScreen.kt` | ✅ Existe | Funcional |
-| **LiveConsoleScreen** | `app/src/.../ui/console/LiveConsoleScreen.kt` | ✅ Existe | Funcional |
-| **MusicPlayerScreen** | Existe en root | ⚠️ Parcial | Necesita integración |
-| **DoubtAssistantScreen** | `ui/DoubtAssistantScreen.kt` | ✅ Existe | Asistente Orión |
-| **StatsDashboardScreen** | ❌ FALTA | ❌ NO EXISTE | Stats/Analytics module |
-| **SettingsScreen** | ❌ FALTA | ❌ NO EXISTE | Settings placeholder |
+| **SplashScreen** | `ui/splash/SplashScreen.kt` | ❌ Missing | 2-3 sec entry point |
+| **OriginLoadingScreen** | `ui/splash/OriginLoadingScreen.kt` | ⚠️ Exists under `ui/` | Grid Origin animated logo + slogan "Create, Organize, Move Forward." |
+| **MainDashboardScreen** | `ui/dashboard/MainDashboardScreen.kt` | ❌ Missing | Central hub with counters |
+| **ToolLibraryScreen** | `ui/library/ToolLibraryScreen.kt` | ⚠️ Exists under `ui/` | Tree view with hierarchy lines |
+| **CommandBuilderScreen** | `app/src/.../ui/commands/CommandBuilderScreen.kt` | ✅ Exists | Functional |
+| **AutoModScreen** | `app/src/.../ui/automod/AutoModScreen.kt` | ✅ Exists | Functional |
+| **BotCreationScreen** | `app/src/.../ui/launch/BotCreationScreen.kt` | ✅ Exists | Functional |
+| **LiveConsoleScreen** | `app/src/.../ui/console/LiveConsoleScreen.kt` | ✅ Exists | Functional |
+| **MusicPlayerScreen** | Exists at root | ⚠️ Partial | Needs integration |
+| **DoubtAssistantScreen** | `ui/DoubtAssistantScreen.kt` | ✅ Exists | Orion Assistant |
+| **StatsDashboardScreen** | ❌ Missing | ❌ Does not exist | Stats/Analytics module |
+| **SettingsScreen** | ❌ Missing | ❌ Does not exist | Settings placeholder |
 
 ---
 
@@ -114,18 +114,18 @@ object AppColors {
 - **Diameter**: 140dp (around 96dp logo)
 - **Stroke**: 3dp, round cap, Blurple with opacity sweep
 - **Speed**: 1400ms per revolution (linear)
-- **Glow**: Alpha oscillates 25%-60% at half rotation period
+- **Glow**: alpha oscillates 25%-60% at half rotation period
 
 ### **Slogan**
 ```
-"Crea, Organiza, Avanza."
+"Create, Organize, Advance."
 ```
 - **Font**: 14sp, SansSerif, Normal
 - **Color**: TextSecondary `#B5BAC1`
 
 ---
 
-## 📂 ESTRUCTURA DE DIRECTORIOS (CORRECTA)
+## 📂 DIRECTORY STRUCTURE (CORRECT)
 
 ```
 discord-bot-maker-android/
@@ -134,12 +134,12 @@ discord-bot-maker-android/
 │   │   ├── MainActivity.kt
 │   │   ├── ui/
 │   │   │   ├── theme/
-│   │   │   │   ├── AppTheme.kt ✅ (existe)
-│   │   │   │   ├── AppColors.kt (opcional - está en AppTheme)
-│   │   │   │   └── Typography.kt (opcional)
+│   │   │   │   ├── AppTheme.kt ✅ (exists)
+│   │   │   │   ├── AppColors.kt (optional - already in AppTheme)
+│   │   │   │   └── Typography.kt (optional)
 │   │   │   │
 │   │   │   ├── navigation/
-│   │   │   │   └── AppNavGraph.kt ✅ (ESTA es la oficial)
+│   │   │   │   └── AppNavGraph.kt ✅ (this is the official one)
 │   │   │   │
 │   │   │   ├── splash/
 │   │   │   │   ├── SplashScreen.kt ❌
@@ -176,7 +176,7 @@ discord-bot-maker-android/
 │   │   │   └── components/
 │   │   │       ├── OrionBubble.kt
 │   │   │       ├── GridBottomNavBar.kt
-│   │   │       └── Common composables
+│   │   │       └── common composables
 │   │   │
 │   │   └── models/
 │   │       ├── BotCommand.kt
@@ -194,14 +194,14 @@ discord-bot-maker-android/
 │           └── ic_launcher_foreground.xml ✅
 │
 ├── backend/
-│   └── backend_api.py ✅ (FastAPI completo)
+│   └── backend_api.py ✅ (complete FastAPI)
 │
 ├── design/
-│   ├── OFFICIAL_MOCKUP.md ✅ (Imagen+Directivas)
+│   ├── OFFICIAL_MOCKUP.md ✅ (image + guidelines)
 │   ├── OFFICIAL_BRANDING.md ✅
-│   ├── branding.md ✅ (Logo spec)
-│   ├── visual-tree.md ✅ (Tree structure)
-│   └── perspectives.md ✅ (HiFi refs)
+│   ├── branding.md ✅ (logo spec)
+│   ├── visual-tree.md ✅ (tree structure)
+│   └── perspectives.md ✅ (HiFi references)
 │
 ├── build.gradle.kts ✅
 ├── app/build.gradle.kts ✅
@@ -210,51 +210,51 @@ discord-bot-maker-android/
 
 ---
 
-## ✅ STATUS POR COMPONENTE
+## ✅ STATUS BY COMPONENT
 
-| Área | Completitud | Prioridad | Bloqueador |
+| Area | Completion | Priority | Blocker |
 |------|-------------|-----------|-----------|
 | **Backend API** | 100% ✅ | — | NO |
 | **Build System** | 100% ✅ | — | NO |
 | **Theme (AppTheme.kt)** | 100% ✅ | — | NO |
-| **Navigation** | 50% ⚠️ | HIGH | **SÍ - Duplicada** |
-| **Logo/Branding** | 80% ⚠️ | MEDIUM | Espera navegación |
-| **Dashboard** | 10% ⚠️ | HIGH | **SÍ - No existe** |
-| **Tree View** | 30% ⚠️ | HIGH | **SÍ - Incompleta** |
-| **Screens (5)** | 60% ⚠️ | MEDIUM | Espera Nav |
-| **Resources** | 20% ❌ | MEDIUM | **SÍ - Faltan XML** |
+| **Navigation** | 50% ⚠️ | HIGH | **YES - duplicated** |
+| **Logo/Branding** | 80% ⚠️ | MEDIUM | waits for navigation |
+| **Dashboard** | 10% ⚠️ | HIGH | **YES - missing** |
+| **Tree View** | 30% ⚠️ | HIGH | **YES - incomplete** |
+| **Screens (5)** | 60% ⚠️ | MEDIUM | waits for navigation |
+| **Resources** | 20% ❌ | MEDIUM | **YES - missing XML** |
 | **Tests** | 40% ⚠️ | LOW | — |
 
 ---
 
-## 🔴 PROBLEMAS BLOQUEADORES
+## 🔴 BLOCKING PROBLEMS
 
-### **1. NAVEGACIÓN DUPLICADA** (CRÍTICO)
+### **1. DUPLICATED NAVIGATION** (CRITICAL)
 
-**Situación:**
-- `ui/AppNavigation.kt` (OLD) - con SplashScreen, OriginLoadingScreen
-- `app/src/.../ui/navigation/AppNavigation.kt` (NEW) - simplificada
+**Situation:**
+- `ui/AppNavigation.kt` (OLD) - with SplashScreen, OriginLoadingScreen
+- `app/src/.../ui/navigation/AppNavigation.kt` (NEW) - simplified
 
-**Solución:**
-- ✅ Mantener SOLO: `app/src/main/kotlin/com/discordbotmaker/android/ui/navigation/AppNavigation.kt`
-- ❌ Eliminar: `ui/AppNavigation.kt`
-- Actualizar `MainActivity.kt` para importar de la ruta correcta
+**Solution:**
+- ✅ Keep ONLY: `app/src/main/kotlin/com/discordbotmaker/android/ui/navigation/AppNavigation.kt`
+- ❌ Remove: `ui/AppNavigation.kt`
+- Update `MainActivity.kt` to import from the correct path
 
 ---
 
-### **2. SCREENS FALTANTES** (CRÍTICO)
+### **2. MISSING SCREENS** (CRITICAL)
 
 ```kotlin
 ❌ SplashScreen.kt
-❌ MainDashboardScreen.kt  // El hub central más importante
+❌ MainDashboardScreen.kt  // the central hub
 ❌ StatsDashboardScreen.kt
-❌ GridBottomNavBar.kt (componente)
+❌ GridBottomNavBar.kt (component)
 ```
 
-**Flujo correcto:**
+**Correct flow:**
 ```
 MainActivity.kt
-  → AppNavGraph() 
+  → AppNavGraph()
     → startDestination = SplashScreen
       → (2-3s delay)
       → OriginLoadingScreen (animated logo)
@@ -264,76 +264,75 @@ MainActivity.kt
 
 ---
 
-### **3. RESOURCES FALTANTES** (ALTO)
+### **3. MISSING RESOURCES** (HIGH)
 
 ```xml
 ❌ app/src/main/res/values/strings.xml
 ❌ app/src/main/res/values/themes.xml
-❌ app/src/main/res/values/colors.xml (EXPANDIDO)
+❌ app/src/main/res/values/colors.xml (EXPANDED)
 ```
 
-**Necesarios para:**
-- Strings externalizados
+**Needed for:**
+- externalized strings
 - Material 3 theme configuration
-- Color references desde XML
+- color references from XML
 
 ---
 
-## 🚀 PLAN DE ACCIÓN ORDENADO
+## 🚀 ORDERED ACTION PLAN
 
-### **FASE 1: Estructuración (1 hora)**
-1. ✅ Consolidar navegación (eliminar `ui/AppNavigation.kt`)
-2. ✅ Crear structure de directorios correcta
-3. ✅ Crear archivos Android Resources
+### **PHASE 1: Structure (1 hour)**
+1. ✅ Consolidate navigation (remove `ui/AppNavigation.kt`)
+2. ✅ Create the correct directory structure
+3. ✅ Create Android resource files
 
-### **FASE 2: Screens Base (2-3 horas)**
-1. `SplashScreen.kt` - Entry point simple
-2. `MainDashboardScreen.kt` - Hub central (CON contadores)
-3. `StatsDashboardScreen.kt` - Placeholder
-4. `GridBottomNavBar.kt` - Componente nav
+### **PHASE 2: Base Screens (2-3 hours)**
+1. `SplashScreen.kt` - simple entry point
+2. `MainDashboardScreen.kt` - central hub (WITH counters)
+3. `StatsDashboardScreen.kt` - placeholder
+4. `GridBottomNavBar.kt` - nav component
 
-### **FASE 3: Integración (1 hora)**
-1. Conectar `MainActivity.kt` → `AppNavGraph()`
-2. Verifica `./gradlew :app:assembleDebug`
-3. Test en emulador
+### **PHASE 3: Integration (1 hour)**
+1. Connect `MainActivity.kt` → `AppNavGraph()`
+2. Run `./gradlew :app:assembleDebug`
+3. Test on an emulator
 
-### **FASE 4: Refinamiento (2-3 horas)**
-1. Detalles visuales según mockup
-2. Animaciones de transición
-3. Orión bubble flotante
+### **PHASE 4: Refinement (2-3 hours)**
+1. Visual details matching the mockup
+2. Transition animations
+3. Orion floating bubble
 4. Pull-to-refresh, etc.
 
 ---
 
 ## 📊 EXPECTED RESULT
 
-**Cuando termines FASE 2:**
-- ✅ App compila sin errores
-- ✅ Splash 2-3 seg
-- ✅ Logo animado Grid Origin
-- ✅ Dashboard central funcional
-- ✅ Navegación bottom bar
-- ✅ Accesos a 5 screens principales
+**When PHASE 2 is complete:**
+- ✅ App compiles without errors
+- ✅ Splash 2-3 sec
+- ✅ Animated Grid Origin logo
+- ✅ Functional central dashboard
+- ✅ Bottom navigation bar
+- ✅ Access to 5 main screens
 
-**Cuando termines FASE 3:**
-- ✅ **App funciona en emulador** 📱
-- ✅ Puedes navegar todas las screens
-- ✅ Backend conecta para logs/deploy
+**When PHASE 3 is complete:**
+- ✅ **App works on emulator** 📱
+- ✅ You can navigate all screens
+- ✅ Backend connects for logs/deploy
 
-**Cuando termines FASE 4:**
-- ✅ **App lista para Play Store** 🎉
-
----
-
-## 📖 REFERENCIAS OBLIGATORIAS
-
-1. `design/OFFICIAL_MOCKUP.md` - Mockup maestro (VERDAD ABSOLUTA)
-2. `design/branding.md` - Colores + Logo spec exacto
-3. `ui/AppTheme.kt` - Colors ya están aquí ✅
-4. `COORDINATION.md` - Convenciones de desarrollo
+**When PHASE 4 is complete:**
+- ✅ **App ready for Play Store** 🎉
 
 ---
 
-**Estado**: Estructuralmente 100% definido. Implementación 50% completa.
-**Próximo paso**: Consolidar navegación y crear MainDashboardScreen.
+## 📖 REQUIRED REFERENCES
 
+1. `design/OFFICIAL_MOCKUP.md` - master mockup (ABSOLUTE TRUTH)
+2. `design/branding.md` - exact colors + logo spec
+3. `ui/AppTheme.kt` - colors already exist here ✅
+4. `COORDINATION.md` - development conventions
+
+---
+
+**Status**: Structurally 100% defined. Implementation 50% complete.
+**Next step**: consolidate navigation and create `MainDashboardScreen`.
