@@ -269,7 +269,7 @@ private fun SearchBar(query: String, onQueryChange: (String) -> Unit) {
     }
 }
 
-// â”€â”€â”€ Featured "Asistente OriÃ³n" compact banner â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
+// Featured Orion Assistant compact banner
 
 @Composable
 private fun FeaturedOrionBanner(onClick: () -> Unit) {
