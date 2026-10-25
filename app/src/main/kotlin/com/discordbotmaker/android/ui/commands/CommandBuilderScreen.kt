@@ -58,6 +58,17 @@ data class BotCommand(
 
 // ─── Command Builder Screen ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+/**
+ * Displays the command editor backed by the provided initial command list.
+ *
+ * Save and delete events are delivered through the callbacks; this screen does
+ * not persist commands unless its caller implements that behavior.
+ *
+ * @param initialCommands Commands shown when the editor is opened or updated.
+ * @param onSaveToCloud Called with the current list when the cloud-save action is used.
+ * @param onDeleteCommand Called when a command is deleted.
+ * @param onSaveCommand Called when an individual command is saved.
+ */
 @Composable
 fun CommandBuilderScreen(
     initialCommands: List<BotCommand> = emptyList(),

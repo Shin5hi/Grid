@@ -1,221 +1,122 @@
 <div align="center">
 
-# 🚀 Grid
-## <u>Discord Bot Maker for Android</u>
+# Grid
+## Discord Bot Maker for Android
 
-<p align="center">
-  <img src="https://img.shields.io/badge/Kotlin-68.9%25-7F52FF?style=for-the-badge&logo=kotlin" />
-  <img src="https://img.shields.io/badge/Python-31.1%25-3776AB?style=for-the-badge&logo=python" />
-  <img src="https://img.shields.io/badge/Android-Jetpack%20Compose-3DDC84?style=for-the-badge&logo=android" />
-  <img src="https://img.shields.io/badge/FastAPI-Backend-009688?style=for-the-badge&logo=fastapi" />
-  <img src="https://img.shields.io/badge/Redis-State%20Layer-DC382D?style=for-the-badge&logo=redis" />
-</p>
-
-**Build, deploy, and manage Discord bots — from your phone.**
+**A mobile-first Android interface and an experimental Discord bot management API.**
 
 </div>
 
 ---
 
-## ✨ Overview
+## Project status
 
-Grid is a modern Android app for creating, testing, and managing Discord bots directly from a mobile device. Built with Kotlin and Jetpack Compose, Grid brings together bot creation, deployment, monitoring, and command management in one polished mobile-first experience.
+Grid currently contains an Android UI prototype and a separate FastAPI backend prototype. The Android screens use local/default state: the app does not yet make HTTP or WebSocket requests to the backend. Backend endpoints are not proof of a live Discord bot runtime or cloud deployment; deployment currently records a provisioning request and returns a simulated provisioning response.
 
-The goal is simple: remove the friction of desktop-only bot workflows and give creators a faster, cleaner, and more powerful way to build and manage bots from anywhere.
+## Features in the repository
 
----
+The Android app includes navigation, a dashboard, a tool library, command and AutoMod editors, a bot launch flow, a log console, statistics, a music-player screen, and the Orion Assistant screen. These screens are UI prototypes and are not connected to persistent backend data yet.
 
-## 🎯 Mission
+The backend exposes:
 
-Grid exists to make Discord bot development accessible, fast, and elegant.
+| Method | Path | Purpose |
+|---|---|---|
+| WebSocket | `/ws/logs` | Stream log events published through Redis Pub/Sub |
+| `POST` | `/api/logs` | Publish a validated log entry |
+| `GET`, `PUT` | `/api/automod/config` | Read or store AutoMod settings in Redis |
+| `GET` | `/health` | Check Redis connectivity |
+| `POST` | `/api/music/play` | Publish a play or resume command |
+| `GET` | `/api/music/queue` | Read the queue and current track from Redis |
+| `POST` | `/api/music/add` | Add a track to the Redis queue |
+| `POST` | `/api/bots/deploy` | Validate a token and create a simulated provisioning request |
+| `GET`, `POST`, `DELETE` | `/api/commands` | List, save, or delete command definitions in Redis |
 
-By combining a streamlined Android interface with backend orchestration and real-time status updates, Grid enables users to:
+Interactive API documentation is available at `/docs` while the backend is running.
 
-- 🧩 Build and manage bots from a phone
-- 📊 Monitor logs and performance in real time
-- 🛡️ Configure moderation and automation tools
-- ⚙️ Deploy changes instantly
-- 🌐 Run a complete bot ecosystem from one app
+## Technology
 
----
+- **Android:** Kotlin, Jetpack Compose, Material 3, Navigation Compose
+- **Build:** Gradle wrapper, Android Gradle Plugin, JDK 17
+- **Backend:** Python, FastAPI, Pydantic, Redis asyncio client
+- **Tests:** pytest-based repository checks; backend live-import checks require FastAPI
 
-## 💡 Why Grid?
+The Android module targets SDK 35 and supports Android 8.0 (API 26) and later.
 
-Discord bot development is powerful, but often fragmented across desktop tools, APIs, and manual workflows. Grid brings that experience into a single premium mobile platform with a polished visual language and simplified developer flow.
-
-It is designed for:
-- creators
-- communities
-- developers
-- moderators
-- advanced bot operators
-
-who want speed, clarity, and control without sacrificing quality.
-
----
-
-## 🧰 Tech Stack
-
-| Layer | Technology | Purpose |
-|-------|-----------|---------|
-| **📱 Frontend** | Kotlin + Jetpack Compose | Modern Android interface |
-| **⚙️ Backend** | FastAPI (Python) | API and orchestration layer |
-| **🔄 Realtime** | WebSockets | Log streaming and status updates |
-| **🗄️ Cache / State** | Redis | Runtime state and event handling |
-| **🧠 AI Moderation** | Google Gemini API | Content moderation and filtering |
-| **🤖 Bot Runtime** | discord.py / Pycord | Discord bot execution |
-
----
-
-## 🚀 Core Features
-
-- **📊 Bot Dashboard** — real-time overview of bot status and activity
-- **🖥️ Live Console** — monitor logs and runtime events as they happen
-- **🧩 Command Builder** — design and manage bot commands visually
-- **🤖 AI AutoMod** — moderation and content filtering with AI
-- **⚙️ Deploy Workflow** — push updates and configuration changes directly from the app
-- **🎵 Music Controls** — manage playback and audio actions
-- **📈 Statistics** — track usage, performance, and operational metrics
-- **🌑 Premium Dark UI** — a polished mobile-first design language
-
----
-
-## 🏗️ Architecture
-
-Grid is built as a multi-layer system designed to keep the experience smooth while supporting powerful backend orchestration.
-
-- **📱 Android client** → dashboard, command builder, bot management
-- **⚙️ Backend service** → orchestration, deployment flow, app logic
-- **🔄 Real-time layer** → WebSocket-based log and status updates
-- **🤖 Bot runtime** → Python-powered Discord bot execution
-- **🧠 AI layer** → Gemini-powered moderation and filtering
-
-This structure keeps the app lightweight while still supporting real-time workflows and scalable bot operations.
-
----
-
-## 📁 Project Structure
+## Repository layout
 
 ```text
 Grid/
-├── README.md
-├── app/
-├── backend/
+├── app/src/main/
+│   ├── kotlin/com/discordbotmaker/android/  # Android application and UI
+│   └── res/                                 # Android resources
+├── backend_api.py                           # FastAPI application
+├── backend/backend_api.py                   # Mirrored backend source
+├── scripts/                                 # Repository maintenance scripts
+├── design/                                  # Visual and branding references
+├── test_*.py                                # Python repository tests
 ├── gradlew
 ├── gradlew.bat
-├── settings.gradle.kts
-├── build.gradle.kts
-├── gradle.properties
-├── .gitignore
-├── ESTRUCTURA_OFICIAL.md
-├── COORDINATION.md
-└── ...
+└── README.md
 ```
 
----
+## Requirements
 
-## 🧪 Getting Started
+- Android Studio with Android SDK 35
+- JDK 17
+- Python 3.10 or later
+- Redis for running the backend
 
-### ✅ Prerequisites
+The backend reads `REDIS_URL` (default: `redis://localhost:6379/0`) and `LOG_CHANNEL` (default: `bot:logs`). It does not currently read `DISCORD_TOKEN`, `GEMINI_API_KEY`, or `BACKEND_PORT` from the environment.
 
-Before running the project, make sure you have:
+## Build the Android app
 
-- 🧑‍💻 Android Studio
-- ☕ JDK 17+
-- 🟦 Kotlin configured in your environment
-- 🐍 Python 3.10+
-- ⚙️ FastAPI-compatible environment
-- 🗄️ Redis server
-- 🔑 Discord bot token
-- 🧠 Google Gemini API key
-
----
-
-### 1) Clone the repository
+Open the repository in Android Studio and allow Gradle to sync, or run:
 
 ```bash
-git clone https://github.com/Shin5hi/Grid.git
-cd Grid
+# macOS / Linux
+./gradlew :app:assembleDebug
+
+# Windows PowerShell
+.\gradlew.bat :app:assembleDebug
 ```
 
----
+Run the app on an emulator or Android device from Android Studio.
 
-### 2) Android setup
+## Run the backend
 
-Open the project in Android Studio and let Gradle sync the dependencies.
-
-```bash
-./gradlew assembleDebug
-```
-
-Then run the app from Android Studio on an emulator or physical device.
-
----
-
-### 3) Backend setup
-
-Navigate to the backend folder and install the required Python dependencies.
+From the repository root, install the backend packages and start Redis. Then run:
 
 ```bash
-cd backend
 python -m venv .venv
-source .venv/bin/activate  # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
+
+# macOS / Linux
+source .venv/bin/activate
+
+# Windows PowerShell
+.\.venv\Scripts\Activate.ps1
+
+python -m pip install fastapi uvicorn redis pydantic
+uvicorn backend_api:app --host 0.0.0.0 --port 8000 --reload
 ```
 
-Create a `.env` file:
+The backend checks its Redis connection during startup. Open `http://localhost:8000/docs` for the generated API reference and `http://localhost:8000/health` for the health endpoint.
 
-```env
-DISCORD_TOKEN=your_discord_bot_token
-GEMINI_API_KEY=your_gemini_key
-REDIS_URL=redis://localhost:6379
-BACKEND_PORT=8000
-```
-
-Then start the backend:
+## Run repository tests
 
 ```bash
-uvicorn main:app --reload
+python -m pip install pytest
+python -m pytest -q
 ```
 
----
+The backend import test is skipped when FastAPI is not installed. The repository also contains structural and source-based tests for Android UI files.
 
-## 🔧 Development Notes
+## Notes for contributors
 
-Grid is designed to be both developer-friendly and mobile-first. The Android layer is optimized for responsiveness and clarity, while the backend handles orchestration, deployment flow, real-time updates, and integrations.
+- Keep Android code under `app/src/main/kotlin/com/discordbotmaker/android/`.
+- Keep application colors centralized in `ui/theme/AppTheme.kt`.
+- Update this README when API behavior, build requirements, or the integration status changes.
+- `scripts/cleanup_repo.sh` deletes root-level `test_*.py` files and several named legacy documents. Review the script before running it; it is a destructive maintenance utility, not a test or build command.
 
-This separation keeps the app lightweight while still supporting powerful bot workflows and scalable automation.
+## License
 
----
-
-## 🤝 Contributing
-
-Contributions are welcome.
-
-1. 🍴 Fork the repository
-2. 🌿 Create a feature branch
-3. 📝 Commit your changes
-4. 🔃 Open a pull request
-
-Please keep changes focused, document new functionality clearly, and follow the project’s existing structure and conventions.
-
----
-
-## 📜 License
-
-This project is distributed under the repository’s chosen license. Please review the repository files for the exact licensing terms before use or distribution.
-
----
-
-## 📬 Contact
-
-- GitHub: https://github.com/Shin5hi
-- Repository: https://github.com/Shin5hi/Grid
-
----
-
-<div align="center">
-
-**🚀 Grid is built for creators who want to move faster, stay in control, and manage Discord bots from anywhere.**
-
-</div>
+No license file is currently present. Ask the repository maintainers before redistributing this project.

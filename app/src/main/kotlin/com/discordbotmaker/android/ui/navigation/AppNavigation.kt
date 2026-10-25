@@ -69,6 +69,13 @@ private val hideOrionRoutes = setOf(
     AppRoutes.DOUBT_ASSISTANT
 )
 
+/**
+ * Builds the navigation graph, shared bottom bar, and assistant shortcut.
+ *
+ * @param navController Controller used to navigate between app routes.
+ * @param consoleViewModel Shared state holder for the live-console screen.
+ * @param botStatus Bot state displayed by the dashboard.
+ */
 @Composable
 fun AppNavGraph(
     navController: NavHostController = rememberNavController(),
@@ -172,11 +179,10 @@ fun AppNavGraph(
                 composable(AppRoutes.TOOL_LIBRARY) {
                     ToolLibraryScreen(
                         onToolSelected = { toolName ->
-                            // Normalize: trim + case-insensitive, so accented
-                            // "Asistente OriÃ³n" matches regardless of Unicode form.
+                            // Normalize whitespace and case before resolving a tool route.
                             val key = toolName.trim().lowercase().replace(" ", "-")
                             val route = when (key) {
-                                "asistente-orion", "asistente orion" -> AppRoutes.DOUBT_ASSISTANT
+                                "orion-assistant", "orion assistant" -> AppRoutes.DOUBT_ASSISTANT
                                 "stats-dashboard" -> AppRoutes.STATS_DASHBOARD
                                 "music-player" -> AppRoutes.MUSIC_PLAYER
                                 "settings" -> AppRoutes.SETTINGS
@@ -269,6 +275,4 @@ private fun SettingsPlaceholderScreen() {
         }
     }
 }
-
-
 

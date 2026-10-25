@@ -46,6 +46,12 @@ enum class ToxicityAction(val label: String, val icon: String) {
 
 // â”€â”€â”€ AutoMod Screen â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
+/**
+ * Displays AutoMod controls and reports configuration edits to the caller.
+ *
+ * @param config Initial moderation settings for this screen.
+ * @param onConfigChanged Called whenever a setting is changed by the user.
+ */
 @Composable
 fun AutoModScreen(
     config: AutoModConfig = AutoModConfig(),
@@ -461,4 +467,3 @@ private fun RowScope.ActionChip(
         )
     }
 }
-

@@ -30,10 +30,13 @@ import com.discordbotmaker.android.ui.theme.AppColors
 import kotlin.math.roundToInt
 
 /**
- * OrionBubble — Floating action button for Asistente Orion.
+ * Draggable floating action button that opens the Orion Assistant.
  *
  * Minimal design: Blurple FAB with bot icon, draggable, pulse glow ring.
  * Tap to open the Orion chat screen.
+ *
+ * @param onClick Called when the bubble is tapped.
+ * @param modifier Modifier applied to the bubble container.
  */
 @Composable
 fun OrionBubble(
@@ -162,7 +165,7 @@ fun OrionBubble(
                     Spacer(Modifier.height(1.dp))
 
                     Text(
-                        text = "Orión",
+                        text = "Orion",
                         color = Color.White,
                         fontSize = 7.sp,
                         fontWeight = FontWeight.Bold,

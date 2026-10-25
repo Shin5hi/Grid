@@ -40,6 +40,7 @@ redis_pool: aioredis.Redis | None = None
 
 
 async def get_redis() -> aioredis.Redis:
+    """Return the shared Redis connection pool, creating it on first use."""
     global redis_pool
     if redis_pool is None:
         redis_pool = aioredis.from_url(REDIS_URL, decode_responses=True, max_connections=20)
@@ -48,6 +49,7 @@ async def get_redis() -> aioredis.Redis:
 
 @asynccontextmanager
 async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    """Verify Redis on startup and close the shared connection during shutdown."""
     r = await get_redis(); await r.ping(); logger.info("Connected to Redis at %s", REDIS_URL)
     yield
     if redis_pool: await redis_pool.close()
@@ -82,6 +84,7 @@ class AutoModConfig(BaseModel):
 
 @app.websocket("/ws/logs")
 async def websocket_log_stream(ws: WebSocket) -> None:
+    """Stream Redis log events to a WebSocket client and handle client commands."""
     await ws.accept(); r = await get_redis(); pubsub = r.pubsub(); await pubsub.subscribe(LOG_CHANNEL)
     welcome = LogEntry(level=LogLevel.SYSTEM, source="server", message="Connected to log stream. Awaiting bot events")
     await ws.send_json(welcome.model_dump())
@@ -92,6 +95,7 @@ async def websocket_log_stream(ws: WebSocket) -> None:
                 try: log_entry = LogEntry(**json.loads(message["data"]))
                 except: log_entry = LogEntry(level=LogLevel.INFO, source="raw", message=str(message["data"]))
                 await ws.send_json(log_entry.model_dump())
+            # Keep the Redis poll bounded so ping/clear commands remain responsive.
             try:
                 client_msg = await asyncio.wait_for(ws.receive_text(), timeout=0.05)
                 await _handle_client_command(ws, client_msg)
@@ -101,6 +105,7 @@ async def websocket_log_stream(ws: WebSocket) -> None:
 
 
 async def _handle_client_command(ws: WebSocket, raw: str) -> None:
+    """Reply to supported client control messages; ignore malformed JSON."""
     try: cmd = json.loads(raw)
     except json.JSONDecodeError: return
     action = cmd.get("action")
@@ -110,6 +115,7 @@ async def _handle_client_command(ws: WebSocket, raw: str) -> None:
 
 @app.post("/api/logs", status_code=201)
 async def publish_log(entry: LogEntry) -> dict:
+    """Publish a validated log entry to Redis Pub/Sub and report subscriber count."""
     r = await get_redis(); payload = entry.model_dump_json()
     subscribers = await r.publish(LOG_CHANNEL, payload)
     return {"published": True, "subscribers": subscribers}
@@ -117,6 +123,7 @@ async def publish_log(entry: LogEntry) -> dict:
 
 @app.get("/api/automod/config", response_model=AutoModConfig)
 async def get_automod_config() -> AutoModConfig:
+    """Return the stored AutoMod configuration or its default values."""
     r = await get_redis(); raw = await r.get(AUTOMOD_CONFIG_KEY)
     if raw is None: return AutoModConfig()
     return AutoModConfig.model_validate_json(raw)
@@ -124,6 +131,7 @@ async def get_automod_config() -> AutoModConfig:
 
 @app.put("/api/automod/config", response_model=AutoModConfig)
 async def update_automod_config(config: AutoModConfig) -> AutoModConfig:
+    """Persist AutoMod settings and publish a system log event."""
     r = await get_redis(); payload = config.model_dump_json()
     await r.set(AUTOMOD_CONFIG_KEY, payload)
     change_event = LogEntry(level=LogLevel.SYSTEM, source="automod", message=f"AutoMod config updated")
@@ -133,6 +141,7 @@ async def update_automod_config(config: AutoModConfig) -> AutoModConfig:
 
 @app.get("/health")
 async def health_check() -> dict:
+    """Report backend and Redis health, returning HTTP 503 when Redis is unavailable."""
     try: r = await get_redis(); await r.ping(); return {"status": "healthy", "redis": "connected"}
     except Exception as exc: raise HTTPException(status_code=503, detail=f"Redis unavailable: {exc}")
 
@@ -169,6 +178,7 @@ class MusicQueueResponse(BaseModel):
 
 @app.post("/api/music/play", status_code=200)
 async def music_play(command: MusicPlayCommand) -> dict:
+    """Publish a play or resume command to the music command channel."""
     r = await get_redis(); subscribers = await r.publish(MUSIC_CHANNEL, command.model_dump_json())
     log_entry = LogEntry(level=LogLevel.INFO, source="music", message=f"Play command sent action={command.action}")
     await r.publish(LOG_CHANNEL, log_entry.model_dump_json())
@@ -177,6 +187,7 @@ async def music_play(command: MusicPlayCommand) -> dict:
 
 @app.get("/api/music/queue", response_model=MusicQueueResponse)
 async def music_get_queue() -> MusicQueueResponse:
+    """Load the current music queue and track state from Redis."""
     r = await get_redis()
     raw_queue = await r.get(MUSIC_QUEUE_KEY); tracks = []
     if raw_queue:
@@ -191,6 +202,7 @@ async def music_get_queue() -> MusicQueueResponse:
 
 @app.post("/api/music/add", status_code=201)
 async def music_add_track(request: MusicAddRequest) -> dict:
+    """Append a track request to the Redis queue and publish queue/log events."""
     r = await get_redis()
     track = MusicTrack(title=request.title if request.title else request.query, artist=request.artist, duration_seconds=request.duration_seconds, url=request.query)
     raw_queue = await r.get(MUSIC_QUEUE_KEY); queue = []
@@ -227,6 +239,10 @@ DISCORD_TOKEN_RE = re.compile(r"^[A-Za-z0-9_-]{24,}\.[A-Za-z0-9_-]{4,9}\.[A-Za-z
 
 @app.post("/api/bots/deploy", status_code=202, response_model=DeployResponse)
 async def deploy_bot(request: DeployRequest) -> DeployResponse:
+    """Validate a Discord token shape and return a simulated provisioning request.
+
+    This endpoint does not create cloud resources or start a Discord bot.
+    """
     token_trimmed = request.token.strip()
     if not DISCORD_TOKEN_RE.match(token_trimmed):
         raise HTTPException(status_code=422, detail="Invalid Discord bot token format. Expected: Base64.Timestamp.HMAC")
@@ -259,6 +275,7 @@ class BotCommandResponse(BaseModel):
 
 @app.get("/api/commands", response_model=list[BotCommandResponse])
 async def list_commands() -> list[BotCommandResponse]:
+    """Return valid command definitions stored in the Redis hash."""
     r = await get_redis(); raw = await r.hgetall(COMMANDS_HASH_KEY)
     commands = []
     for name, data in raw.items():
@@ -269,6 +286,7 @@ async def list_commands() -> list[BotCommandResponse]:
 
 @app.post("/api/commands", status_code=201, response_model=BotCommandResponse)
 async def create_command(command: BotCommandCreate) -> BotCommandResponse:
+    """Create or replace a command definition and publish a system log event."""
     r = await get_redis()
     payload = json.dumps({"response_type": command.response_type.value, "response_content": command.response_content})
     await r.hset(COMMANDS_HASH_KEY, command.name, payload)
@@ -279,6 +297,7 @@ async def create_command(command: BotCommandCreate) -> BotCommandResponse:
 
 @app.delete("/api/commands/{name}", status_code=200)
 async def delete_command(name: str) -> dict:
+    """Delete a command definition, returning HTTP 404 if it does not exist."""
     r = await get_redis(); removed = await r.hdel(COMMANDS_HASH_KEY, name)
     if removed == 0: raise HTTPException(status_code=404, detail=f"Command '/{name}' not found")
     log_entry = LogEntry(level=LogLevel.SYSTEM, source="commands", message=f"Command '/{name}' deleted")

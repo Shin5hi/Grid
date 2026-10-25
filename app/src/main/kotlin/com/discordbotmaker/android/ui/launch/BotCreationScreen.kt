@@ -62,11 +62,27 @@ private val DISCORD_TOKEN_REGEX = Regex(
     "^[A-Za-z0-9_-]{24,}\\.[A-Za-z0-9_-]{4,9}\\.[A-Za-z0-9_-]{25,}$"
 )
 
+/**
+ * Checks whether [token] matches the expected three-part Discord token shape.
+ *
+ * This validates syntax only; it does not authenticate the token with Discord.
+ *
+ * @param token Candidate bot token. Leading and trailing whitespace is ignored.
+ * @return `true` when all three token segments match the expected pattern.
+ */
 fun isTokenFormatValid(token: String): Boolean =
     DISCORD_TOKEN_REGEX.matches(token.trim())
 
 // â”€â”€â”€ Bot Creation Screen â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”
 
+/**
+ * Displays the bot launch wizard and delegates submission to [onDeploy].
+ *
+ * The default callback is a no-op, so embedding this screen alone does not
+ * deploy a bot.
+ *
+ * @param onDeploy Called with the entered token and bot name on submission.
+ */
 @Composable
 fun BotCreationScreen(
     onDeploy: (token: String, botName: String) -> Unit = { _, _ -> }
@@ -795,4 +811,3 @@ private fun GlowingDeployButton(onClick: () -> Unit) {
         )
     }
 }
-

@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.sp
  * Motion: 150–200 ms standard easing; no bounce, no elastic.
  */
 object AppColors {
-    // Grid real — negro profundo del mockup, no gris Discord
+    // Grid brand palette from the current dark mockup.
     val Background       = Color(0xFF0A0A0F)
     val Surface          = Color(0xFF14151B)
     val SurfaceVariant   = Color(0xFF1C1E26)
@@ -39,13 +39,13 @@ object AppColors {
     val InputBackground  = Color(0xFF0F1015)
     val SurfaceOverlay   = Color(0xFF000000)
 
-    // Grid morado del logo G
+    // Grid purple from the G logo.
     val Primary          = Color(0xFF7C5CFF)
     val PrimaryLight     = Color(0xFFA78BFA)
     val PrimaryDim       = Color(0xFF5B3DF0)
     val PrimarySubtle    = Color(0xFF7C5CFF).copy(alpha = 0.12f)
 
-    // Azul secundario "Organiza" del mockup
+    // Secondary blue accent from the mockup.
     val SecondaryBlue    = Color(0xFF5B8DEF)
 
     val Success          = Color(0xFF22C55E)
@@ -122,6 +122,11 @@ val AppTypography = Typography(
     labelSmall = TextStyle(fontFamily = FontFamily.SansSerif, fontWeight = FontWeight.Medium, fontSize = 10.sp, lineHeight = 14.sp, color = AppColors.TextMuted)
 )
 
+/**
+ * Applies Grid's dark Material theme to [content].
+ *
+ * @param content Composable content rendered inside the theme.
+ */
 @Composable
 fun AppTheme(content: @Composable () -> Unit) {
     MaterialTheme(colorScheme = AppDarkColorScheme, typography = AppTypography, content = content)

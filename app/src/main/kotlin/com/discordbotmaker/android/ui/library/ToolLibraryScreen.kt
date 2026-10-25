@@ -97,7 +97,7 @@ private val categories = listOf(
         accentColor = AppColors.AccentBrain,
         count = 18,
         channels = listOf(
-            TreeChannel("asistente-orion", "asistente-orion", ChannelType.STAGE, isPro = true, label = "Automation Tools", count = 7, icon = "A"),
+            TreeChannel("orion-assistant", "orion-assistant", ChannelType.STAGE, isPro = true, label = "Automation Tools", count = 7, icon = "A"),
             TreeChannel("music-player", "music-player", ChannelType.VOICE, label = "Integrations", count = 6, icon = "I"),
             TreeChannel("scripts", "scripts", ChannelType.TEXT, label = "Scripting", count = 5, icon = "S")
         )
@@ -124,6 +124,11 @@ private val categories = listOf(
     )
 )
 
+/**
+ * Displays the searchable, collapsible tool library.
+ *
+ * @param onToolSelected Called with the selected tool's display name.
+ */
 @Composable
 fun ToolLibraryScreen(
     onToolSelected: (String) -> Unit = {}
@@ -145,7 +150,7 @@ fun ToolLibraryScreen(
 
         Spacer(Modifier.height(8.dp))
 
-        FeaturedOrionBanner(onClick = { onToolSelected("Asistente OriÃ³n") })
+        FeaturedOrionBanner(onClick = { onToolSelected("Orion Assistant") })
 
         Spacer(Modifier.height(8.dp))
 
@@ -281,7 +286,7 @@ private fun FeaturedOrionBanner(onClick: () -> Unit) {
         Text(text = "ðŸ“¡", fontSize = 16.sp)
         Spacer(Modifier.width(10.dp))
         Text(
-            text = "Asistente OriÃ³n",
+            text = "Orion Assistant",
             color = AppColors.TextPrimary,
             fontSize = 14.sp,
             fontWeight = FontWeight.SemiBold,
@@ -449,4 +454,3 @@ private fun CountChip(count: Int) {
         Text(text = count.toString(), color = AppColors.TextSecondary, fontSize = 10.sp, fontWeight = FontWeight.Medium, fontFamily = sansSerif, modifier = Modifier.padding(horizontal = 7.dp, vertical = 2.dp))
     }
 }
-

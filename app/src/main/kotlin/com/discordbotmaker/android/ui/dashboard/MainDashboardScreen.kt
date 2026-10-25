@@ -36,7 +36,7 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.viewModelScope
 import kotlinx.coroutines.launch
 
-// Grid real: Hola Shin5hi + Resumen + Acceso rapido (mockup negro/morado).
+// Grid dashboard layout: greeting, summary, and quick actions.
 data class BotStatus(
     val isOnline: Boolean = false,
     val botName: String = "MyDiscordBot",
@@ -49,6 +49,17 @@ data class BotStatus(
     val username: String = ""
 )
 
+/**
+ * Renders the dashboard for the current bot state.
+ *
+ * @param botStatus Bot details displayed by the dashboard.
+ * @param onNavigateToConsole Opens the live-console screen.
+ * @param onNavigateToAutoMod Opens the AutoMod screen.
+ * @param onNavigateToCommandBuilder Opens the command editor.
+ * @param onNavigateToBotCreation Opens the bot launch flow.
+ * @param onLoginWithDiscord Starts the caller-provided Discord login flow.
+ * @param viewModel Supplies loading, error, or dashboard content state.
+ */
 @Composable
 fun MainDashboardScreen(
     botStatus: BotStatus = BotStatus(),
@@ -84,7 +95,7 @@ fun MainDashboardScreen(
                 }
                 Spacer(Modifier.height(40.dp))
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
-                    Text(text = "Hola, ", color = AppColors.TextPrimary, fontSize = 32.sp,
+                    Text(text = "Hello, ", color = AppColors.TextPrimary, fontSize = 32.sp,
                         fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
                     Text(text = "Shin5hi", color = AppColors.Primary, fontSize = 32.sp,
                         fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
@@ -100,7 +111,7 @@ fun MainDashboardScreen(
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        text = "Cargando tu dashboard...",
+                        text = "Loading your dashboard...",
                         color = AppColors.TextSecondary,
                         fontSize = 14.sp,
                         fontFamily = FontFamily.SansSerif
@@ -152,7 +163,7 @@ fun MainDashboardScreen(
                         )
                         Spacer(Modifier.height(8.dp))
                         Text(
-                            text = "Revisa tu conexi\u00F3n e intenta de nuevo.",
+                            text = "Check your connection and try again.",
                             color = AppColors.TextSecondary,
                             fontSize = 13.sp,
                             fontFamily = FontFamily.SansSerif,
@@ -171,7 +182,7 @@ fun MainDashboardScreen(
                     ),
                     elevation = ButtonDefaults.buttonElevation(defaultElevation = 0.dp)
                 ) {
-                    Text(text = "Reintentar", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
+                    Text(text = "Retry", fontSize = 15.sp, fontWeight = FontWeight.SemiBold)
                 }
             }
         }
@@ -213,14 +224,14 @@ fun MainDashboardScreen(
         )
         Spacer(Modifier.height(18.dp))
         Text(
-            text = "Que vas a crear hoy?",
+            text = "What will you create today?",
             color = AppColors.TextSecondary, fontSize = 16.sp,
             fontFamily = FontFamily.SansSerif,
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 2.dp)
         )
         Spacer(Modifier.height(18.dp))
         Text(
-            text = "RESUMEN INTELIGENTE",
+            text = "SMART SUMMARY",
             color = AppColors.TextMuted, fontSize = 11.sp, fontWeight = FontWeight.Bold,
             fontFamily = FontFamily.SansSerif,
             modifier = Modifier.padding(horizontal = 20.dp)
@@ -231,11 +242,11 @@ fun MainDashboardScreen(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Box(Modifier.weight(1f)) {
-                AnimatedStatCard(title = "Proyectos", value = "12", icon = "[]",
+                AnimatedStatCard(title = "Projects", value = "12", icon = "[]",
                     iconColor = AppColors.Primary, delayMs = 0)
             }
             Box(Modifier.weight(1f)) {
-                AnimatedStatCard(title = "Tareas", value = "28", icon = "ok",
+                AnimatedStatCard(title = "Tasks", value = "28", icon = "ok",
                     iconColor = AppColors.Primary, delayMs = 80)
             }
         }
@@ -245,11 +256,11 @@ fun MainDashboardScreen(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Box(Modifier.weight(1f)) {
-                AnimatedStatCard(title = "Herramientas", value = "156", icon = "+",
+                AnimatedStatCard(title = "Tools", value = "156", icon = "+",
                     iconColor = AppColors.SecondaryBlue, delayMs = 160)
             }
             Box(Modifier.weight(1f)) {
-                AnimatedStatCard(title = "Notas", value = "89", icon = "=",
+                AnimatedStatCard(title = "Notes", value = "89", icon = "=",
                     iconColor = AppColors.SecondaryBlue, delayMs = 240)
             }
         }
@@ -259,19 +270,19 @@ fun MainDashboardScreen(
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = "ACCESO RAPIDO", color = AppColors.TextMuted, fontSize = 11.sp,
+            Text(text = "QUICK ACCESS", color = AppColors.TextMuted, fontSize = 11.sp,
                 fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
-            Text(text = "Ver todo", color = AppColors.Primary, fontSize = 13.sp,
+            Text(text = "View all", color = AppColors.Primary, fontSize = 13.sp,
                 fontWeight = FontWeight.Medium, fontFamily = FontFamily.SansSerif)
         }
         Spacer(Modifier.height(10.dp))
-        AnimatedQuickItem(title = "The Tree", subtitle = "Biblioteca de herramientas",
+        AnimatedQuickItem(title = "The Tree", subtitle = "Tool library",
             icon = "T", onClick = onNavigateToCommandBuilder, delayMs = 0)
-        AnimatedQuickItem(title = "Proyectos", subtitle = "Tus proyectos activos",
+        AnimatedQuickItem(title = "Projects", subtitle = "Your active projects",
             icon = "P", onClick = onNavigateToBotCreation, delayMs = 80)
-        AnimatedQuickItem(title = "Notas", subtitle = "Ideas y documentacion",
+        AnimatedQuickItem(title = "Notes", subtitle = "Ideas and documentation",
             icon = "N", onClick = onNavigateToAutoMod, delayMs = 160)
-        AnimatedQuickItem(title = "Plantillas", subtitle = "Puntos de partida",
+        AnimatedQuickItem(title = "Templates", subtitle = "Starting points",
             icon = "S", onClick = onNavigateToConsole, delayMs = 240)
             }
         }
@@ -384,13 +395,19 @@ private fun GridQuickItem(
 data class BottomNavItem(val route: String, val label: String, val icon: String)
 
 val bottomNavItems = listOf(
-    BottomNavItem(route = "dashboard", label = "Inicio", icon = "H"),
-    BottomNavItem(route = "bot_creation", label = "Proyectos", icon = "P"),
+    BottomNavItem(route = "dashboard", label = "Home", icon = "H"),
+    BottomNavItem(route = "bot_creation", label = "Projects", icon = "P"),
     BottomNavItem(route = "tool_library", label = "The Tree", icon = "T"),
-    BottomNavItem(route = "doubt_assistant", label = "Notas", icon = "N"),
-    BottomNavItem(route = "settings", label = "Ajustes", icon = "A")
+    BottomNavItem(route = "doubt_assistant", label = "Notes", icon = "N"),
+    BottomNavItem(route = "settings", label = "Settings", icon = "A")
 )
 
+/**
+ * Renders the dashboard's bottom navigation items.
+ *
+ * @param currentRoute Route currently selected in the navigation graph.
+ * @param onNavigate Called with the selected destination route.
+ */
 @Composable
 fun GridBottomNavBar(currentRoute: String, onNavigate: (String) -> Unit) {
     Surface(
@@ -430,7 +447,7 @@ fun GridBottomNavBar(currentRoute: String, onNavigate: (String) -> Unit) {
 }
 
 // ═════════════════════════════════════════════════════════════════════════════════
-// Dashboard ViewModel — estado de pantalla (carga / éxito / error)
+// Dashboard view state transitions: loading, content, and recoverable error.
 // ═════════════════════════════════════════════════════════════════════════════════
 
 sealed class DashboardUiState {
@@ -463,5 +480,3 @@ class DashboardViewModel : ViewModel() {
         }
     }
 }
-
-

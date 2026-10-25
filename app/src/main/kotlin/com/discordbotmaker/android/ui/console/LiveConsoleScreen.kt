@@ -93,6 +93,11 @@ class LiveConsoleViewModel {
 
 // ─── Live Console Screen ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
+/**
+ * Displays log entries and connection controls from [viewModel].
+ *
+ * @param viewModel State holder for logs, connection status, and auto-scroll.
+ */
 @Composable
 fun LiveConsoleScreen(viewModel: LiveConsoleViewModel) {
     val logs by viewModel.logs.collectAsState()

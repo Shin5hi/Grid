@@ -11,6 +11,11 @@ import com.discordbotmaker.android.ui.theme.AppColors
 //
 // ─────────────────────────────────────────────────────────────────────────────
 
+/**
+ * Keeps the splash-screen API while delegating its UI to [OriginLoadingScreen].
+ *
+ * @param onSplashComplete Called when the branded loading screen finishes.
+ */
 @Composable
 fun SplashScreen(
     onSplashComplete: () -> Unit = {}

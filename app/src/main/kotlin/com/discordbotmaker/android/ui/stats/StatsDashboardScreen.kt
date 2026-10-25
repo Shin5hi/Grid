@@ -64,6 +64,12 @@ data class ActivityDataPoint(
 
 // ─── Stats Dashboard Screen ─────────────────────────────────────────────────────
 
+/**
+ * Displays bot statistics and activity data.
+ *
+ * @param stats Metrics shown in the summary cards.
+ * @param activityData Values plotted in the activity chart.
+ */
 @Composable
 fun StatsDashboardScreen(
     stats: BotStats = BotStats(),

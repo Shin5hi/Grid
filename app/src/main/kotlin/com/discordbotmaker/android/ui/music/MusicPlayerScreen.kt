@@ -27,6 +27,16 @@ enum class PlaybackState { PLAYING, PAUSED, STOPPED }
 data class Track(val id: String, val title: String, val artist: String, val durationSeconds: Int, val url: String = "", val thumbnailEmoji: String = "\ud83c\udfb5")
 data class MusicPlayerState(val playbackState: PlaybackState = PlaybackState.STOPPED, val currentTrack: Track? = null, val progressSeconds: Int = 0, val queue: List<Track> = emptyList())
 private fun fmtTime(s: Int): String { return "%d:%02d".format(s / 60, s % 60) }
+/**
+ * Displays music playback controls and delegates playback actions to callbacks.
+ *
+ * @param state Current track, playback status, progress, and queue.
+ * @param onPlay Called when playback is requested.
+ * @param onPause Called when playback is paused.
+ * @param onSkip Called when the current track should be skipped.
+ * @param onStop Called when playback is stopped.
+ * @param onAddTrack Called with a track URL or search query.
+ */
 @Composable fun MusicPlayerScreen(state: MusicPlayerState = MusicPlayerState(), onPlay: () -> Unit = {}, onPause: () -> Unit = {}, onSkip: () -> Unit = {}, onStop: () -> Unit = {}, onAddTrack: (String) -> Unit = {}) {
     var ps by remember { mutableStateOf(state) }; var q by remember { mutableStateOf("") }
     LaunchedEffect(state) { ps = state }

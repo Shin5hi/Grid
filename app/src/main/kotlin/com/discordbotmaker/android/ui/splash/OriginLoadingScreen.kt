@@ -44,7 +44,7 @@ import kotlinx.coroutines.delay
 // - Centered blocky "G" logo in Blurple (#5865F2) rounded square
 // - Continuous smooth circular sweep/ring animation using InfiniteTransition
 // - "Grid Origin" title (bold, white) below the logo
-// - "Crea, Organiza, Avanza." slogan (smaller, light gray) below the title
+// - "Create, Organize, Move Forward." slogan (smaller, light gray) below the title
 // - Staged entrance animation: logo scale-in -> text fade -> slogan fade
 // - Auto-navigates after the entrance sequence completes
 //
@@ -53,6 +53,15 @@ import kotlinx.coroutines.delay
 /**
  * The Blurple sweep ring that rotates continuously around the "G" logo.
  * Uses [rememberInfiniteTransition] for a smooth, never-ending circular arc sweep.
+ */
+/**
+ * Draws a continuously rotating sweep arc with a pulsing glow.
+ *
+ * @param modifier Modifier applied to the ring canvas.
+ * @param ringSize Diameter of the ring.
+ * @param strokeWidth Width of the ring stroke.
+ * @param sweepColor Base color for the track and animated arc.
+ * @param durationMs Duration of one rotation in milliseconds.
  */
 @Composable
 fun SweepLoadingRing(
@@ -128,7 +137,7 @@ fun SweepLoadingRing(
  * Background: Official Charcoal (#313338) via AppColors.Background.
  * Logo: Blocky "G" in Blurple (#5865F2) rounded square (96dp, 20dp corners).
  * Animation: Continuous smooth circular sweep ring via InfiniteTransition.
- * Text: "Grid Origin" (bold, white) + "Crea, Organiza, Avanza." (light gray).
+ * Text: "Grid Origin" (bold, white) + "Create, Organize, Move Forward." (light gray).
  *
  * @param onLoadingComplete Called when the entrance animation finishes and the
  *   screen is ready to hand off to the next destination.
@@ -222,7 +231,7 @@ fun OriginLoadingScreen(
 
             // -- Slogan --- smaller, light gray --
             Text(
-                text = "Crea, Organiza, Avanza.",
+                text = "Create, Organize, Move Forward.",
                 color = AppColors.TextSecondary, // Light gray #B5BAC1
                 fontSize = 14.sp,
                 fontWeight = FontWeight.Normal,
