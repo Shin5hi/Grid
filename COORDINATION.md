@@ -16,6 +16,14 @@ The user-provided dashboard and launch screenshots are visual inspiration for th
 
 The current screen can render bot data passed to it, but bot creation/selection is not wired to the dashboard yet. Keep this limitation explicit until the app persists and supplies the selected bot's actual data.
 
+## Shared screens
+
+- `app/src/main/kotlin/com/discordbotmaker/android/ui/splash/OriginLoadingScreen.kt` provides the animated Grid Origin loading screen and `SweepLoadingRing`.
+- `SplashScreen` delegates to the origin loading screen; navigation then moves to the dashboard.
+- `app/src/main/kotlin/com/discordbotmaker/android/ui/stats/StatsDashboardScreen.kt` contains the statistics cards and activity chart prototype.
+- `app/src/main/kotlin/com/discordbotmaker/android/ui/components/OrionBubble.kt` is the draggable assistant shortcut.
+- The loading-screen slogan is "Create, Organize, Move Forward."
+
 ## Source conventions
 
 - Keep Android production code under `app/src/main/kotlin/com/discordbotmaker/android/`, organized by screen or component.

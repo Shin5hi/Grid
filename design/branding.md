@@ -3,7 +3,7 @@
 ## Official Logo
 
 **Asset Name:** Grid Origin Logo
-**Shape:** Rounded square (20dp corner radius) with solid Discord Blurple (`#5865F2`) fill.
+**Shape:** Rounded square (20dp corner radius) with solid Grid Purple (`#7C5CFF`) fill.
 **Glyph:** Bold uppercase **"G"** in white (#FFFFFF), centered within the square. Set at 48sp, `FontWeight.Bold`, system sans-serif (Inter / Roboto).
 **Dimensions:** 96×96dp logical size. Export at 1×, 1.5×, 2×, 3×, 4× density buckets for Android (`mdpi` through `xxxhdpi`).
 
@@ -11,8 +11,8 @@
 A continuous sweep ring orbits the logo during the loading screen:
 - **Ring diameter:** 140dp (centered around the 96dp logo with 22dp clearance per side).
 - **Stroke:** 3dp, round cap.
-- **Color:** Blurple (`#5865F2`) with gradient opacity sweep (transparent → 60% → 100%).
-- **Background track:** Blurple at 10% opacity, full 360° circle.
+- **Color:** Grid Purple (`#7C5CFF`) with gradient opacity sweep (transparent → 60% → 100%).
+- **Background track:** Grid Purple at 10% opacity, full 360° circle.
 - **Rotation speed:** 1400ms per full revolution, linear easing, infinite repeat.
 - **Glow pulse:** Ring leading-edge alpha oscillates between 25%–60% at half the rotation period.
 
