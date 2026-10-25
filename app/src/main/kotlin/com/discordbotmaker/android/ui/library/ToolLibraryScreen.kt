@@ -30,9 +30,9 @@ import com.discordbotmaker.android.ui.theme.AppColors
 
 // â”€â”€â”€ Tool Library â€” High-Density Server Tree View â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 //
-// Discord-style collapsible tree: UPPERCASE category headers with branch lines
+// Discord-style collapsible tree: uppercase category headers with branch lines
 // (drawn on a Canvas), kebab-case channel rows, a compact 30dp row height, and
-// a Featured "Asistente OriÃ³n" banner. No Monospace anywhere â€” uses SansSerif.
+// a featured "Orion Assistant" banner. No Monospace anywhere; it uses SansSerif.
 //
 // â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€
 

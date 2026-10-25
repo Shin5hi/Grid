@@ -60,6 +60,13 @@ class LiveConsoleViewModel {
 
     private var nextId: Long = 0L
 
+    /**
+     * Adds a log entry and assigns it the next in-memory ID.
+     *
+     * @param level Severity assigned to the entry.
+     * @param source Component that produced the entry.
+     * @param message Log message text.
+     */
     fun appendLog(level: LogLevel, source: String, message: String) {
         val entry = LogEntry(
             id = nextId++,
@@ -71,14 +78,21 @@ class LiveConsoleViewModel {
         _logs.value = _logs.value + entry
     }
 
+    /** Removes all log entries currently held in memory. */
     fun clearLogs() {
         _logs.value = emptyList()
     }
 
+    /**
+     * Updates the console's displayed connection state.
+     *
+     * @param connected Whether the caller considers the stream connected.
+     */
     fun setConnected(connected: Boolean) {
         _isConnected.value = connected
     }
 
+    /** Toggles whether the console should follow newly appended entries. */
     fun toggleAutoScroll() {
         _autoScroll.value = !_autoScroll.value
     }

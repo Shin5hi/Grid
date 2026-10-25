@@ -15,12 +15,12 @@ import androidx.compose.ui.unit.sp
  *
  * Minimalist geometric "G" logo mark — a single continuous stroke forming
  * a stylised "G" with an open counter, suggesting both a chat bubble and
- * a circuit trace. Rendered in Discord Blurple (#5865F2) on Deep Charcoal
- * (#313338) backgrounds. The mark is monochrome, never outlined, never
+ * a circuit trace. Rendered in Grid Purple (#7C5CFF) on Deep Charcoal
+ * (#0A0A0F) backgrounds. The mark is monochrome, never outlined, never
  * gradient-filled. It appears at 24 dp in the navigation rail, 32 dp on
  * splash, and 48 dp as app icon.
  *
- * Colour vocabulary: Blurple primary, Deep Charcoal background,
+ * Color vocabulary: Grid Purple primary, Deep Charcoal background,
  * Dark Surface cards, White/Secondary text, Green success, Red danger,
  * Amber warning, Cyan info. Accent chips (Rocket, Shield, Brain, Bolt,
  * Music, Gear, Chart, Welcome) use semantic neon tints at 12% opacity.

@@ -36,10 +36,19 @@ import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.viewModelScope
 import kotlinx.coroutines.launch
 
-// Grid dashboard layout: greeting, summary, and quick actions.
+// The dashboard is scoped to the bot supplied by its caller.
+/**
+ * Status and metrics for the bot currently selected in the app.
+ *
+ * @property botName Display name of the selected bot, or empty when none is selected.
+ * @property serverCount Number of servers where the bot is present.
+ * @property memberCount Total members across those servers.
+ * @property uptimeFormatted Human-readable runtime duration.
+ * @property ping Latest latency in milliseconds.
+ */
 data class BotStatus(
     val isOnline: Boolean = false,
-    val botName: String = "MyDiscordBot",
+    val botName: String = "",
     val serverCount: Int = 0,
     val memberCount: Int = 0,
     val uptimeFormatted: String = "-",
@@ -95,9 +104,7 @@ fun MainDashboardScreen(
                 }
                 Spacer(Modifier.height(40.dp))
                 Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp)) {
-                    Text(text = "Hello, ", color = AppColors.TextPrimary, fontSize = 32.sp,
-                        fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
-                    Text(text = "Shin5hi", color = AppColors.Primary, fontSize = 32.sp,
+                    Text(text = "Bot overview", color = AppColors.TextPrimary, fontSize = 32.sp,
                         fontWeight = FontWeight.Bold, fontFamily = FontFamily.SansSerif)
                 }
                 Spacer(Modifier.height(40.dp))
@@ -111,7 +118,7 @@ fun MainDashboardScreen(
                     )
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        text = "Loading your dashboard...",
+                        text = "Loading bot overview...",
                         color = AppColors.TextSecondary,
                         fontSize = 14.sp,
                         fontFamily = FontFamily.SansSerif
@@ -218,13 +225,39 @@ fun MainDashboardScreen(
                     }
                 }
 
-            color = AppColors.TextSecondary, fontSize = 16.sp,
-            fontFamily = FontFamily.SansSerif,
-            modifier = Modifier.padding(horizontal = 20.dp, vertical = 2.dp)
-        )
+            Column(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 2.dp)
+            ) {
+                Text(
+                    text = "BOT OVERVIEW",
+                    color = AppColors.TextMuted,
+                    fontSize = 11.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.SansSerif
+                )
+                Spacer(Modifier.height(6.dp))
+                Text(
+                    text = botStatus.botName.ifBlank { "No bot selected" },
+                    color = AppColors.TextPrimary,
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily.SansSerif
+                )
+                Spacer(Modifier.height(4.dp))
+                Text(
+                    text = if (botStatus.isOnline) "Online" else "Offline",
+                    color = if (botStatus.isOnline) AppColors.Success else AppColors.TextMuted,
+                    fontSize = 13.sp,
+                    fontFamily = FontFamily.SansSerif
+                )
+            }
         Spacer(Modifier.height(18.dp))
         Text(
-            text = "What will you create today?",
+            text = if (botStatus.botName.isBlank()) {
+                "Create or select a bot to view its dashboard."
+            } else {
+                "Status and metrics for this bot."
+            },
             color = AppColors.TextSecondary, fontSize = 16.sp,
             fontFamily = FontFamily.SansSerif,
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 2.dp)
@@ -242,11 +275,11 @@ fun MainDashboardScreen(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Box(Modifier.weight(1f)) {
-                AnimatedStatCard(title = "Projects", value = "12", icon = "[]",
+                AnimatedStatCard(title = "Servers", value = botStatus.serverCount.toString(), icon = "#",
                     iconColor = AppColors.Primary, delayMs = 0)
             }
             Box(Modifier.weight(1f)) {
-                AnimatedStatCard(title = "Tasks", value = "28", icon = "ok",
+                AnimatedStatCard(title = "Members", value = botStatus.memberCount.toString(), icon = "M",
                     iconColor = AppColors.Primary, delayMs = 80)
             }
         }
@@ -256,11 +289,11 @@ fun MainDashboardScreen(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             Box(Modifier.weight(1f)) {
-                AnimatedStatCard(title = "Tools", value = "156", icon = "+",
+                AnimatedStatCard(title = "Uptime", value = botStatus.uptimeFormatted, icon = "U",
                     iconColor = AppColors.SecondaryBlue, delayMs = 160)
             }
             Box(Modifier.weight(1f)) {
-                AnimatedStatCard(title = "Notes", value = "89", icon = "=",
+                AnimatedStatCard(title = "Ping", value = if (botStatus.ping > 0) "${botStatus.ping} ms" else "—", icon = "P",
                     iconColor = AppColors.SecondaryBlue, delayMs = 240)
             }
         }
@@ -276,14 +309,14 @@ fun MainDashboardScreen(
                 fontWeight = FontWeight.Medium, fontFamily = FontFamily.SansSerif)
         }
         Spacer(Modifier.height(10.dp))
-        AnimatedQuickItem(title = "The Tree", subtitle = "Tool library",
-            icon = "T", onClick = onNavigateToCommandBuilder, delayMs = 0)
-        AnimatedQuickItem(title = "Projects", subtitle = "Your active projects",
-            icon = "P", onClick = onNavigateToBotCreation, delayMs = 80)
-        AnimatedQuickItem(title = "Notes", subtitle = "Ideas and documentation",
-            icon = "N", onClick = onNavigateToAutoMod, delayMs = 160)
-        AnimatedQuickItem(title = "Templates", subtitle = "Starting points",
-            icon = "S", onClick = onNavigateToConsole, delayMs = 240)
+        AnimatedQuickItem(title = "Live Console", subtitle = "View bot events and logs",
+            icon = "C", onClick = onNavigateToConsole, delayMs = 0)
+        AnimatedQuickItem(title = "AutoMod", subtitle = "Review moderation settings",
+            icon = "A", onClick = onNavigateToAutoMod, delayMs = 80)
+        AnimatedQuickItem(title = "Commands", subtitle = "Manage bot commands",
+            icon = "/", onClick = onNavigateToCommandBuilder, delayMs = 160)
+        AnimatedQuickItem(title = "Bot Launch", subtitle = "Create or connect a bot",
+            icon = "B", onClick = onNavigateToBotCreation, delayMs = 240)
             }
         }
     }
@@ -456,6 +489,12 @@ sealed class DashboardUiState {
     data class Error(val message: String, val onRetry: () -> Unit) : DashboardUiState()
 }
 
+/**
+ * Holds dashboard loading, content, and retry state.
+ *
+ * The current implementation simulates loading and is not connected to a data
+ * source; bot details are supplied separately to [MainDashboardScreen].
+ */
 class DashboardViewModel : ViewModel() {
     private val _uiState = MutableStateFlow<DashboardUiState>(DashboardUiState.Loading)
     val uiState: StateFlow<DashboardUiState> = _uiState.stateIn(
@@ -466,12 +505,13 @@ class DashboardViewModel : ViewModel() {
 
     init {
         viewModelScope.launch {
-            // Simula carga de datos del bot / backend
+            // Simulate loading bot data from the backend.
             kotlinx.coroutines.delay(800)
             _uiState.value = DashboardUiState.Content(isLoggedIn = false)
         }
     }
 
+    /** Replays the local loading sequence and returns to the content state. */
     fun retry() {
         _uiState.value = DashboardUiState.Loading
         viewModelScope.launch {

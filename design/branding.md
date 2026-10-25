@@ -24,23 +24,23 @@ A continuous sweep ring orbits the logo during the loading screen:
 
 ## Slogan
 
-**Text:** "Crea, Organiza, Avanza."
+**Text:** "Create, Organize, Move Forward."
 **Display Font:** System sans-serif, 14sp, `FontWeight.Normal`, `letterSpacing = 2.sp`.
-**Color:** `TextSecondary` (`#B5BAC1`).
+**Color:** `TextSecondary` (`#9CA3AF`).
 
 ## Background
 
-**Loading Screen Background:** Solid deep charcoal `InputBackground` (`#1E1F22`) — the darkest surface in the Discord palette.
+**Loading Screen Background:** `AppColors.Background` (`#0A0A0F`).
 
 ## Color Tokens (Summary)
 
 | Token            | Hex       | Role                          |
 |------------------|-----------|-------------------------------|
-| Blurple          | `#5865F2` | Logo fill, sweep ring, CTAs   |
-| Deep Charcoal    | `#1E1F22` | Loading screen background     |
+| Primary purple   | `#7C5CFF` | Logo fill, sweep ring, CTAs   |
+| Deep charcoal    | `#0A0A0F` | Loading screen background     |
 | White            | `#FFFFFF` | Logo glyph, title text        |
-| TextSecondary    | `#B5BAC1` | Slogan text                   |
-| TextMuted @40%   | `#80848E` | Version stamp                 |
+| TextSecondary    | `#9CA3AF` | Slogan text                   |
+| TextMuted @40%   | `#6B7280` | Version stamp                 |
 
 ## Source Image Reference
 

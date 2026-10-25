@@ -11,7 +11,9 @@
 
 ## Project status
 
-Grid currently contains an Android UI prototype and a separate FastAPI backend prototype. The Android screens use local/default state: the app does not yet make HTTP or WebSocket requests to the backend. Backend endpoints are not proof of a live Discord bot runtime or cloud deployment; deployment currently records a provisioning request and returns a simulated provisioning response.
+Grid currently contains an Android UI prototype and a separate FastAPI backend prototype. The Android screens use local/default state: the app does not yet make HTTP or WebSocket requests to the backend. The dashboard can display a selected bot's `BotStatus` values, but bot creation/selection is not yet connected to that state. Backend endpoints are not proof of a live Discord bot runtime or cloud deployment; deployment currently records a provisioning request and returns a simulated provisioning response.
+
+The dashboard is intended to be scoped to whichever bot is created or selected, with bot-specific identity and metrics rather than fixed sample counters. User-provided dashboard and launch screenshots are visual inspiration for the Android experience; the project remains Android-only and does not include a desktop/web client.
 
 ## Features in the repository
 

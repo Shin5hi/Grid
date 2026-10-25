@@ -1,72 +1,33 @@
-# 🤝 Grid & Codex Collaboration Board
+# Project development notes
 
-## ⚠️ DIRECT ORDER: 100% VISUAL FIDELITY
-The boss has approved the definitive master mockup.
+## Current implementation
 
-**Codex / Sprite / Gaul:**
-No aesthetic changes are allowed unless they are present in `design/OFFICIAL_MOCKUP.md`.
-- The backend must support the density of data shown (Projects, Tasks, Tools, Notes).
-- The frontend (Android) must be a clone of this image.
+- Android app source lives under `app/src/main/kotlin/com/discordbotmaker/android/`.
+- The app uses Kotlin, Jetpack Compose, Material 3, and Navigation Compose.
+- The backend entry point is the root `backend_api.py`; it uses FastAPI and Redis.
+- The backend and Android app are not integrated yet. The assistant uses mock responses, console data is in memory, and the launch callback must be supplied by the caller.
+- Bot deployment is simulated by the backend; it does not provision cloud resources or start a Discord bot.
 
-Time to work! 🚀
+## Bot dashboard direction
 
----
+The dashboard is for whichever bot is selected or created in the app. It must not be tied to a developer username or hard-coded sample counters. Use the selected bot's name, online state, server/member counts, uptime, and latency from `BotStatus`.
 
-## Migration Status
+The user-provided dashboard and launch screenshots are visual inspiration for the Android experience, not a request to add a desktop/web client. Adapt their hierarchy and clarity to the Android layout. Do not show sample metrics as live data.
 
-The Android frontend migration is in progress. Current status:
+The current screen can render bot data passed to it, but bot creation/selection is not wired to the dashboard yet. Keep this limitation explicit until the app persists and supplies the selected bot's actual data.
 
-- **pending / waiting**: the Billing screen remains pending implementation (placeholder).
-- Organization permissions (org permissions): each server belongs to an organization and its permissions are resolved by role. The backend connection for org-based permissions is still pending.
-- Personal fork of the author: `Shin5hi/discord-bot-maker-android`.
+## Source conventions
 
-## Server Tree View
+- Keep Android production code under `app/src/main/kotlin/com/discordbotmaker/android/`, organized by screen or component.
+- Use `AppColors` and the shared theme for application colors.
+- Use English for source comments, API documentation, and user-facing strings.
+- Add KDoc to public composables and docstrings to public backend functions.
+- Keep the two backend source copies synchronized when changing backend behavior.
 
-The tools screen uses a Discord-style hierarchical **Tree View**:
+## Validation
 
-- Collapsible categories (compact / high-density) with branch lines drawn via `Canvas` + `drawLine` to connect parents and children.
-- Data types `TreeChannel` and `TreeCategory` in `ui/library/ToolLibraryScreen.kt`.
-- High-density layout so many channels can fit on screen.
+- Android build: `./gradlew :app:assembleDebug` (Windows: `.\gradlew.bat :app:assembleDebug`).
+- Python tests: `python -m pytest -q`.
+- Redis is required to run the FastAPI application.
 
-## Orion Assistant (OrionBubble FAB)
-
-- `ui/components/OrionBubble.kt`: draggable floating action button (`pointerInput` + `detectDragGestures`) with antennas, eyes, and pulse animation (`rememberInfiniteTransition`).
-- Integrated into the `Scaffold` in `ui/navigation/AppNavigation.kt`; it navigates to the Orion Assistant (`DoubtAssistantScreen`).
-- Hidden on the `SPLASH` route (and on the Orion screen itself) via the `hideOrionRoutes` set and the `showOrionBubble` flag.
-
-## Stats Dashboard Module
-
-Bot metrics module.
-
-- **File (ownership, status Active):** `ui/StatsDashboardScreen.kt`
-- **Path:** `stats_dashboard`
-- **Models:** `BotStats`, `ActivityDataPoint`
-- **Components:** `StatsCardGrid` / `StatCard`, `ActivityChart`
-- Follows the art direction: flat cards with elevation `0.dp` and corners `8.dp`.
-
-## Art Direction
-
-- Primary Blurple: `#5865F2`
-- Charcoal background: `#313338`
-- Surface: `#2B2D31`
-- Flat cards: elevation `0.dp`, corners `8.dp`.
-
-## Conventions
-
-- All colors are referenced via `AppColors.*`; never use inline hex colors on screens.
-- Default Material typography (nothing like `FontFamily.Monospace`).
-- Kotlin code in the source set `app/src/main/kotlin/...` with one package per screen.
-
-## File Ownership
-
-| File | Owner | Status |
-|---|---|---|
-| `app/src/main/kotlin/.../ui/theme/AppTheme.kt` | Codex | Active |
-| `app/src/main/kotlin/.../ui/theme/NeonColors.kt` | Codex | Active |
-| `app/src/main/kotlin/.../ui/dashboard/MainDashboardScreen.kt` | Sprite | Active |
-| `app/src/main/kotlin/.../ui/navigation/AppNavigation.kt` | Sprite | Active |
-| `app/src/main/kotlin/.../ui/components/OrionBubble.kt` | Gaul | Active |
-| `app/src/main/kotlin/.../ui/library/ToolLibraryScreen.kt` | Gaul | Active |
-| `ui/StatsDashboardScreen.kt` | Sprite | Active |
-| `ui/splash/OriginLoadingScreen.kt` | Sprite | Active |
-| `backend_api.py` | Codex | Active |
+The cleanup script deletes root-level test files. Review `scripts/README.md` and the script itself before running it.
